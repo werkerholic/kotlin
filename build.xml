@@ -1334,6 +1334,51 @@
         </pack-runtime-jar>
     </target>
 
+    <target name="build-gradle-runtime">
+        <property environment="env"/>
+        <condition property="jdk17" value="${env.JDK_17}" else="${env.JAVA_HOME}">
+            <isset property="env.JDK_17" />
+        </condition>
+        <java classname="org.gradle.wrapper.GradleWrapperMain"
+              fork="true"
+              dir="${basedir}/libraries"
+              failonerror="true"
+              timeout="4000000"
+              taskname="build-gradle-runtime"
+              jvm="${jdk17}/bin/java">
+            <env key="JAVA_HOME" value="${jdk17}"/>
+            <classpath>
+                <pathelement location="${basedir}/libraries/gradle/wrapper/gradle-wrapper.jar"/>
+            </classpath>
+            <arg line="clean" />
+            <arg line="build -x test" />
+        </java>
+    </target>
+
+    <target name="pack-gradle-runtime">
+        <pack-runtime-jar jar-name="kotlin-runtime-gradle.jar" implementation-title="${manifest.impl.title.kotlin.jvm.runtime}">
+            <jar-content>
+                <fileset dir="${basedir}/libraries/tools/runtime/build/classes/main"/>
+                <fileset dir="${basedir}/libraries/stdlib/build/classes/main"/>
+                <zipfileset dir="${output}/builtins">
+                    <include name="kotlin/**"/>
+                    <!-- TODO: load metadata from @Metadata annotation in KotlinBuiltIns on JVM and restore this exclusion (also below in mock-runtime) -->
+                    <!-- exclude name="kotlin/reflect/**"/ -->
+                </zipfileset>
+            </jar-content>
+        </pack-runtime-jar>
+
+        <pack-runtime-jar jar-name="kotlin-test-gradle.jar" implementation-title="${manifest.impl.title.kotlin.test}" runtime-component="Test">
+            <jar-content>
+                <fileset dir="${basedir}/libraries/kotlin.test/shared/build/classes/main" includes="**/*" excludes="kotlin/internal/OnlyInputTypes*,kotlin/internal/InlineOnly*,kotlin/internal"/>
+                <fileset dir="${basedir}/libraries/kotlin.test/junit/build/classes/main" />
+            </jar-content>
+        </pack-runtime-jar>
+    </target>
+
+    <target name="gradle-runtime"
+            depends="build-gradle-runtime,pack-gradle-runtime" />
+
     <target name="runtime"
             depends="builtins,stdlib,kotlin-test,core,reflection,pack-runtime,pack-runtime-sources,script-runtime,mock-runtime-for-test"/>
 
