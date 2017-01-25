@@ -69,7 +69,7 @@ public external open class FormData(form: HTMLFormElement = definedExternally) {
     fun append(name: String, value: Blob, filename: String = definedExternally): Unit
     fun delete(name: String): Unit
     fun get(name: String): dynamic
-    fun getAll(name: String): Array<dynamic>
+    fun getAll(name: String): Array<out dynamic>
     fun has(name: String): Boolean
     fun set(name: String, value: String): Unit
     fun set(name: String, value: Blob, filename: String = definedExternally): Unit

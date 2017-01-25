@@ -32,7 +32,7 @@ public external open class Notification(title: String, options: NotificationOpti
     open val icon: String
     open val badge: String
     open val sound: String
-    open val vibrate: dynamic
+    open val vibrate: Array<out Int>
     open val timestamp: Number
     open val renotify: Boolean
     open val silent: Boolean
@@ -40,13 +40,13 @@ public external open class Notification(title: String, options: NotificationOpti
     open val requireInteraction: Boolean
     open val sticky: Boolean
     open val data: Any?
-    open val actions: dynamic
+    open val actions: Array<out NotificationAction>
     fun close(): Unit
 
     companion object {
         var permission: String
         var maxActions: Int
-        fun requestPermission(deprecatedCallback: (String) -> Unit = definedExternally): dynamic
+        fun requestPermission(deprecatedCallback: (String) -> Unit = definedExternally): Promise<String>
     }
 }
 
@@ -99,12 +99,12 @@ public external interface NotificationOptions {
     var data: Any? /* = null */
         get() = definedExternally
         set(value) = definedExternally
-    var actions: Array<NotificationAction>? /* = arrayOf() */
+    var actions: Array<out NotificationAction>? /* = arrayOf() */
         get() = definedExternally
         set(value) = definedExternally
 }
 
-public inline fun NotificationOptions(dir: String? = "auto", lang: String? = "", body: String? = "", tag: String? = "", image: String? = null, icon: String? = null, badge: String? = null, sound: String? = null, vibrate: dynamic = null, timestamp: Number? = null, renotify: Boolean? = false, silent: Boolean? = false, noscreen: Boolean? = false, requireInteraction: Boolean? = false, sticky: Boolean? = false, data: Any? = null, actions: Array<NotificationAction>? = arrayOf()): NotificationOptions {
+public inline fun NotificationOptions(dir: String? = "auto", lang: String? = "", body: String? = "", tag: String? = "", image: String? = null, icon: String? = null, badge: String? = null, sound: String? = null, vibrate: dynamic = null, timestamp: Number? = null, renotify: Boolean? = false, silent: Boolean? = false, noscreen: Boolean? = false, requireInteraction: Boolean? = false, sticky: Boolean? = false, data: Any? = null, actions: Array<out NotificationAction>? = arrayOf()): NotificationOptions {
     val o = js("({})")
 
     o["dir"] = dir

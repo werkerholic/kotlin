@@ -104,7 +104,7 @@ public external interface WebGLRenderingContextBase {
     val drawingBufferHeight: Int
     fun getContextAttributes(): WebGLContextAttributes?
     fun isContextLost(): Boolean
-    fun getSupportedExtensions(): Array<String>?
+    fun getSupportedExtensions(): Array<out String>?
     fun getExtension(name: String): dynamic
     fun activeTexture(texture: Int): Unit
     fun attachShader(program: WebGLProgram?, shader: WebGLShader?): Unit
@@ -163,7 +163,7 @@ public external interface WebGLRenderingContextBase {
     fun generateMipmap(target: Int): Unit
     fun getActiveAttrib(program: WebGLProgram?, index: Int): WebGLActiveInfo?
     fun getActiveUniform(program: WebGLProgram?, index: Int): WebGLActiveInfo?
-    fun getAttachedShaders(program: WebGLProgram?): Array<WebGLShader>?
+    fun getAttachedShaders(program: WebGLProgram?): Array<out WebGLShader>?
     fun getAttribLocation(program: WebGLProgram?, name: String): Int
     fun getBufferParameter(target: Int, pname: Int): Any?
     fun getParameter(pname: Int): Any?
@@ -212,34 +212,34 @@ public external interface WebGLRenderingContextBase {
     fun texSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, format: Int, type: Int, source: TexImageSource?): Unit
     fun uniform1f(location: WebGLUniformLocation?, x: Float): Unit
     fun uniform1fv(location: WebGLUniformLocation?, v: Float32Array): Unit
-    fun uniform1fv(location: WebGLUniformLocation?, v: Array<Float>): Unit
+    fun uniform1fv(location: WebGLUniformLocation?, v: Array<out Float>): Unit
     fun uniform1i(location: WebGLUniformLocation?, x: Int): Unit
     fun uniform1iv(location: WebGLUniformLocation?, v: Int32Array): Unit
-    fun uniform1iv(location: WebGLUniformLocation?, v: Array<Int>): Unit
+    fun uniform1iv(location: WebGLUniformLocation?, v: Array<out Int>): Unit
     fun uniform2f(location: WebGLUniformLocation?, x: Float, y: Float): Unit
     fun uniform2fv(location: WebGLUniformLocation?, v: Float32Array): Unit
-    fun uniform2fv(location: WebGLUniformLocation?, v: Array<Float>): Unit
+    fun uniform2fv(location: WebGLUniformLocation?, v: Array<out Float>): Unit
     fun uniform2i(location: WebGLUniformLocation?, x: Int, y: Int): Unit
     fun uniform2iv(location: WebGLUniformLocation?, v: Int32Array): Unit
-    fun uniform2iv(location: WebGLUniformLocation?, v: Array<Int>): Unit
+    fun uniform2iv(location: WebGLUniformLocation?, v: Array<out Int>): Unit
     fun uniform3f(location: WebGLUniformLocation?, x: Float, y: Float, z: Float): Unit
     fun uniform3fv(location: WebGLUniformLocation?, v: Float32Array): Unit
-    fun uniform3fv(location: WebGLUniformLocation?, v: Array<Float>): Unit
+    fun uniform3fv(location: WebGLUniformLocation?, v: Array<out Float>): Unit
     fun uniform3i(location: WebGLUniformLocation?, x: Int, y: Int, z: Int): Unit
     fun uniform3iv(location: WebGLUniformLocation?, v: Int32Array): Unit
-    fun uniform3iv(location: WebGLUniformLocation?, v: Array<Int>): Unit
+    fun uniform3iv(location: WebGLUniformLocation?, v: Array<out Int>): Unit
     fun uniform4f(location: WebGLUniformLocation?, x: Float, y: Float, z: Float, w: Float): Unit
     fun uniform4fv(location: WebGLUniformLocation?, v: Float32Array): Unit
-    fun uniform4fv(location: WebGLUniformLocation?, v: Array<Float>): Unit
+    fun uniform4fv(location: WebGLUniformLocation?, v: Array<out Float>): Unit
     fun uniform4i(location: WebGLUniformLocation?, x: Int, y: Int, z: Int, w: Int): Unit
     fun uniform4iv(location: WebGLUniformLocation?, v: Int32Array): Unit
-    fun uniform4iv(location: WebGLUniformLocation?, v: Array<Int>): Unit
+    fun uniform4iv(location: WebGLUniformLocation?, v: Array<out Int>): Unit
     fun uniformMatrix2fv(location: WebGLUniformLocation?, transpose: Boolean, value: Float32Array): Unit
-    fun uniformMatrix2fv(location: WebGLUniformLocation?, transpose: Boolean, value: Array<Float>): Unit
+    fun uniformMatrix2fv(location: WebGLUniformLocation?, transpose: Boolean, value: Array<out Float>): Unit
     fun uniformMatrix3fv(location: WebGLUniformLocation?, transpose: Boolean, value: Float32Array): Unit
-    fun uniformMatrix3fv(location: WebGLUniformLocation?, transpose: Boolean, value: Array<Float>): Unit
+    fun uniformMatrix3fv(location: WebGLUniformLocation?, transpose: Boolean, value: Array<out Float>): Unit
     fun uniformMatrix4fv(location: WebGLUniformLocation?, transpose: Boolean, value: Float32Array): Unit
-    fun uniformMatrix4fv(location: WebGLUniformLocation?, transpose: Boolean, value: Array<Float>): Unit
+    fun uniformMatrix4fv(location: WebGLUniformLocation?, transpose: Boolean, value: Array<out Float>): Unit
     fun useProgram(program: WebGLProgram?): Unit
     fun validateProgram(program: WebGLProgram?): Unit
     fun vertexAttrib1f(index: Int, x: Float): Unit

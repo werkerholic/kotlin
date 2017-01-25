@@ -137,7 +137,7 @@ public external open class Document : Node, GlobalEventHandlers, DocumentAndElem
     override val firstElementChild: Element?
     override val lastElementChild: Element?
     override val childElementCount: Int
-    fun exitFullscreen(): dynamic
+    fun exitFullscreen(): Promise<Unit>
     fun getElementsByName(elementName: String): NodeList
     fun open(type: String = definedExternally, replace: String = definedExternally): Document
     fun open(url: String, name: String, features: String): Window
@@ -175,14 +175,14 @@ public external open class Document : Node, GlobalEventHandlers, DocumentAndElem
     fun createTreeWalker(root: Node, whatToShow: Int = definedExternally, filter: NodeFilter? = definedExternally): TreeWalker
     fun createTreeWalker(root: Node, whatToShow: Int = definedExternally, filter: ((Node) -> Short)? = definedExternally): TreeWalker
     fun elementFromPoint(x: Double, y: Double): Element?
-    fun elementsFromPoint(x: Double, y: Double): Array<Element>
+    fun elementsFromPoint(x: Double, y: Double): Array<out Element>
     fun caretPositionFromPoint(x: Double, y: Double): CaretPosition?
     override fun getElementById(elementId: String): Element?
     override fun prepend(vararg nodes: dynamic): Unit
     override fun append(vararg nodes: dynamic): Unit
     override fun querySelector(selectors: String): Element?
     override fun querySelectorAll(selectors: String): NodeList
-    override fun getBoxQuads(options: BoxQuadOptions /* = definedExternally */): Array<DOMQuad>
+    override fun getBoxQuads(options: BoxQuadOptions /* = definedExternally */): Array<out DOMQuad>
     override fun convertQuadFromNode(quad: dynamic, from: dynamic, options: ConvertCoordinateOptions /* = definedExternally */): DOMQuad
     override fun convertRectFromNode(rect: DOMRectReadOnly, from: dynamic, options: ConvertCoordinateOptions /* = definedExternally */): DOMQuad
     override fun convertPointFromNode(point: DOMPointInit, from: dynamic, options: ConvertCoordinateOptions /* = definedExternally */): DOMPoint
@@ -238,7 +238,7 @@ public external abstract class Window : EventTarget, GlobalEventHandlers, Window
     fun print(): Unit
     fun requestAnimationFrame(callback: (Double) -> Unit): Int
     fun cancelAnimationFrame(handle: Int): Unit
-    fun postMessage(message: Any?, targetOrigin: String, transfer: Array<dynamic> = definedExternally): Unit
+    fun postMessage(message: Any?, targetOrigin: String, transfer: Array<out dynamic> = definedExternally): Unit
     fun captureEvents(): Unit
     fun releaseEvents(): Unit
     fun matchMedia(query: String): MediaQueryList
@@ -638,7 +638,7 @@ public external abstract class HTMLMediaElement : HTMLElement {
     fun canPlayType(type: String): String
     fun fastSeek(time: Double): Unit
     fun getStartDate(): dynamic
-    fun play(): dynamic
+    fun play(): Promise<Unit>
     fun pause(): Unit
     fun addTextTrack(kind: String, label: String = definedExternally, language: String = definedExternally): TextTrack
 
@@ -1209,7 +1209,7 @@ public external abstract class HTMLTemplateElement : HTMLElement {
 
 public external abstract class HTMLSlotElement : HTMLElement {
     open var name: String
-    fun assignedNodes(options: AssignedNodesOptions = definedExternally): Array<Node>
+    fun assignedNodes(options: AssignedNodesOptions = definedExternally): Array<out Node>
 }
 
 public external interface AssignedNodesOptions {
@@ -1357,8 +1357,8 @@ public external interface CanvasPathDrawingStyles {
     var lineJoin: String
     var miterLimit: Double
     var lineDashOffset: Double
-    fun setLineDash(segments: Array<Double>): Unit
-    fun getLineDash(): Array<Double>
+    fun setLineDash(segments: Array<out Double>): Unit
+    fun getLineDash(): Array<out Double>
 }
 
 public external interface CanvasTextDrawingStyles {
@@ -1456,7 +1456,7 @@ public external open class ImageData : TexImageSource {
 
 public external open class Path2D() : CanvasPath {
     constructor(path: Path2D)
-    constructor(paths: Array<Path2D>, fillRule: String = definedExternally)
+    constructor(paths: Array<out Path2D>, fillRule: String = definedExternally)
     constructor(d: String)
     fun addPath(path: Path2D, transform: dynamic = definedExternally): Unit
     override fun closePath(): Unit
@@ -1497,7 +1497,7 @@ public inline fun ImageBitmapRenderingContextSettings(alpha: Boolean? = true): I
 public external abstract class CustomElementRegistry {
     fun define(name: String, constructor: () -> dynamic, options: ElementDefinitionOptions = definedExternally): Unit
     fun get(name: String): Any?
-    fun whenDefined(name: String): dynamic
+    fun whenDefined(name: String): Promise<Unit>
 }
 
 public external interface ElementDefinitionOptions {
@@ -1523,7 +1523,7 @@ public external abstract class DataTransfer {
     open var dropEffect: String
     open var effectAllowed: String
     open val items: DataTransferItemList
-    open val types: dynamic
+    open val types: Array<out String>
     open val files: FileList
     fun setDragImage(image: Element, x: Int, y: Int): Unit
     fun getData(format: String): String
@@ -1616,7 +1616,7 @@ public external abstract class Location {
     open var pathname: String
     open var search: String
     open var hash: String
-    open val ancestorOrigins: dynamic
+    open val ancestorOrigins: Array<out String>
     fun assign(url: String): Unit
     fun replace(url: String): Unit
     fun reload(): Unit
@@ -1764,12 +1764,12 @@ public inline fun ErrorEventInit(message: String? = "", filename: String? = "", 
 }
 
 public external open class PromiseRejectionEvent(type: String, eventInitDict: PromiseRejectionEventInit) : Event {
-    open val promise: dynamic
+    open val promise: Promise<Any?>
     open val reason: Any?
 }
 
 public external interface PromiseRejectionEventInit : EventInit {
-    var promise: dynamic
+    var promise: Promise<Any?>?
         get() = definedExternally
         set(value) = definedExternally
     var reason: Any?
@@ -1777,7 +1777,7 @@ public external interface PromiseRejectionEventInit : EventInit {
         set(value) = definedExternally
 }
 
-public inline fun PromiseRejectionEventInit(promise: dynamic, reason: Any? = null, bubbles: Boolean? = false, cancelable: Boolean? = false, composed: Boolean? = false): PromiseRejectionEventInit {
+public inline fun PromiseRejectionEventInit(promise: Promise<Any?>?, reason: Any? = null, bubbles: Boolean? = false, cancelable: Boolean? = false, composed: Boolean? = false): PromiseRejectionEventInit {
     val o = js("({})")
 
     o["promise"] = promise
@@ -1880,15 +1880,15 @@ public external interface DocumentAndElementEventHandlers {
 public external interface WindowOrWorkerGlobalScope {
     val caches: CacheStorage
     val origin: String
-    fun fetch(input: dynamic, init: RequestInit = definedExternally): dynamic
+    fun fetch(input: dynamic, init: RequestInit = definedExternally): Promise<Response>
     fun btoa(data: String): String
     fun atob(data: String): String
     fun setTimeout(handler: dynamic, timeout: Int = definedExternally, vararg arguments: Any?): Int
     fun clearTimeout(handle: Int = definedExternally): Unit
     fun setInterval(handler: dynamic, timeout: Int = definedExternally, vararg arguments: Any?): Int
     fun clearInterval(handle: Int = definedExternally): Unit
-    fun createImageBitmap(image: dynamic, options: ImageBitmapOptions = definedExternally): dynamic
-    fun createImageBitmap(image: dynamic, sx: Int, sy: Int, sw: Int, sh: Int, options: ImageBitmapOptions = definedExternally): dynamic
+    fun createImageBitmap(image: dynamic, options: ImageBitmapOptions = definedExternally): Promise<ImageBitmap>
+    fun createImageBitmap(image: dynamic, sx: Int, sy: Int, sw: Int, sh: Int, options: ImageBitmapOptions = definedExternally): Promise<ImageBitmap>
 }
 
 public external abstract class Navigator : NavigatorID, NavigatorLanguage, NavigatorOnLine, NavigatorContentUtils, NavigatorCookies, NavigatorPlugins, NavigatorConcurrentHardware {
@@ -1912,7 +1912,7 @@ public external interface NavigatorID {
 
 public external interface NavigatorLanguage {
     val language: String
-    val languages: dynamic
+    val languages: Array<out String>
 }
 
 public external interface NavigatorContentUtils {
@@ -2014,8 +2014,8 @@ public external open class MessageEvent(type: String, eventInitDict: MessageEven
     open val origin: String
     open val lastEventId: String
     open val source: UnionMessagePortOrWindow?
-    open val ports: dynamic
-    fun initMessageEvent(type: String, bubbles: Boolean, cancelable: Boolean, data: Any?, origin: String, lastEventId: String, source: UnionMessagePortOrWindow?, ports: Array<MessagePort>): Unit
+    open val ports: Array<out MessagePort>
+    fun initMessageEvent(type: String, bubbles: Boolean, cancelable: Boolean, data: Any?, origin: String, lastEventId: String, source: UnionMessagePortOrWindow?, ports: Array<out MessagePort>): Unit
 }
 
 public external interface MessageEventInit : EventInit {
@@ -2031,12 +2031,12 @@ public external interface MessageEventInit : EventInit {
     var source: UnionMessagePortOrWindow? /* = null */
         get() = definedExternally
         set(value) = definedExternally
-    var ports: Array<MessagePort>? /* = arrayOf() */
+    var ports: Array<out MessagePort>? /* = arrayOf() */
         get() = definedExternally
         set(value) = definedExternally
 }
 
-public inline fun MessageEventInit(data: Any? = null, origin: String? = "", lastEventId: String? = "", source: UnionMessagePortOrWindow? = null, ports: Array<MessagePort>? = arrayOf(), bubbles: Boolean? = false, cancelable: Boolean? = false, composed: Boolean? = false): MessageEventInit {
+public inline fun MessageEventInit(data: Any? = null, origin: String? = "", lastEventId: String? = "", source: UnionMessagePortOrWindow? = null, ports: Array<out MessagePort>? = arrayOf(), bubbles: Boolean? = false, cancelable: Boolean? = false, composed: Boolean? = false): MessageEventInit {
     val o = js("({})")
 
     o["data"] = data
@@ -2144,7 +2144,7 @@ public external open class MessageChannel {
 
 public external abstract class MessagePort : EventTarget, UnionMessagePortOrWindow, UnionMessagePortOrServiceWorker, UnionClientOrMessagePortOrServiceWorker {
     open var onmessage: ((Event) -> dynamic)?
-    fun postMessage(message: Any?, transfer: Array<dynamic> = definedExternally): Unit
+    fun postMessage(message: Any?, transfer: Array<out dynamic> = definedExternally): Unit
     fun start(): Unit
     fun close(): Unit
 }
@@ -2171,7 +2171,7 @@ public external abstract class WorkerGlobalScope : EventTarget, WindowOrWorkerGl
 
 public external abstract class DedicatedWorkerGlobalScope : WorkerGlobalScope {
     open var onmessage: ((Event) -> dynamic)?
-    fun postMessage(message: Any?, transfer: Array<dynamic> = definedExternally): Unit
+    fun postMessage(message: Any?, transfer: Array<out dynamic> = definedExternally): Unit
     fun close(): Unit
 }
 
@@ -2190,7 +2190,7 @@ public external open class Worker(scriptURL: String, options: WorkerOptions = de
     var onmessage: ((Event) -> dynamic)?
     override var onerror: ((Event) -> dynamic)?
     fun terminate(): Unit
-    fun postMessage(message: Any?, transfer: Array<dynamic> = definedExternally): Unit
+    fun postMessage(message: Any?, transfer: Array<out dynamic> = definedExternally): Unit
 }
 
 public external interface WorkerOptions {
@@ -2488,10 +2488,10 @@ public external abstract class HTMLCollection : UnionElementOrHTMLCollection {
 inline operator fun HTMLCollection.get(index: Int): Element? = asDynamic()[index]
 inline operator fun HTMLCollection.get(name: String): Element? = asDynamic()[name]
 
-public external open class MutationObserver(callback: (Array<MutationRecord>, MutationObserver) -> Unit) {
+public external open class MutationObserver(callback: (Array<out MutationRecord>, MutationObserver) -> Unit) {
     fun observe(target: Node, options: MutationObserverInit = definedExternally): Unit
     fun disconnect(): Unit
-    fun takeRecords(): Array<MutationRecord>
+    fun takeRecords(): Array<out MutationRecord>
 }
 
 public external interface MutationObserverInit {
@@ -2513,12 +2513,12 @@ public external interface MutationObserverInit {
     var characterDataOldValue: Boolean?
         get() = definedExternally
         set(value) = definedExternally
-    var attributeFilter: Array<String>?
+    var attributeFilter: Array<out String>?
         get() = definedExternally
         set(value) = definedExternally
 }
 
-public inline fun MutationObserverInit(childList: Boolean? = false, attributes: Boolean? = null, characterData: Boolean? = null, subtree: Boolean? = false, attributeOldValue: Boolean? = null, characterDataOldValue: Boolean? = null, attributeFilter: Array<String>? = null): MutationObserverInit {
+public inline fun MutationObserverInit(childList: Boolean? = false, attributes: Boolean? = null, characterData: Boolean? = null, subtree: Boolean? = false, attributeOldValue: Boolean? = null, characterDataOldValue: Boolean? = null, attributeFilter: Array<out String>? = null): MutationObserverInit {
     val o = js("({})")
 
     o["childList"] = childList
@@ -2617,7 +2617,7 @@ public external open class XMLDocument : Document {
     override fun append(vararg nodes: dynamic): Unit
     override fun querySelector(selectors: String): Element?
     override fun querySelectorAll(selectors: String): NodeList
-    override fun getBoxQuads(options: BoxQuadOptions /* = definedExternally */): Array<DOMQuad>
+    override fun getBoxQuads(options: BoxQuadOptions /* = definedExternally */): Array<out DOMQuad>
     override fun convertQuadFromNode(quad: dynamic, from: dynamic, options: ConvertCoordinateOptions /* = definedExternally */): DOMQuad
     override fun convertRectFromNode(rect: DOMRectReadOnly, from: dynamic, options: ConvertCoordinateOptions /* = definedExternally */): DOMQuad
     override fun convertPointFromNode(point: DOMPointInit, from: dynamic, options: ConvertCoordinateOptions /* = definedExternally */): DOMPoint
@@ -2694,10 +2694,10 @@ public external abstract class Element : Node, ParentNode, NonDocumentTypeChildN
     open val clientLeft: Int
     open val clientWidth: Int
     open val clientHeight: Int
-    fun requestFullscreen(): dynamic
+    fun requestFullscreen(): Promise<Unit>
     fun insertAdjacentHTML(position: String, text: String): Unit
     fun hasAttributes(): Boolean
-    fun getAttributeNames(): Array<String>
+    fun getAttributeNames(): Array<out String>
     fun getAttribute(qualifiedName: String): String?
     fun getAttributeNS(namespace: String?, localName: String): String?
     fun setAttribute(qualifiedName: String, value: String): Unit
@@ -2720,7 +2720,7 @@ public external abstract class Element : Node, ParentNode, NonDocumentTypeChildN
     fun getElementsByClassName(classNames: String): HTMLCollection
     fun insertAdjacentElement(where: String, element: Element): Element?
     fun insertAdjacentText(where: String, data: String): Unit
-    fun getClientRects(): Array<DOMRect>
+    fun getClientRects(): Array<out DOMRect>
     fun getBoundingClientRect(): DOMRect
     fun scrollIntoView(): Unit
     fun scrollIntoView(arg: dynamic): Unit
@@ -2789,7 +2789,7 @@ public external open class Text(data: String = definedExternally) : CharacterDat
     override fun after(vararg nodes: dynamic): Unit
     override fun replaceWith(vararg nodes: dynamic): Unit
     override fun remove(): Unit
-    override fun getBoxQuads(options: BoxQuadOptions /* = definedExternally */): Array<DOMQuad>
+    override fun getBoxQuads(options: BoxQuadOptions /* = definedExternally */): Array<out DOMQuad>
     override fun convertQuadFromNode(quad: dynamic, from: dynamic, options: ConvertCoordinateOptions /* = definedExternally */): DOMQuad
     override fun convertRectFromNode(rect: DOMRectReadOnly, from: dynamic, options: ConvertCoordinateOptions /* = definedExternally */): DOMQuad
     override fun convertPointFromNode(point: DOMPointInit, from: dynamic, options: ConvertCoordinateOptions /* = definedExternally */): DOMPoint
@@ -2800,7 +2800,7 @@ public external open class CDATASection : Text {
     override fun after(vararg nodes: dynamic): Unit
     override fun replaceWith(vararg nodes: dynamic): Unit
     override fun remove(): Unit
-    override fun getBoxQuads(options: BoxQuadOptions /* = definedExternally */): Array<DOMQuad>
+    override fun getBoxQuads(options: BoxQuadOptions /* = definedExternally */): Array<out DOMQuad>
     override fun convertQuadFromNode(quad: dynamic, from: dynamic, options: ConvertCoordinateOptions /* = definedExternally */): DOMQuad
     override fun convertRectFromNode(rect: DOMRectReadOnly, from: dynamic, options: ConvertCoordinateOptions /* = definedExternally */): DOMQuad
     override fun convertPointFromNode(point: DOMPointInit, from: dynamic, options: ConvertCoordinateOptions /* = definedExternally */): DOMPoint
@@ -2847,7 +2847,7 @@ public external open class Range {
     fun isPointInRange(node: Node, offset: Int): Boolean
     fun comparePoint(node: Node, offset: Int): Short
     fun intersectsNode(node: Node): Boolean
-    fun getClientRects(): Array<DOMRect>
+    fun getClientRects(): Array<out DOMRect>
     fun getBoundingClientRect(): DOMRect
 
     companion object {
@@ -3022,7 +3022,7 @@ public external open class DOMQuad {
     open val bounds: DOMRectReadOnly
 }
 
-public external open class DOMMatrixReadOnly(numberSequence: Array<Double>) {
+public external open class DOMMatrixReadOnly(numberSequence: Array<out Double>) {
     open val a: Double
     open val b: Double
     open val c: Double
@@ -3070,7 +3070,7 @@ public external open class DOMMatrix() : DOMMatrixReadOnly {
     constructor(other: DOMMatrixReadOnly)
     constructor(array32: Float32Array)
     constructor(array64: Float64Array)
-    constructor(numberSequence: Array<Double>)
+    constructor(numberSequence: Array<out Double>)
     override var a: Double
     override var b: Double
     override var c: Double
@@ -3248,7 +3248,7 @@ public inline fun ConvertCoordinateOptions(fromBox: String? = "border", toBox: S
 }
 
 public external interface GeometryUtils {
-    fun getBoxQuads(options: BoxQuadOptions = definedExternally): Array<DOMQuad>
+    fun getBoxQuads(options: BoxQuadOptions = definedExternally): Array<out DOMQuad>
     fun convertQuadFromNode(quad: dynamic, from: dynamic, options: ConvertCoordinateOptions = definedExternally): DOMQuad
     fun convertRectFromNode(rect: DOMRectReadOnly, from: dynamic, options: ConvertCoordinateOptions = definedExternally): DOMQuad
     fun convertPointFromNode(point: DOMPointInit, from: dynamic, options: ConvertCoordinateOptions = definedExternally): DOMPoint

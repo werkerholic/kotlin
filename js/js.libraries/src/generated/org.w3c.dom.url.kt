@@ -47,7 +47,7 @@ public external open class URLSearchParams(init: dynamic = definedExternally) {
     fun append(name: String, value: String): Unit
     fun delete(name: String): Unit
     fun get(name: String): String?
-    fun getAll(name: String): Array<String>
+    fun getAll(name: String): Array<out String>
     fun has(name: String): Boolean
     fun set(name: String, value: String): Unit
 }
