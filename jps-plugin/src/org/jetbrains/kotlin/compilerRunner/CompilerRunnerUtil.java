@@ -19,6 +19,7 @@ package org.jetbrains.kotlin.compilerRunner;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector;
+import org.jetbrains.kotlin.load.kotlin.DeserializedDescriptorResolver;
 import org.jetbrains.kotlin.preloading.ClassPreloadingUtils;
 import org.jetbrains.kotlin.preloading.Preloader;
 import org.jetbrains.kotlin.utils.KotlinPaths;
@@ -44,8 +45,15 @@ public class CompilerRunnerUtil {
     ) throws IOException {
         ClassLoader classLoader = ourClassLoaderRef.get();
         if (classLoader == null) {
+            File compilerJar = new File(libPath, "kotlin-compiler.jar");
+
+            String testsCompilerJarPath = System.getProperty("kotlin.jps.tests.compiler.jar");
+            if ("true".equals(testsCompilerJarPath)) {
+                compilerJar = new File(testsCompilerJarPath);
+            }
+
             classLoader = ClassPreloadingUtils.preloadClasses(
-                    Collections.singletonList(new File(libPath, "kotlin-compiler.jar")),
+                    Collections.singletonList(compilerJar),
                     Preloader.DEFAULT_CLASS_NUMBER_ESTIMATE,
                     CompilerRunnerUtil.class.getClassLoader(),
                     environment.getClassesToLoadByParent()
