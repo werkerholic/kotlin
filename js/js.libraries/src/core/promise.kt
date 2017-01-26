@@ -31,3 +31,29 @@ public open external class Promise<out T>(executor: (resolve: (T) -> Unit, rejec
 
     public open fun <S> catch(onRejected: (Throwable) -> S): Promise<S>
 }
+
+public inline fun <T1, T2> Promise.Companion.all(v1: Promise<T1>, v2: Promise<T2>): Promise<JsTuple2<T1, T2>> {
+    return all(arrayOf<Promise<Any?>>(v1, v2)).asDynamic().unsafeCast<Promise<JsTuple2<T1, T2>>>()
+}
+
+public inline fun <T1, T2, T3> Promise.Companion.all(v1: Promise<T1>, v2: Promise<T2>, v3: Promise<T3>): Promise<JsTuple3<T1, T2, T3>> {
+    return all(arrayOf<Promise<Any?>>(v1, v2, v3)).asDynamic().unsafeCast<Promise<JsTuple3<T1, T2, T3>>>()
+}
+
+public inline fun <T1, T2, T3, T4> Promise.Companion.all(
+        v1: Promise<T1>, v2: Promise<T2>, v3: Promise<T3>, v4: Promise<T4>
+): Promise<JsTuple4<T1, T2, T3, T4>> {
+    return all(arrayOf<Promise<Any?>>(v1, v2, v3, v4)).asDynamic().unsafeCast<Promise<JsTuple4<T1, T2, T3, T4>>>()
+}
+
+public inline fun <T1, T2, T3, T4, T5> Promise.Companion.all(
+        v1: Promise<T1>, v2: Promise<T2>, v3: Promise<T3>, v4: Promise<T4>, v5: Promise<T5>
+): Promise<JsTuple5<T1, T2, T3, T4, T5>> {
+    return all(arrayOf<Promise<Any?>>(v1, v2, v3, v4, v5)).asDynamic().unsafeCast<Promise<JsTuple5<T1, T2, T3, T4, T5>>>()
+}
+
+public inline fun <T1, T2, T3, T4, T5, T6> Promise.Companion.all(
+        v1: Promise<T1>, v2: Promise<T2>, v3: Promise<T3>, v4: Promise<T4>, v5: Promise<T5>, v6: Promise<T6>
+): Promise<JsTuple6<T1, T2, T3, T4, T5, T6>> {
+    return all(arrayOf<Promise<Any?>>(v1, v2, v3, v4, v5, v6)).asDynamic().unsafeCast<Promise<JsTuple6<T1, T2, T3, T4, T5, T6>>>()
+}
