@@ -1,6 +1,8 @@
 // MODULE: #my-libr@ry
 // FILE: bar.kt
 // MODULE_KIND: COMMON_JS
+// PROPERTY_NOT_WRITTEN_TO: baz
+// PROPERTY_NOT_WRITTEN_TO: boo_287e2$
 @file:Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
 
 inline fun foo() = "foo"
