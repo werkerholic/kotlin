@@ -83,7 +83,6 @@ internal fun mapType(repository: Repository, type: Type): Type = when (type) {
             typeName.startsWith("unrestricted") -> mapType(repository, SimpleType(typeName.removePrefix("unrestricted"), false))
             typeName in repository.interfaces -> type
             typeName in repository.typeDefs -> mapTypedef(repository, type)
-            typeName in repository.enums -> SimpleType("String", type.nullable)
 
             else -> type
         }
