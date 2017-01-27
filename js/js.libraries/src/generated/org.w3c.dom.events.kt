@@ -416,7 +416,7 @@ public external open class Event(type: String, eventInitDict: EventInit = define
     open val composed: Boolean
     open val isTrusted: Boolean
     open val timeStamp: Number
-    fun composedPath(): Array<out EventTarget>
+    fun composedPath(): Array<EventTarget>
     fun stopPropagation(): Unit
     fun stopImmediatePropagation(): Unit
     fun preventDefault(): Unit

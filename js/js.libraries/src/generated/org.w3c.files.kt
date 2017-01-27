@@ -20,7 +20,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-public external open class Blob(blobParts: Array<out dynamic> = definedExternally, options: BlobPropertyBag = definedExternally) {
+public external open class Blob(blobParts: Array<dynamic> = definedExternally, options: BlobPropertyBag = definedExternally) {
     open val size: Int
     open val type: String
     open val isClosed: Boolean
@@ -42,7 +42,7 @@ public inline fun BlobPropertyBag(type: String? = ""): BlobPropertyBag {
     return o
 }
 
-public external open class File(fileBits: Array<out dynamic>, fileName: String, options: FilePropertyBag = definedExternally) : Blob {
+public external open class File(fileBits: Array<dynamic>, fileName: String, options: FilePropertyBag = definedExternally) : Blob {
     open val name: String
     open val lastModified: Int
 }

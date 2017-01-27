@@ -99,12 +99,12 @@ public external interface NotificationOptions {
     var data: Any? /* = null */
         get() = definedExternally
         set(value) = definedExternally
-    var actions: Array<out NotificationAction>? /* = arrayOf() */
+    var actions: Array<NotificationAction>? /* = arrayOf() */
         get() = definedExternally
         set(value) = definedExternally
 }
 
-public inline fun NotificationOptions(dir: NotificationDirection? = NotificationDirection.AUTO, lang: String? = "", body: String? = "", tag: String? = "", image: String? = null, icon: String? = null, badge: String? = null, sound: String? = null, vibrate: dynamic = null, timestamp: Number? = null, renotify: Boolean? = false, silent: Boolean? = false, noscreen: Boolean? = false, requireInteraction: Boolean? = false, sticky: Boolean? = false, data: Any? = null, actions: Array<out NotificationAction>? = arrayOf()): NotificationOptions {
+public inline fun NotificationOptions(dir: NotificationDirection? = NotificationDirection.AUTO, lang: String? = "", body: String? = "", tag: String? = "", image: String? = null, icon: String? = null, badge: String? = null, sound: String? = null, vibrate: dynamic = null, timestamp: Number? = null, renotify: Boolean? = false, silent: Boolean? = false, noscreen: Boolean? = false, requireInteraction: Boolean? = false, sticky: Boolean? = false, data: Any? = null, actions: Array<NotificationAction>? = arrayOf()): NotificationOptions {
     val o = js("({})")
 
     o["dir"] = dir

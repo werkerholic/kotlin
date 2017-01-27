@@ -52,7 +52,7 @@ public external abstract class ServiceWorker : EventTarget, AbstractWorker, Unio
     open val scriptURL: String
     open val state: ServiceWorkerState
     open var onstatechange: ((Event) -> dynamic)?
-    fun postMessage(message: Any?, transfer: Array<out dynamic> = definedExternally): Unit
+    fun postMessage(message: Any?, transfer: Array<dynamic> = definedExternally): Unit
 }
 
 public external abstract class ServiceWorkerContainer : EventTarget {
@@ -105,12 +105,12 @@ public external interface ServiceWorkerMessageEventInit : EventInit {
     var source: UnionMessagePortOrServiceWorker?
         get() = definedExternally
         set(value) = definedExternally
-    var ports: Array<out MessagePort>?
+    var ports: Array<MessagePort>?
         get() = definedExternally
         set(value) = definedExternally
 }
 
-public inline fun ServiceWorkerMessageEventInit(data: Any? = null, origin: String? = null, lastEventId: String? = null, source: UnionMessagePortOrServiceWorker? = null, ports: Array<out MessagePort>? = null, bubbles: Boolean? = false, cancelable: Boolean? = false, composed: Boolean? = false): ServiceWorkerMessageEventInit {
+public inline fun ServiceWorkerMessageEventInit(data: Any? = null, origin: String? = null, lastEventId: String? = null, source: UnionMessagePortOrServiceWorker? = null, ports: Array<MessagePort>? = null, bubbles: Boolean? = false, cancelable: Boolean? = false, composed: Boolean? = false): ServiceWorkerMessageEventInit {
     val o = js("({})")
 
     o["data"] = data
@@ -129,7 +129,7 @@ public external abstract class Client : UnionClientOrMessagePortOrServiceWorker 
     open val url: String
     open val frameType: FrameType
     open val id: String
-    fun postMessage(message: Any?, transfer: Array<out dynamic> = definedExternally): Unit
+    fun postMessage(message: Any?, transfer: Array<dynamic> = definedExternally): Unit
 }
 
 public external abstract class WindowClient : Client {
@@ -186,15 +186,15 @@ public external open class InstallEvent(type: String, eventInitDict: ExtendableE
 }
 
 public external interface ForeignFetchOptions {
-    var scopes: Array<out String>?
+    var scopes: Array<String>?
         get() = definedExternally
         set(value) = definedExternally
-    var origins: Array<out String>?
+    var origins: Array<String>?
         get() = definedExternally
         set(value) = definedExternally
 }
 
-public inline fun ForeignFetchOptions(scopes: Array<out String>?, origins: Array<out String>?): ForeignFetchOptions {
+public inline fun ForeignFetchOptions(scopes: Array<String>?, origins: Array<String>?): ForeignFetchOptions {
     val o = js("({})")
 
     o["scopes"] = scopes
@@ -269,12 +269,12 @@ public external interface ForeignFetchResponse {
     var origin: String?
         get() = definedExternally
         set(value) = definedExternally
-    var headers: Array<out String>?
+    var headers: Array<String>?
         get() = definedExternally
         set(value) = definedExternally
 }
 
-public inline fun ForeignFetchResponse(response: Response?, origin: String? = null, headers: Array<out String>? = null): ForeignFetchResponse {
+public inline fun ForeignFetchResponse(response: Response?, origin: String? = null, headers: Array<String>? = null): ForeignFetchResponse {
     val o = js("({})")
 
     o["response"] = response
@@ -305,12 +305,12 @@ public external interface ExtendableMessageEventInit : ExtendableEventInit {
     var source: UnionClientOrMessagePortOrServiceWorker?
         get() = definedExternally
         set(value) = definedExternally
-    var ports: Array<out MessagePort>?
+    var ports: Array<MessagePort>?
         get() = definedExternally
         set(value) = definedExternally
 }
 
-public inline fun ExtendableMessageEventInit(data: Any? = null, origin: String? = null, lastEventId: String? = null, source: UnionClientOrMessagePortOrServiceWorker? = null, ports: Array<out MessagePort>? = null, bubbles: Boolean? = false, cancelable: Boolean? = false, composed: Boolean? = false): ExtendableMessageEventInit {
+public inline fun ExtendableMessageEventInit(data: Any? = null, origin: String? = null, lastEventId: String? = null, source: UnionClientOrMessagePortOrServiceWorker? = null, ports: Array<MessagePort>? = null, bubbles: Boolean? = false, cancelable: Boolean? = false, composed: Boolean? = false): ExtendableMessageEventInit {
     val o = js("({})")
 
     o["data"] = data
@@ -329,7 +329,7 @@ public external abstract class Cache {
     fun match(request: dynamic, options: CacheQueryOptions = definedExternally): Promise<Any?>
     fun matchAll(request: dynamic = definedExternally, options: CacheQueryOptions = definedExternally): Promise<dynamic>
     fun add(request: dynamic): Promise<Unit>
-    fun addAll(requests: Array<out dynamic>): Promise<Unit>
+    fun addAll(requests: Array<dynamic>): Promise<Unit>
     fun put(request: dynamic, response: Response): Promise<Unit>
     fun delete(request: dynamic, options: CacheQueryOptions = definedExternally): Promise<Boolean>
     fun keys(request: dynamic = definedExternally, options: CacheQueryOptions = definedExternally): Promise<dynamic>
