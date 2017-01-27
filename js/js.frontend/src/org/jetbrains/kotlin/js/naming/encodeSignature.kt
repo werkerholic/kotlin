@@ -18,6 +18,7 @@ package org.jetbrains.kotlin.js.naming
 
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns
 import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.resolve.DescriptorUtils
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.TypeProjection
@@ -84,6 +85,7 @@ private fun StringBuilder.encodeForSignature(
 
     if (type.arguments.isNotEmpty()) {
         val parameters = declaration.typeConstructor.parameters
+        assert(parameters.size == type.arguments.size) { "Type parameter count ${parameters.size} differs from type argument count ${type.arguments.size} for type ${type.getJetTypeFqName(true)}" }
         append("<")
         for ((index, argument) in type.arguments.withIndex()) {
             if (index > 0) {
