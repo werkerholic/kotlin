@@ -112,10 +112,10 @@ public class KotlinTestUtils {
      *
      * Several files may follow one module
      */
-    private static final char MODULE_DELIMITER = ',';
+    private static final String MODULE_DELIMITER = ",\\s*";
 
     private static final Pattern FILE_OR_MODULE_PATTERN = Pattern.compile(
-            "(?://\\s*MODULE:\\s*([^()\\n]+)(?:\\(([^()]+(?:" + MODULE_DELIMITER + "\\s*[^()]+)*)\\))?\\s*)?" +
+            "(?://\\s*MODULE:\\s*([^()\\n]+)(?:\\(([^()]+(?:" + MODULE_DELIMITER + "[^()]+)*)\\))?\\s*)?" +
             "//\\s*FILE:\\s*(.*)$", Pattern.MULTILINE);
     private static final Pattern DIRECTIVE_PATTERN = Pattern.compile("^//\\s*!([\\w_]+)(:\\s*(.*)$)?", Pattern.MULTILINE);
 
@@ -683,7 +683,7 @@ public class KotlinTestUtils {
 
     private static List<String> parseDependencies(@Nullable String dependencies) {
         if (dependencies == null) return Collections.emptyList();
-        return StringsKt.split(dependencies, new char[] { MODULE_DELIMITER }, false, 0);
+        return StringsKt.split(dependencies, Pattern.compile(MODULE_DELIMITER), 0);
     }
 
     @NotNull
