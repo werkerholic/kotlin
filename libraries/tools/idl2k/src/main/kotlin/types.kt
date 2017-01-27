@@ -31,9 +31,6 @@ data class FunctionType(val parameterTypes : List<Attribute>, val returnType : T
     override fun render() = if (nullable) "(${renderImpl()})?" else renderImpl()
     private fun renderImpl() = "(${parameterTypes.joinToString(", ") { it.type.render() }}) -> ${returnType.render()}"
 }
-data class SequenceType(val elementType: Type, override val nullable: Boolean) : Type() {
-    override fun render() = "Array<out ${elementType.render()}>".appendNullabilitySuffix(this)
-}
 data class PromiseType(val valueType: Type, override val nullable: Boolean) : Type() {
     override fun render() = "Promise<${valueType.render()}>".appendNullabilitySuffix(this)
 }
@@ -58,8 +55,8 @@ class UnionType(val namespace: String, types: Collection<Type>, override val nul
 
 fun UnionType.toSingleTypeIfPossible() = if (this.memberTypes.size == 1) this.memberTypes.single().withNullability(nullable) else this
 
-data class ArrayType(val memberType: Type, override val nullable: Boolean) : Type() {
-    override fun render(): String = "Array<${memberType.render()}>".appendNullabilitySuffix(this)
+data class ArrayType(val memberType: Type, val mutable: Boolean, override val nullable: Boolean) : Type() {
+    override fun render(): String = "Array<${if (mutable) "" else "out "}${memberType.render()}>".appendNullabilitySuffix(this)
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -72,7 +69,6 @@ private fun <T: Type> T.copyWithNullability(nullable: Boolean): T = when (this) 
     is FunctionType -> this.copy(nullable = nullable)
     is UnionType -> this.copy(types = this.memberTypes, nullable = nullable)
     is ArrayType -> this.copy(nullable = nullable)
-    is SequenceType -> this.copy(nullable = nullable)
     is PromiseType -> this.copy(nullable = nullable)
     else -> throw UnsupportedOperationException()
 } as T

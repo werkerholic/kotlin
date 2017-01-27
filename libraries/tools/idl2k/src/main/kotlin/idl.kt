@@ -162,16 +162,17 @@ class TypeVisitor(val namespace: String) : WebIDLBaseVisitor<Type>() {
     }
 
     override fun visitSequenceType(ctx: SequenceTypeContext): Type {
-        type = SequenceType(TypeVisitor(namespace).visitChildren(ctx), false)
+        val mutable = ctx.getChild(0).text == "sequence"
+        type = ArrayType(TypeVisitor(namespace).visitChildren(ctx), mutable = mutable, nullable = false)
         return type
     }
 
     override fun visitTypeSuffix(ctx: TypeSuffixContext): Type {
         when (ctx.text?.trim()) {
             "?" -> type = type.toNullable()
-            "[]" -> type = ArrayType(type, false)
-            "[]?" -> type = ArrayType(type, true)
-            "?[]" -> type = ArrayType(type.toNullable(), false)
+            "[]" -> type = ArrayType(type, mutable = true, nullable = false)
+            "[]?" -> type = ArrayType(type, mutable = true, nullable = false)
+            "?[]" -> type = ArrayType(type.toNullable(), mutable = true, nullable = false)
         }
 
         return type
