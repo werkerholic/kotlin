@@ -139,6 +139,7 @@ fun TranslationContext.addAccessorsToPrototype(
 
 fun FunctionDescriptor.requiresStateMachineTransformation(context: TranslationContext): Boolean =
         this is AnonymousFunctionDescriptor ||
+        this.isInline ||
         context.bindingContext()[BindingContext.CONTAINS_NON_TAIL_SUSPEND_CALLS, this] == true
 
 fun JsFunction.fillCoroutineMetadata(
