@@ -74,7 +74,7 @@ public final class K2JSTranslator {
         }
 
         BindingTrace bindingTrace = analysisResult.getBindingTrace();
-        TopDownAnalyzerFacadeForJS.checkForErrors(JsConfig.withJsLibAdded(files, config), bindingTrace.getBindingContext());
+        TopDownAnalyzerFacadeForJS.checkForErrors(JsConfig.withJsLibAdded(files), bindingTrace.getBindingContext());
         ModuleDescriptor moduleDescriptor = analysisResult.getModuleDescriptor();
         Diagnostics diagnostics = bindingTrace.getBindingContext().getDiagnostics();
 

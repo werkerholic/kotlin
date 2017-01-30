@@ -54,7 +54,7 @@ object TopDownAnalyzerFacadeForJS {
             moduleContext: ModuleContext,
             config: JsConfig
     ): JsAnalysisResult {
-        val allFiles = JsConfig.withJsLibAdded(files, config)
+        val allFiles = JsConfig.withJsLibAdded(files)
         val analyzerForJs = createTopDownAnalyzerForJs(
                 moduleContext, trace,
                 FileBasedDeclarationProviderFactory(moduleContext.storageManager, allFiles),
