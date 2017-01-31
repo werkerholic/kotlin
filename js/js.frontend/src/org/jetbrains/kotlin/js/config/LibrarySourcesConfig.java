@@ -17,7 +17,6 @@
 package org.jetbrains.kotlin.js.config;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.StandardFileSystems;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
@@ -49,7 +48,6 @@ public class LibrarySourcesConfig extends JsConfig {
     public static final List<String> JS_KOTLIN_TEST =
             Collections.singletonList(getKotlinPathsForDistDirectory().getJsKotlinTestJarPath().getAbsolutePath());
 
-    public static final Key<String> EXTERNAL_MODULE_NAME = Key.create("externalModule");
     public static final String UNKNOWN_EXTERNAL_MODULE_NAME = "<unknown>";
 
     public LibrarySourcesConfig(@NotNull Project project, @NotNull CompilerConfiguration configuration) {

@@ -16,7 +16,6 @@
 
 package org.jetbrains.kotlin.js.config;
 
-import com.google.common.collect.Lists;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.SmartList;
 import kotlin.collections.CollectionsKt;
@@ -29,7 +28,6 @@ import org.jetbrains.kotlin.descriptors.PackageFragmentProvider;
 import org.jetbrains.kotlin.descriptors.impl.ModuleDescriptorImpl;
 import org.jetbrains.kotlin.js.resolve.JsPlatform;
 import org.jetbrains.kotlin.name.Name;
-import org.jetbrains.kotlin.psi.KtFile;
 import org.jetbrains.kotlin.resolve.CompilerDeserializationConfiguration;
 import org.jetbrains.kotlin.serialization.js.JsModuleDescriptor;
 import org.jetbrains.kotlin.serialization.js.KotlinJavascriptSerializationUtil;
@@ -39,7 +37,6 @@ import org.jetbrains.kotlin.utils.JsMetadataVersion;
 import org.jetbrains.kotlin.utils.KotlinJavascriptMetadata;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -145,12 +142,5 @@ public abstract class JsConfig {
 
     private static void setDependencies(ModuleDescriptorImpl module, List<ModuleDescriptorImpl> modules) {
         module.setDependencies(CollectionsKt.plus(modules, JsPlatform.INSTANCE.getBuiltIns().getBuiltInsModule()));
-    }
-
-    @NotNull
-    public static Collection<KtFile> withJsLibAdded(@NotNull Collection<KtFile> files) {
-        Collection<KtFile> allFiles = Lists.newArrayList();
-        allFiles.addAll(files);
-        return allFiles;
     }
 }
