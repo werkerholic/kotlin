@@ -8,6 +8,7 @@
 package org.w3c.xhr
 
 import kotlin.js.*
+import kotlin.internal.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
 import org.w3c.dom.css.*
@@ -94,6 +95,7 @@ public external interface ProgressEventInit : EventInit {
         set(value) = definedExternally
 }
 
+@InlineOnly
 public inline fun ProgressEventInit(lengthComputable: Boolean? = false, loaded: Int? = 0, total: Int? = 0, bubbles: Boolean? = false, cancelable: Boolean? = false, composed: Boolean? = false): ProgressEventInit {
     val o = js("({})")
 

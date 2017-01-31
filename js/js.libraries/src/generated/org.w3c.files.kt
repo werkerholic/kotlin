@@ -8,6 +8,7 @@
 package org.w3c.files
 
 import kotlin.js.*
+import kotlin.internal.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
 import org.w3c.dom.css.*
@@ -35,6 +36,7 @@ public external interface BlobPropertyBag {
         set(value) = definedExternally
 }
 
+@InlineOnly
 public inline fun BlobPropertyBag(type: String? = ""): BlobPropertyBag {
     val o = js("({})")
 
@@ -54,6 +56,7 @@ public external interface FilePropertyBag : BlobPropertyBag {
         set(value) = definedExternally
 }
 
+@InlineOnly
 public inline fun FilePropertyBag(lastModified: Int? = null, type: String? = ""): FilePropertyBag {
     val o = js("({})")
 
@@ -67,7 +70,7 @@ public external abstract class FileList {
     open val length: Int
     fun item(index: Int): File?
 }
-inline operator fun FileList.get(index: Int): File? = asDynamic()[index]
+@InlineOnly inline operator fun FileList.get(index: Int): File? = asDynamic()[index]
 
 public external open class FileReader : EventTarget {
     open val readyState: Short

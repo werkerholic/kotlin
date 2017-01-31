@@ -8,6 +8,7 @@
 package org.w3c.dom.parsing
 
 import kotlin.js.*
+import kotlin.internal.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
 import org.w3c.dom.css.*
