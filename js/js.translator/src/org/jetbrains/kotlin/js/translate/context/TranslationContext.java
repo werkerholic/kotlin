@@ -127,7 +127,7 @@ public class TranslationContext {
     }
 
     @NotNull
-    public Collection<StaticContext.ImportedModule> getImportedModules() {
+    public Collection<JsImportedModule> getImportedModules() {
         return staticContext.getImportedModules();
     }
 

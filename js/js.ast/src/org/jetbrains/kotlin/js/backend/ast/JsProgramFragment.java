@@ -6,18 +6,53 @@ package org.jetbrains.kotlin.js.backend.ast;
 
 import org.jetbrains.annotations.NotNull;
 
-/**
- * One independently loadable fragment of a {@link JsProgram}.
- */
-public class JsProgramFragment extends SourceInfoAwareJsNode {
-    private final JsGlobalBlock globalBlock;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
-    public JsProgramFragment() {
-        globalBlock = new JsGlobalBlock();
+public class JsProgramFragment extends SourceInfoAwareJsNode {
+    private final List<JsImportedModule> importedModules = new ArrayList<JsImportedModule>();
+    private final Set<JsFqName> imports = new LinkedHashSet<JsFqName>();
+    private final JsGlobalBlock declarationBlock = new JsGlobalBlock();
+    private final JsGlobalBlock exportBlock = new JsGlobalBlock();
+    private final JsGlobalBlock initializerBlock = new JsGlobalBlock();
+    private final List<JsNameBinding> nameBindings = new ArrayList<JsNameBinding>();
+    private final Set<JsFqName> classNames = new LinkedHashSet<JsFqName>();
+
+    @NotNull
+    public List<JsImportedModule> getImportedModules() {
+        return importedModules;
     }
 
-    public JsBlock getGlobalBlock() {
-        return globalBlock;
+    @NotNull
+    public Set<JsFqName> getImports() {
+        return imports;
+    }
+
+    @NotNull
+    public JsBlock getDeclarationBlock() {
+        return declarationBlock;
+    }
+
+    @NotNull
+    public JsGlobalBlock getExportBlock() {
+        return exportBlock;
+    }
+
+    @NotNull
+    public JsGlobalBlock getInitializerBlock() {
+        return initializerBlock;
+    }
+
+    @NotNull
+    public List<JsNameBinding> getNameBindings() {
+        return nameBindings;
+    }
+
+    @NotNull
+    public Set<JsFqName> getClassNames() {
+        return classNames;
     }
 
     @Override
@@ -27,13 +62,15 @@ public class JsProgramFragment extends SourceInfoAwareJsNode {
 
     @Override
     public void acceptChildren(JsVisitor visitor) {
-        visitor.accept(globalBlock);
+        visitor.accept(declarationBlock);
     }
 
     @Override
     public void traverse(JsVisitorWithContext v, JsContext ctx) {
         if (v.visit(this, ctx)) {
-            v.acceptStatement(globalBlock);
+            v.acceptStatement(declarationBlock);
+            v.acceptStatement(initializerBlock);
+            v.acceptStatement(exportBlock);
         }
         v.endVisit(this, ctx);
     }
