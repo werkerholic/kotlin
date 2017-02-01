@@ -40,11 +40,11 @@ class InterfaceFunctionCopier(val context: StaticContext) {
         val orderedClasses = DFS.topologicalOrder(classes) { current -> DescriptorUtils.getSuperclassDescriptors(current) }.asReversed()
 
         for (classDescriptor in orderedClasses) {
-            addInterfaceDefaultMembers(classDescriptor, context)
+            addInterfaceDefaultMembers(classDescriptor)
         }
     }
 
-    private fun addInterfaceDefaultMembers(descriptor: ClassDescriptor, context: StaticContext) {
+    private fun addInterfaceDefaultMembers(descriptor: ClassDescriptor) {
         // optimization: don't do anything for native declarations
         if (isNativeObject(descriptor)) return
 
@@ -56,7 +56,7 @@ class InterfaceFunctionCopier(val context: StaticContext) {
                 .mapNotNull { it as? CallableMemberDescriptor }
 
         for (member in members.filter { it.kind.isReal }) {
-            val names = generateAllNames(member, context)
+            val names = generateAllNames(member)
             val identifiers = names.map { it.ident }
             when (member) {
                 is FunctionDescriptor -> {
@@ -81,12 +81,12 @@ class InterfaceFunctionCopier(val context: StaticContext) {
         }
 
         for (member in members.filterIsInstance<FunctionDescriptor>()) {
-            moveDefaultFunction(member, context)
+            moveDefaultFunction(member)
         }
 
         for (member in members.filterIsInstance<FunctionDescriptor>()
                 .filter { it.kind.isReal && it.hasOwnParametersWithDefaultValue() }) {
-            val names = generateAllNames(member, context)
+            val names = generateAllNames(member)
             val identifiers = names.map { it.ident }
             classModel.copiedFunctions += identifiers
         }
@@ -98,18 +98,18 @@ class InterfaceFunctionCopier(val context: StaticContext) {
         for (superModel in superModels) {
             for (name in superModel.copiedFunctions) {
                 if (classModel.copiedFunctions.add(name)) {
-                    addDefaultMethodFromInterface(name, name, superModel.descriptor, descriptor, context)
+                    addDefaultMethodFromInterface(name, name, superModel.descriptor, descriptor)
                 }
             }
             for (name in superModel.copiedProperties) {
                 if (classModel.copiedProperties.add(name)) {
-                    addDefaultPropertyFromInterface(name, superModel.descriptor, descriptor, context)
+                    addDefaultPropertyFromInterface(name, superModel.descriptor, descriptor)
                 }
             }
         }
     }
 
-    private fun moveDefaultFunction(function: FunctionDescriptor, context: StaticContext) {
+    private fun moveDefaultFunction(function: FunctionDescriptor) {
         if (function.kind.isReal || function.modality == Modality.ABSTRACT) return
 
         val overriddenWithDefaultArg = function.overriddenDescriptors
@@ -123,17 +123,17 @@ class InterfaceFunctionCopier(val context: StaticContext) {
         val sourceName = context.getNameForDescriptor(fakeImplementation).ident
 
         addDefaultMethodFromInterface(sourceName, targetName, fakeImplementation.containingDeclaration as ClassDescriptor,
-                                      function.containingDeclaration as ClassDescriptor, context)
+                                      function.containingDeclaration as ClassDescriptor)
 
-        val overrideNames = generateAllNames(function, context).map { it.ident }
+        val overrideNames = generateAllNames(function).map { it.ident }
         val namesFromBaseClass = function.overriddenDescriptors
                 .filter { !DescriptorUtils.isInterface(it.containingDeclaration) }
-                .flatMap { generateAllNames(it, context).map { it.ident }.asIterable() }
+                .flatMap { generateAllNames(it).map { it.ident }.asIterable() }
                 .distinct()
 
         for (name in overrideNames.filter { it in namesFromBaseClass }) {
             addDefaultMethodFromInterface(interfaceFunctionName, name, overriddenWithDefaultArg.containingDeclaration as ClassDescriptor,
-                                          function.containingDeclaration as ClassDescriptor, context)
+                                          function.containingDeclaration as ClassDescriptor)
         }
     }
 
@@ -141,8 +141,7 @@ class InterfaceFunctionCopier(val context: StaticContext) {
             sourceName: String,
             targetName: String,
             sourceDescriptor: ClassDescriptor,
-            targetDescriptor: ClassDescriptor,
-            context: StaticContext
+            targetDescriptor: ClassDescriptor
     ) {
         if (targetDescriptor.module != context.currentModule) return
 
@@ -156,8 +155,7 @@ class InterfaceFunctionCopier(val context: StaticContext) {
     private fun addDefaultPropertyFromInterface(
             name: String,
             sourceDescriptor: ClassDescriptor,
-            targetDescriptor: ClassDescriptor,
-            context: StaticContext
+            targetDescriptor: ClassDescriptor
     ) {
         if (targetDescriptor.module != context.currentModule) return
 
@@ -171,7 +169,7 @@ class InterfaceFunctionCopier(val context: StaticContext) {
         context.declarationStatements += defineProperty.makeStmt()
     }
 
-    private fun generateAllNames(member: CallableMemberDescriptor, context: StaticContext): Sequence<JsName> {
+    private fun generateAllNames(member: CallableMemberDescriptor): Sequence<JsName> {
         return (generateBridges(member) + member).map { context.getNameForDescriptor(it) }.distinctBy { it.ident }
     }
 

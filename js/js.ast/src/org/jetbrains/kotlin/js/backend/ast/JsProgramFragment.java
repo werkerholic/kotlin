@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 public class JsProgramFragment extends SourceInfoAwareJsNode {
+    private final JsScope scope;
     private final List<JsImportedModule> importedModules = new ArrayList<JsImportedModule>();
     private final Set<JsFqName> imports = new LinkedHashSet<JsFqName>();
     private final JsGlobalBlock declarationBlock = new JsGlobalBlock();
@@ -19,6 +20,15 @@ public class JsProgramFragment extends SourceInfoAwareJsNode {
     private final JsGlobalBlock initializerBlock = new JsGlobalBlock();
     private final List<JsNameBinding> nameBindings = new ArrayList<JsNameBinding>();
     private final Set<JsFqName> classNames = new LinkedHashSet<JsFqName>();
+
+    public JsProgramFragment(@NotNull JsScope scope) {
+        this.scope = scope;
+    }
+
+    @NotNull
+    public JsScope getScope() {
+        return scope;
+    }
 
     @NotNull
     public List<JsImportedModule> getImportedModules() {

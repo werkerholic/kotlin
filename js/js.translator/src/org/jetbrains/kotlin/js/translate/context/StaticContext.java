@@ -69,11 +69,15 @@ public final class StaticContext {
         JsProgram program = new JsProgram();
         Namer namer = Namer.newInstance(program.getRootScope());
         JsFunction rootFunction = JsAstUtils.createFunctionWithEmptyBody(program.getScope());
-        return new StaticContext(program, rootFunction, bindingTrace, namer, program.getRootScope(), config, moduleDescriptor);
+        JsProgramFragment fragment = new JsProgramFragment(rootFunction.getScope());
+        return new StaticContext(program, fragment, bindingTrace, namer, program.getRootScope(), config, moduleDescriptor);
     }
 
     @NotNull
     private final JsProgram program;
+
+    @NotNull
+    private final JsProgramFragment fragment;
 
     @NotNull
     private final BindingTrace bindingTrace;
@@ -131,22 +135,10 @@ public final class StaticContext {
     private final JsScope rootPackageScope;
 
     @NotNull
-    private JsFunction rootFunction;
-
-    @NotNull
-    private final List<JsStatement> declarationStatements = new ArrayList<JsStatement>();
-
-    @NotNull
-    private final List<JsStatement> topLevelStatements = new ArrayList<JsStatement>();
-
-    @NotNull
     private final List<JsStatement> importStatements = new ArrayList<JsStatement>();
 
     @NotNull
     private final DeclarationExporter exporter = new DeclarationExporter(this);
-
-    @NotNull
-    private final Set<ClassDescriptor> classes = new LinkedHashSet<ClassDescriptor>();
 
     @NotNull
     private final Map<FqName, JsScope> packageScopes = new HashMap<FqName, JsScope>();
@@ -154,7 +146,7 @@ public final class StaticContext {
     //TODO: too many parameters in constructor
     private StaticContext(
             @NotNull JsProgram program,
-            @NotNull JsFunction rootFunction,
+            @NotNull JsProgramFragment fragment,
             @NotNull BindingTrace bindingTrace,
             @NotNull Namer namer,
             @NotNull JsScope rootScope,
@@ -162,14 +154,13 @@ public final class StaticContext {
             @NotNull ModuleDescriptor moduleDescriptor
     ) {
         this.program = program;
-        this.rootFunction = rootFunction;
+        this.fragment = fragment;
         this.bindingTrace = bindingTrace;
         this.namer = namer;
         this.intrinsics = new Intrinsics(this);
         this.rootScope = rootScope;
         this.config = config;
         this.currentModule = moduleDescriptor;
-        this.rootFunction = rootFunction;
         rootPackageScope = new JsObjectScope(rootScope, "<root package>");
 
         JsName kotlinName = rootScope.declareName(Namer.KOTLIN_NAME);
@@ -180,6 +171,11 @@ public final class StaticContext {
     @NotNull
     public JsProgram getProgram() {
         return program;
+    }
+
+    @NotNull
+    public JsProgramFragment getFragment() {
+        return fragment;
     }
 
     @NotNull
@@ -456,7 +452,7 @@ public final class StaticContext {
         // since local scope inherited from global scope.
         // TODO: remove prefix when problem with scopes is solved
 
-        JsName result = rootFunction.getScope().declareTemporaryName(suggestedName);
+        JsName result = fragment.getScope().declareTemporaryName(suggestedName);
         MetadataProperties.setImported(result, true);
         importStatements.add(JsAstUtils.newVar(result, declaration));
         return result;
@@ -467,7 +463,7 @@ public final class StaticContext {
         ModuleDescriptor module = DescriptorUtilsKt.getModule(descriptor);
         JsName name = module != currentModule ?
                 importDeclaration(suggestedName, getQualifiedReference(descriptor)) :
-                rootFunction.getScope().declareTemporaryName(suggestedName);
+                fragment.getScope().declareTemporaryName(suggestedName);
         MetadataProperties.setDescriptor(name, descriptor);
         return name;
     }
@@ -610,14 +606,14 @@ public final class StaticContext {
             Rule<JsScope> generateNewScopesForPackageDescriptors = new Rule<JsScope>() {
                 @Override
                 public JsScope apply(@NotNull DeclarationDescriptor descriptor) {
-                    return rootFunction.getScope();
+                    return fragment.getScope();
                 }
             };
             //TODO: never get there
             Rule<JsScope> generateInnerScopesForMembers = new Rule<JsScope>() {
                 @Override
                 public JsScope apply(@NotNull DeclarationDescriptor descriptor) {
-                    return rootFunction.getScope().innerObjectScope("Scope for member " + descriptor.getName());
+                    return fragment.getScope().innerObjectScope("Scope for member " + descriptor.getName());
                 }
             };
             Rule<JsScope> createFunctionObjectsForCallableDescriptors = new Rule<JsScope>() {
@@ -627,7 +623,7 @@ public final class StaticContext {
                         return null;
                     }
 
-                    JsFunction correspondingFunction = JsAstUtils.createFunctionWithEmptyBody(rootFunction.getScope());
+                    JsFunction correspondingFunction = JsAstUtils.createFunctionWithEmptyBody(fragment.getScope());
                     assert (!scopeToFunction.containsKey(correspondingFunction.getScope())) : "Scope to function value overridden for " + descriptor;
                     scopeToFunction.put(correspondingFunction.getScope(), correspondingFunction);
                     return correspondingFunction.getScope();
@@ -725,22 +721,46 @@ public final class StaticContext {
     }
 
     @NotNull
-    public JsFunction getRootFunction() {
-        return rootFunction;
-    }
-
-    @NotNull
     public List<JsStatement> getTopLevelStatements() {
-        return topLevelStatements;
+        return fragment.getInitializerBlock().getStatements();
     }
 
     @NotNull
     public List<JsStatement> getDeclarationStatements() {
-        return declarationStatements;
+        return fragment.getDeclarationBlock().getStatements();
     }
 
     public void addClass(@NotNull ClassDescriptor classDescriptor) {
-        classes.add(classDescriptor);
+        JsFqName fqName = getFqName(classDescriptor);
+        if (fqName != null) {
+            fragment.getClassNames().add(fqName);
+        }
+    }
+
+    @Nullable
+    private static JsFqName getFqName(@NotNull ClassDescriptor classDescriptor) {
+        if (classDescriptor.getName().isSpecial()) return null;
+        DeclarationDescriptor container = classDescriptor.getContainingDeclaration();
+
+        JsFqName parent;
+        if (container instanceof ClassDescriptor) {
+            parent = getFqName((ClassDescriptor) container);
+            if (parent == null) return null;
+        }
+        else if (container instanceof PackageFragmentDescriptor) {
+            parent = getFqName(((PackageFragmentDescriptor) container).getFqName(), DescriptorUtils.getContainingModule(classDescriptor));
+        }
+        else {
+            return null;
+        }
+
+        return new JsFqName(classDescriptor.getName().asString(), parent);
+    }
+
+    @Nullable
+    private static JsFqName getFqName(@NotNull FqName fqName, @NotNull ModuleDescriptor module) {
+        if (fqName.isRoot()) return new JsFqName(module.getName().asString(), null);
+        return new JsFqName(fqName.shortName().asString(), getFqName(fqName.parent(), module));
     }
 
     public void export(@NotNull MemberDescriptor descriptor, boolean force) {
@@ -757,23 +777,23 @@ public final class StaticContext {
         return currentModule;
     }
 
-    public void postProcess() {
+    /*public void postProcess() {
         addInterfaceDefaultMethods();
         rootFunction.getBody().getStatements().addAll(importStatements);
         addClassPrototypes();
         rootFunction.getBody().getStatements().addAll(declarationStatements);
         rootFunction.getBody().getStatements().addAll(exporter.getStatements());
         rootFunction.getBody().getStatements().addAll(topLevelStatements);
-    }
+    }*/
 
-    private void addClassPrototypes() {
+    /*private void addClassPrototypes() {
         Set<ClassDescriptor> visited = new HashSet<ClassDescriptor>();
         for (ClassDescriptor cls : classes) {
             addClassPrototypes(cls, visited);
         }
-    }
+    }*/
 
-    private void addClassPrototypes(@NotNull ClassDescriptor cls, @NotNull Set<ClassDescriptor> visited) {
+    /*private void addClassPrototypes(@NotNull ClassDescriptor cls, @NotNull Set<ClassDescriptor> visited) {
         if (!visited.add(cls)) return;
         if (DescriptorUtilsKt.getModule(cls) != currentModule) return;
         if (isNativeObject(cls) || isLibraryObject(cls)) return;
@@ -801,21 +821,8 @@ public final class StaticContext {
             JsExpression constructorRef = new JsNameRef("constructor", prototype.deepCopy());
             statements.add(JsAstUtils.assignment(constructorRef, classRef.deepCopy()).makeStmt());
         }
-    }
+    }*/
 
-    private void addInterfaceDefaultMethods() {
-        new InterfaceFunctionCopier(this).copyInterfaceFunctions(classes);
-    }
-
-    public boolean isBuiltinModule() {
-        for (ClassDescriptor cls : classes) {
-            FqNameUnsafe fqn = DescriptorUtils.getFqName(cls);
-            if ("kotlin.Enum".equals(fqn.asString())) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private static class ImportedModuleKey {
         @NotNull

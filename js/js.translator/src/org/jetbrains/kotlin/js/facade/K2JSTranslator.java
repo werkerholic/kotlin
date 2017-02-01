@@ -78,11 +78,11 @@ public final class K2JSTranslator {
         ModuleDescriptor moduleDescriptor = analysisResult.getModuleDescriptor();
         Diagnostics diagnostics = bindingTrace.getBindingContext().getDiagnostics();
 
-        TranslationContext context = Translation.generateAst(bindingTrace, files, mainCallParameters, moduleDescriptor, config);
+        JsProgram program = Translation.generateAst(bindingTrace, files, mainCallParameters, moduleDescriptor, config);
         ProgressIndicatorAndCompilationCanceledStatus.checkCanceled();
         if (hasError(diagnostics)) return new TranslationResult.Fail(diagnostics);
 
-        JsProgram program = JsInliner.process(context);
+        //JsInliner.process(program);
         ResolveTemporaryNamesKt.resolveTemporaryNames(program);
         ProgressIndicatorAndCompilationCanceledStatus.checkCanceled();
         if (hasError(diagnostics)) return new TranslationResult.Fail(diagnostics);
@@ -93,13 +93,13 @@ public final class K2JSTranslator {
         ProgressIndicatorAndCompilationCanceledStatus.checkCanceled();
         if (hasError(diagnostics)) return new TranslationResult.Fail(diagnostics);
 
-        expandIsCalls(program, context);
+        //expandIsCalls(program, context);
         ProgressIndicatorAndCompilationCanceledStatus.checkCanceled();
 
         List<String> importedModules = new ArrayList<String>();
-        for (JsImportedModule module : context.getImportedModules()) {
+        /*for (JsImportedModule module : context.getImportedModules()) {
             importedModules.add(module.getExternalName());
-        }
+        }*/
         return new TranslationResult.Success(config, files, program, diagnostics, importedModules, moduleDescriptor,
                                              bindingTrace.getBindingContext());
     }
