@@ -18,10 +18,10 @@ package org.jetbrains.kotlin.js.translate.general
 
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.js.backend.ast.*
-import org.jetbrains.kotlin.js.inline.clean.resolveTemporaryNames
+import org.jetbrains.kotlin.js.translate.context.Namer
 import org.jetbrains.kotlin.js.translate.utils.JsAstUtils
 
-class Merger(private val rootFunction: JsFunction, val module: ModuleDescriptor) {
+class Merger(private val rootFunction: JsFunction, val internalModuleName: JsName, val module: ModuleDescriptor) {
     private val nameTable = mutableMapOf<JsFqName, JsName>()
     private val importedModuleTable = mutableMapOf<JsImportedModuleKey, JsName>()
     private val importBlock = JsGlobalBlock()
@@ -58,6 +58,7 @@ class Merger(private val rootFunction: JsFunction, val module: ModuleDescriptor)
                 rootFunction.scope.declareTemporaryName(nameBinding.name.ident)
             }
         }
+        fragment.scope.findName(Namer.getRootPackageName())?.let { nameMap[it] = internalModuleName }
 
         for (importedModule in fragment.importedModules) {
             nameMap[importedModule.internalName] = importedModuleTable.getOrPut(importedModule.key) {
@@ -96,6 +97,7 @@ class Merger(private val rootFunction: JsFunction, val module: ModuleDescriptor)
             this += importBlock.statements
             addClassPrototypes(this)
             this += declarationBlock.statements
+            this += exportBlock.statements
             this += initializerBlock.statements
         }
     }

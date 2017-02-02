@@ -17,7 +17,7 @@ public class JsProgramFragment extends SourceInfoAwareJsNode {
     private final JsGlobalBlock initializerBlock = new JsGlobalBlock();
     private final List<JsNameBinding> nameBindings = new ArrayList<JsNameBinding>();
     private final Map<JsName, JsName> parentClasses = new LinkedHashMap<JsName, JsName>();
-    private final Set<JsName> declaredClasses = new LinkedHashSet<JsName>();
+    private final Map<String, JsExpression> inlineModuleMap = new LinkedHashMap<String, JsExpression>();
 
     public JsProgramFragment(@NotNull JsScope scope) {
         this.scope = scope;
@@ -61,6 +61,11 @@ public class JsProgramFragment extends SourceInfoAwareJsNode {
     @NotNull
     public Map<JsName, JsName> getParentClasses() {
         return parentClasses;
+    }
+
+    @NotNull
+    public Map<String, JsExpression> getInlineModuleMap() {
+        return inlineModuleMap;
     }
 
     @Override

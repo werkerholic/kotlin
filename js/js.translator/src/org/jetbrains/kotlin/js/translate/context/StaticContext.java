@@ -131,8 +131,6 @@ public final class StaticContext {
     @NotNull
     private final Map<JsImportedModuleKey, JsImportedModule> importedModules = new LinkedHashMap<JsImportedModuleKey, JsImportedModule>();
 
-    private Collection<JsImportedModule> readOnlyImportedModules;
-
     @NotNull
     private final JsScope rootPackageScope;
 
@@ -664,7 +662,7 @@ public final class StaticContext {
     }
 
     @Nullable
-    public JsExpression getModuleExpressionFor(@NotNull DeclarationDescriptor descriptor) {
+    private JsExpression getModuleExpressionFor(@NotNull DeclarationDescriptor descriptor) {
         JsName name = getModuleInnerName(descriptor);
         return name != null ? JsAstUtils.pureFqn(name, null) : null;
     }
@@ -765,6 +763,11 @@ public final class StaticContext {
     @NotNull
     public ModuleDescriptor getCurrentModule() {
         return currentModule;
+    }
+
+    public void addInlineCall(@NotNull CallableDescriptor descriptor) {
+        String tag = Namer.getFunctionTag(descriptor);
+        fragment.getInlineModuleMap().put(tag, getModuleExpressionFor(descriptor));
     }
 
     /*public void postProcess() {

@@ -64,6 +64,8 @@ fun setInlineCallMetadata(
     }
 
     visitor.accept(expression)
+
+    context.addInlineCall(descriptor)
 }
 
 fun setInlineCallMetadata(

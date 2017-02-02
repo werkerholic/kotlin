@@ -16,8 +16,6 @@
 
 package org.jetbrains.kotlin.js.facade;
 
-import org.jetbrains.kotlin.js.backend.ast.JsImportedModule;
-import org.jetbrains.kotlin.js.backend.ast.JsProgram;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor;
@@ -29,7 +27,7 @@ import org.jetbrains.kotlin.js.facade.exceptions.TranslationException;
 import org.jetbrains.kotlin.js.inline.JsInliner;
 import org.jetbrains.kotlin.js.inline.clean.RemoveUnusedImportsKt;
 import org.jetbrains.kotlin.js.inline.clean.ResolveTemporaryNamesKt;
-import org.jetbrains.kotlin.js.translate.context.TranslationContext;
+import org.jetbrains.kotlin.js.translate.general.AstGenerationResult;
 import org.jetbrains.kotlin.js.translate.general.Translation;
 import org.jetbrains.kotlin.progress.ProgressIndicatorAndCompilationCanceledStatus;
 import org.jetbrains.kotlin.psi.KtFile;
@@ -40,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.jetbrains.kotlin.diagnostics.DiagnosticUtils.hasError;
-import static org.jetbrains.kotlin.js.translate.utils.ExpandIsCallsKt.expandIsCalls;
 
 /**
  * An entry point of translator.
@@ -78,18 +75,20 @@ public final class K2JSTranslator {
         ModuleDescriptor moduleDescriptor = analysisResult.getModuleDescriptor();
         Diagnostics diagnostics = bindingTrace.getBindingContext().getDiagnostics();
 
-        JsProgram program = Translation.generateAst(bindingTrace, files, mainCallParameters, moduleDescriptor, config);
+        AstGenerationResult translationResult = Translation.generateAst(bindingTrace, files, mainCallParameters, moduleDescriptor, config);
         ProgressIndicatorAndCompilationCanceledStatus.checkCanceled();
         if (hasError(diagnostics)) return new TranslationResult.Fail(diagnostics);
 
-        //JsInliner.process(program);
-        ResolveTemporaryNamesKt.resolveTemporaryNames(program);
+        JsInliner.process(config, analysisResult.getBindingTrace(), translationResult.getInnerModuleName(),
+                          translationResult.getFragments(), translationResult.getFragments());
+
+        ResolveTemporaryNamesKt.resolveTemporaryNames(translationResult.getProgram());
         ProgressIndicatorAndCompilationCanceledStatus.checkCanceled();
         if (hasError(diagnostics)) return new TranslationResult.Fail(diagnostics);
 
-        CoroutineTransformer coroutineTransformer = new CoroutineTransformer(program);
-        coroutineTransformer.accept(program);
-        RemoveUnusedImportsKt.removeUnusedImports(program);
+        CoroutineTransformer coroutineTransformer = new CoroutineTransformer(translationResult.getProgram());
+        coroutineTransformer.accept(translationResult.getProgram());
+        RemoveUnusedImportsKt.removeUnusedImports(translationResult.getProgram());
         ProgressIndicatorAndCompilationCanceledStatus.checkCanceled();
         if (hasError(diagnostics)) return new TranslationResult.Fail(diagnostics);
 
@@ -100,7 +99,7 @@ public final class K2JSTranslator {
         /*for (JsImportedModule module : context.getImportedModules()) {
             importedModules.add(module.getExternalName());
         }*/
-        return new TranslationResult.Success(config, files, program, diagnostics, importedModules, moduleDescriptor,
-                                             bindingTrace.getBindingContext());
+        return new TranslationResult.Success(config, files, translationResult.getProgram(), diagnostics, importedModules,
+                                             moduleDescriptor, bindingTrace.getBindingContext());
     }
 }

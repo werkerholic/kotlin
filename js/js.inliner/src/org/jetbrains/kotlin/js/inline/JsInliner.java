@@ -28,6 +28,8 @@ import org.jetbrains.kotlin.diagnostics.DiagnosticSink;
 import org.jetbrains.kotlin.diagnostics.Errors;
 import org.jetbrains.kotlin.js.backend.ast.*;
 import org.jetbrains.kotlin.js.backend.ast.metadata.MetadataProperties;
+import org.jetbrains.kotlin.js.config.JsConfig;
+import org.jetbrains.kotlin.js.config.LibrarySourcesConfig;
 import org.jetbrains.kotlin.js.inline.clean.FunctionPostProcessor;
 import org.jetbrains.kotlin.js.inline.clean.RemoveUnusedFunctionDefinitionsKt;
 import org.jetbrains.kotlin.js.inline.clean.RemoveUnusedLocalFunctionDeclarationsKt;
@@ -37,7 +39,6 @@ import org.jetbrains.kotlin.js.inline.context.NamingContext;
 import org.jetbrains.kotlin.js.inline.util.CollectUtilsKt;
 import org.jetbrains.kotlin.js.inline.util.CollectionUtilsKt;
 import org.jetbrains.kotlin.js.inline.util.NamingUtilsKt;
-import org.jetbrains.kotlin.js.translate.context.TranslationContext;
 import org.jetbrains.kotlin.resolve.inline.InlineStrategy;
 
 import java.util.*;
@@ -68,15 +69,24 @@ public class JsInliner extends JsVisitorWithContextImpl {
         }
     };
 
-    public static JsProgram process(@NotNull TranslationContext context) {
-        JsProgram program = context.program();
-        Map<JsName, JsFunction> functions = CollectUtilsKt.collectNamedFunctions(program);
-        Map<String, JsFunction> accessors = CollectUtilsKt.collectAccessors(program);
-        new DummyAccessorInvocationTransformer().accept(program);
-        JsInliner inliner = new JsInliner(functions, accessors, new FunctionReader(context), context.bindingTrace());
-        inliner.accept(program);
-        RemoveUnusedFunctionDefinitionsKt.removeUnusedFunctionDefinitions(program, functions);
-        return program;
+    public static void process(
+            @NotNull JsConfig config,
+            @NotNull DiagnosticSink trace,
+            @NotNull JsName currentModuleName,
+            @NotNull List<JsProgramFragment> fragments,
+            @NotNull List<JsProgramFragment> fragmentsToProcess
+    ) {
+        Map<JsName, JsFunction> functions = CollectUtilsKt.collectNamedFunctions(fragments);
+        Map<String, JsFunction> accessors = CollectUtilsKt.collectAccessors(fragments);
+        for (JsProgramFragment fragment : fragmentsToProcess) {
+            new DummyAccessorInvocationTransformer().accept(fragment);
+        }
+        FunctionReader functionReader = new FunctionReader((LibrarySourcesConfig) config, currentModuleName, fragments);
+        JsInliner inliner = new JsInliner(functions, accessors, functionReader, trace);
+        for (JsProgramFragment fragment : fragmentsToProcess) {
+            inliner.accept(fragment);
+            RemoveUnusedFunctionDefinitionsKt.removeUnusedFunctionDefinitions(fragment, functions);
+        }
     }
 
     private JsInliner(
