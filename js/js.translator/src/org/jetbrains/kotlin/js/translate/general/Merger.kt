@@ -62,7 +62,11 @@ class Merger(private val rootFunction: JsFunction, val internalModuleName: JsNam
 
         for (importedModule in fragment.importedModules) {
             nameMap[importedModule.internalName] = importedModuleTable.getOrPut(importedModule.key) {
-                rootFunction.scope.declareTemporaryName(importedModule.internalName.ident).also {
+                val scope = rootFunction.scope
+                val newName = importedModule.internalName.let {
+                    if (it.isTemporary) scope.declareTemporaryName(it.ident) else scope.declareName(it.ident)
+                }
+                newName.also {
                     importedModulesImpl += JsImportedModule(importedModule.externalName, it, importedModule.plainReference)
                 }
             }
