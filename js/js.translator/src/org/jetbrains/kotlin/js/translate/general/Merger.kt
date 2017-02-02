@@ -23,12 +23,14 @@ import org.jetbrains.kotlin.js.translate.utils.JsAstUtils
 
 class Merger(private val rootFunction: JsFunction, val module: ModuleDescriptor) {
     private val nameTable = mutableMapOf<JsFqName, JsName>()
+    private val importedModuleTable = mutableMapOf<JsImportedModuleKey, JsName>()
     private val importBlock = JsGlobalBlock()
     private val declarationBlock = JsGlobalBlock()
     private val initializerBlock = JsGlobalBlock()
     private val exportBlock = JsGlobalBlock()
     private val declaredImports = mutableSetOf<JsFqName>()
     private val parentClasses = mutableMapOf<JsName, JsName>()
+    private val importedModulesImpl = mutableListOf<JsImportedModule>()
 
     fun addFragment(fragment: JsProgramFragment) {
         val nameMap = buildNameMap(fragment)
@@ -37,7 +39,7 @@ class Merger(private val rootFunction: JsFunction, val module: ModuleDescriptor)
         for ((key, importExpr) in fragment.imports) {
             if (declaredImports.add(key)) {
                 val name = nameTable[key]!!
-                importBlock.statements += JsAstUtils.newVar(nameMap.rename(name), importExpr)
+                importBlock.statements += JsAstUtils.newVar(nameMap.rename(name), nameMap.rename(importExpr))
             }
         }
 
@@ -56,6 +58,15 @@ class Merger(private val rootFunction: JsFunction, val module: ModuleDescriptor)
                 rootFunction.scope.declareTemporaryName(nameBinding.name.ident)
             }
         }
+
+        for (importedModule in fragment.importedModules) {
+            nameMap[importedModule.internalName] = importedModuleTable.getOrPut(importedModule.key) {
+                rootFunction.scope.declareTemporaryName(importedModule.internalName.ident).also {
+                    importedModulesImpl += JsImportedModule(importedModule.externalName, it, importedModule.plainReference)
+                }
+            }
+        }
+
         return nameMap
     }
 
@@ -65,8 +76,8 @@ class Merger(private val rootFunction: JsFunction, val module: ModuleDescriptor)
         rename(fragment.initializerBlock)
     }
 
-    private fun Map<JsName, JsName>.rename(statement: JsStatement) {
-        statement.accept(object : RecursiveJsVisitor() {
+    private fun <T: JsNode> Map<JsName, JsName>.rename(node: T): T {
+        node.accept(object : RecursiveJsVisitor() {
             override fun visitElement(node: JsNode) {
                 super.visitElement(node)
                 if (node is HasName) {
@@ -74,7 +85,11 @@ class Merger(private val rootFunction: JsFunction, val module: ModuleDescriptor)
                 }
             }
         })
+        return node
     }
+
+    val importedModules: List<JsImportedModule>
+        get() = importedModulesImpl
 
     fun merge() {
         rootFunction.body.statements.apply {
@@ -83,7 +98,6 @@ class Merger(private val rootFunction: JsFunction, val module: ModuleDescriptor)
             this += declarationBlock.statements
             this += initializerBlock.statements
         }
-        rootFunction.body.resolveTemporaryNames()
     }
 
     private fun addClassPrototypes(statements: MutableList<JsStatement>) {

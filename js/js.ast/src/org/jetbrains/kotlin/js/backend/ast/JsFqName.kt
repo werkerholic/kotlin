@@ -21,7 +21,7 @@ import org.jetbrains.kotlin.js.backend.ast.metadata.sideEffects
 import org.jetbrains.kotlin.name.FqName
 
 data class JsFqName(val id: String, val parent: JsFqName? = null) {
-    override fun toString() = parent?.let { "$it." } + id
+    override fun toString() = parent?.let { "$it." }.orEmpty() + id
 
     fun toExpression(): JsExpression = JsNameRef(id, parent?.toExpression()).apply { sideEffects = SideEffectKind.PURE }
 

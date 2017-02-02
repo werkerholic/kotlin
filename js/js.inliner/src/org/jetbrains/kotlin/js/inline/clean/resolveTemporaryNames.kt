@@ -97,6 +97,7 @@ private class ScopeCollector : RecursiveJsVisitor() {
         recordScope(x.scope)
         super.visitFunction(x)
     }
+
     override fun visitElement(node: JsNode) {
         if (node is HasName) {
             node.name?.let { recordScope(it.enclosing) }
