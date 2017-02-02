@@ -18,6 +18,7 @@ package org.jetbrains.kotlin.js.backend.ast
 
 import org.jetbrains.kotlin.js.backend.ast.metadata.SideEffectKind
 import org.jetbrains.kotlin.js.backend.ast.metadata.sideEffects
+import org.jetbrains.kotlin.name.FqName
 
 data class JsFqName(val id: String, val parent: JsFqName? = null) {
     override fun toString() = parent?.let { "$it." } + id
@@ -27,6 +28,12 @@ data class JsFqName(val id: String, val parent: JsFqName? = null) {
     companion object {
         @JvmStatic
         fun create(vararg parts: String) = parts.foldRight(null, ::JsFqName)!!
+
+        @JvmStatic
+        fun create(fqName: FqName): JsFqName? {
+            if (fqName.isRoot) return null
+            return JsFqName(fqName.shortName().identifier, create(fqName.parent()))
+        }
     }
 }
 

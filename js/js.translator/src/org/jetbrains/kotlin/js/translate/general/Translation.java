@@ -261,7 +261,7 @@ public final class Translation {
     ) {
         JsProgram program = new JsProgram();
         JsFunction rootFunction = new JsFunction(program.getRootScope(), new JsBlock(), "root function");
-        Merger merger = new Merger(rootFunction);
+        Merger merger = new Merger(rootFunction, moduleDescriptor);
 
         List<JsProgramFragment> fragments = new ArrayList<JsProgramFragment>();
         for (KtFile file : files) {
@@ -280,7 +280,6 @@ public final class Translation {
 
         program.getScope().declareName("_");
 
-        //staticContext.postProcess();
         statements.add(0, program.getStringLiteral("use strict").makeStmt());
         if (!isBuiltinModule(fragments)) {
             defineModule(program, statements, config.getModuleId());
@@ -319,8 +318,8 @@ public final class Translation {
 
     private static boolean isBuiltinModule(@NotNull List<JsProgramFragment> fragments) {
         for (JsProgramFragment fragment : fragments) {
-            for (JsFqName cls : fragment.getClassNames()) {
-                if (cls.equals(ENUM_FQ_NAME)) {
+            for (JsNameBinding nameBinding : fragment.getNameBindings()) {
+                if (nameBinding.getKey().equals(ENUM_FQ_NAME) && !fragment.getImports().containsKey(ENUM_FQ_NAME)) {
                     return true;
                 }
             }

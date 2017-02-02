@@ -16,18 +16,17 @@
 
 package org.jetbrains.kotlin.js.translate.utils
 
+import com.google.common.collect.Lists
 import com.intellij.util.SmartList
 import org.jetbrains.kotlin.backend.common.COROUTINES_INTRINSICS_PACKAGE_FQ_NAME
 import org.jetbrains.kotlin.backend.common.COROUTINE_SUSPENDED_NAME
-import org.jetbrains.kotlin.descriptors.ClassDescriptor
-import org.jetbrains.kotlin.descriptors.FunctionDescriptor
-import org.jetbrains.kotlin.descriptors.PropertyDescriptor
-import org.jetbrains.kotlin.descriptors.TypeParameterDescriptor
+import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.descriptors.impl.AnonymousFunctionDescriptor
 import org.jetbrains.kotlin.incremental.components.NoLookupLocation
 import org.jetbrains.kotlin.js.backend.ast.*
 import org.jetbrains.kotlin.js.backend.ast.metadata.CoroutineMetadata
 import org.jetbrains.kotlin.js.backend.ast.metadata.coroutineMetadata
+import org.jetbrains.kotlin.js.naming.NameSuggestion
 import org.jetbrains.kotlin.js.translate.context.Namer
 import org.jetbrains.kotlin.js.translate.context.TranslationContext
 import org.jetbrains.kotlin.js.translate.intrinsic.functions.basic.FunctionIntrinsicWithReceiverComputed
@@ -172,4 +171,19 @@ fun JsFunction.fillCoroutineMetadata(
             isLambda = isLambda,
             hasReceiver = descriptor.dispatchReceiverParameter != null
     )
+}
+
+fun NameSuggestion.fqNameForDeclaration(declaration: DeclarationDescriptor): JsFqName? {
+    if (declaration is ModuleDescriptor) return null
+    if (declaration is PackageFragmentDescriptor) return if (declaration.fqName.isRoot) null else JsFqName.create(declaration.fqName)
+
+    if (declaration is MemberDescriptor) {
+        if (declaration.visibility.effectiveVisibility(declaration, false).privateApi) return null
+        if (DescriptorUtils.isLocal(declaration)) return null
+    }
+
+    val suggested = suggest(declaration)!!
+    if (!suggested.stable) return null
+
+    return JsFqName(suggested.names.single(), fqNameForDeclaration(suggested.scope))
 }

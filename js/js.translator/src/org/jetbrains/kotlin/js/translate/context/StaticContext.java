@@ -38,6 +38,7 @@ import org.jetbrains.kotlin.js.translate.context.generator.Rule;
 import org.jetbrains.kotlin.js.translate.intrinsic.Intrinsics;
 import org.jetbrains.kotlin.js.translate.utils.AnnotationsUtils;
 import org.jetbrains.kotlin.js.translate.utils.JsAstUtils;
+import org.jetbrains.kotlin.js.translate.utils.UtilsKt;
 import org.jetbrains.kotlin.name.FqName;
 import org.jetbrains.kotlin.resolve.BindingContext;
 import org.jetbrains.kotlin.resolve.BindingTrace;
@@ -141,7 +142,6 @@ public final class StaticContext {
     @NotNull
     private final Map<FqName, JsScope> packageScopes = new HashMap<FqName, JsScope>();
 
-
     //TODO: too many parameters in constructor
     private StaticContext(
             @NotNull JsProgram program,
@@ -232,36 +232,13 @@ public final class StaticContext {
     private JsFqName getFqName(@NotNull DeclarationDescriptor descriptor) {
         JsFqName fqn;
         if (!jsFqnCache.containsKey(descriptor)) {
-            fqn = buildFqName(descriptor);
+            fqn = UtilsKt.fqNameForDeclaration(nameSuggestion, descriptor);
             jsFqnCache.put(descriptor, fqn);
         }
         else {
             fqn = jsFqnCache.get(descriptor);
         }
         return fqn;
-    }
-
-    @Nullable
-    private JsFqName buildFqName(@NotNull DeclarationDescriptor descriptor) {
-        if (descriptor instanceof ModuleDescriptor) return null;
-
-        if (descriptor instanceof MemberDescriptor) {
-            MemberDescriptor member = (MemberDescriptor) descriptor;
-            if (member.getVisibility().effectiveVisibility(descriptor, false).getPrivateApi()) return null;
-            if (DescriptorUtils.isLocal(descriptor)) return null;
-        }
-
-        SuggestedName suggested = nameSuggestion.suggest(descriptor);
-        assert suggested != null;
-
-        List<JsName> partNames = getActualNameFromSuggested(suggested);
-        Lists.reverse(partNames);
-        JsFqName result = getFqName(DescriptorUtils.getContainingModule(descriptor));
-
-        for (JsName partName : partNames) {
-            result = new JsFqName(partName.getIdent(), result);
-        }
-        return result;
     }
 
     @NotNull
@@ -776,36 +753,10 @@ public final class StaticContext {
     }
 
     public void addClass(@NotNull ClassDescriptor classDescriptor) {
-        JsFqName fqName = getFqName(classDescriptor);
-        if (fqName != null) {
-            fragment.getClassNames().add(fqName);
+        ClassDescriptor parent = DescriptorUtilsKt.getSuperClassNotAny(classDescriptor);
+        if (parent != null && !AnnotationsUtils.isNativeObject(classDescriptor) && !AnnotationsUtils.isLibraryObject(classDescriptor)) {
+            fragment.getParentClasses().put(getInnerNameForDescriptor(classDescriptor), getInnerNameForDescriptor(parent));
         }
-    }
-
-    @Nullable
-    private static JsFqName getFqName(@NotNull ClassDescriptor classDescriptor) {
-        if (classDescriptor.getName().isSpecial()) return null;
-        DeclarationDescriptor container = classDescriptor.getContainingDeclaration();
-
-        JsFqName parent;
-        if (container instanceof ClassDescriptor) {
-            parent = getFqName((ClassDescriptor) container);
-            if (parent == null) return null;
-        }
-        else if (container instanceof PackageFragmentDescriptor) {
-            parent = getFqName(((PackageFragmentDescriptor) container).getFqName(), DescriptorUtils.getContainingModule(classDescriptor));
-        }
-        else {
-            return null;
-        }
-
-        return new JsFqName(classDescriptor.getName().asString(), parent);
-    }
-
-    @Nullable
-    private static JsFqName getFqName(@NotNull FqName fqName, @NotNull ModuleDescriptor module) {
-        if (fqName.isRoot()) return new JsFqName(module.getName().asString(), null);
-        return new JsFqName(fqName.shortName().asString(), getFqName(fqName.parent(), module));
     }
 
     public void export(@NotNull MemberDescriptor descriptor, boolean force) {
@@ -825,49 +776,10 @@ public final class StaticContext {
     /*public void postProcess() {
         addInterfaceDefaultMethods();
         rootFunction.getBody().getStatements().addAll(importStatements);
-        addClassPrototypes();
         rootFunction.getBody().getStatements().addAll(declarationStatements);
         rootFunction.getBody().getStatements().addAll(exporter.getStatements());
         rootFunction.getBody().getStatements().addAll(topLevelStatements);
     }*/
-
-    /*private void addClassPrototypes() {
-        Set<ClassDescriptor> visited = new HashSet<ClassDescriptor>();
-        for (ClassDescriptor cls : classes) {
-            addClassPrototypes(cls, visited);
-        }
-    }*/
-
-    /*private void addClassPrototypes(@NotNull ClassDescriptor cls, @NotNull Set<ClassDescriptor> visited) {
-        if (!visited.add(cls)) return;
-        if (DescriptorUtilsKt.getModule(cls) != currentModule) return;
-        if (isNativeObject(cls) || isLibraryObject(cls)) return;
-
-        ClassDescriptor superclass = DescriptorUtilsKt.getSuperClassNotAny(cls);
-        if (superclass != null) {
-            addClassPrototypes(superclass, visited);
-
-            List<JsStatement> statements = rootFunction.getBody().getStatements();
-
-            JsNameRef superclassRef;
-            if (isNativeObject(superclass) || isLibraryObject(superclass)) {
-                superclassRef = getQualifiedReference(superclass);
-            }
-            else {
-                superclassRef = getInnerNameForDescriptor(superclass).makeRef();
-            }
-
-            JsExpression superPrototype = JsAstUtils.prototypeOf(superclassRef);
-            JsExpression superPrototypeInstance = new JsInvocation(new JsNameRef("create", "Object"), superPrototype);
-            JsExpression classRef = new JsNameRef(getInnerNameForDescriptor(cls));
-            JsExpression prototype = JsAstUtils.prototypeOf(classRef);
-            statements.add(JsAstUtils.assignment(prototype, superPrototypeInstance).makeStmt());
-
-            JsExpression constructorRef = new JsNameRef("constructor", prototype.deepCopy());
-            statements.add(JsAstUtils.assignment(constructorRef, classRef.deepCopy()).makeStmt());
-        }
-    }*/
-
 
     private static class ImportedModuleKey {
         @NotNull
