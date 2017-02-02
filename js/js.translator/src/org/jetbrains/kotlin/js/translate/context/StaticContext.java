@@ -35,12 +35,10 @@ import org.jetbrains.kotlin.js.naming.NameSuggestion;
 import org.jetbrains.kotlin.js.naming.SuggestedName;
 import org.jetbrains.kotlin.js.translate.context.generator.Generator;
 import org.jetbrains.kotlin.js.translate.context.generator.Rule;
-import org.jetbrains.kotlin.js.translate.declaration.InterfaceFunctionCopier;
 import org.jetbrains.kotlin.js.translate.intrinsic.Intrinsics;
 import org.jetbrains.kotlin.js.translate.utils.AnnotationsUtils;
 import org.jetbrains.kotlin.js.translate.utils.JsAstUtils;
 import org.jetbrains.kotlin.name.FqName;
-import org.jetbrains.kotlin.name.FqNameUnsafe;
 import org.jetbrains.kotlin.resolve.BindingContext;
 import org.jetbrains.kotlin.resolve.BindingTrace;
 import org.jetbrains.kotlin.resolve.DescriptorUtils;
@@ -65,7 +63,8 @@ public final class StaticContext {
     public static StaticContext generateStaticContext(
             @NotNull BindingTrace bindingTrace,
             @NotNull JsConfig config,
-            @NotNull ModuleDescriptor moduleDescriptor) {
+            @NotNull ModuleDescriptor moduleDescriptor
+    ) {
         JsProgram program = new JsProgram();
         Namer namer = Namer.newInstance(program.getRootScope());
         JsFunction rootFunction = JsAstUtils.createFunctionWithEmptyBody(program.getScope());
@@ -124,7 +123,9 @@ public final class StaticContext {
     private final Map<PropertyDescriptor, JsName> backingFieldNameCache = new HashMap<PropertyDescriptor, JsName>();
 
     @NotNull
-    private final Map<DeclarationDescriptor, JsExpression> fqnCache = new HashMap<DeclarationDescriptor, JsExpression>();
+    private final Map<DeclarationDescriptor, JsExpression> fqnExpressionCache = new HashMap<DeclarationDescriptor, JsExpression>();
+
+    private final Map<DeclarationDescriptor, JsFqName> jsFqnCache = new HashMap<DeclarationDescriptor, JsFqName>();
 
     @NotNull
     private final Map<ImportedModuleKey, JsImportedModule> importedModules = new LinkedHashMap<ImportedModuleKey, JsImportedModule>();
@@ -135,13 +136,11 @@ public final class StaticContext {
     private final JsScope rootPackageScope;
 
     @NotNull
-    private final List<JsStatement> importStatements = new ArrayList<JsStatement>();
-
-    @NotNull
     private final DeclarationExporter exporter = new DeclarationExporter(this);
 
     @NotNull
     private final Map<FqName, JsScope> packageScopes = new HashMap<FqName, JsScope>();
+
 
     //TODO: too many parameters in constructor
     private StaticContext(
@@ -229,13 +228,50 @@ public final class StaticContext {
         return (JsNameRef) getQualifiedExpression(descriptor);
     }
 
+    @Nullable
+    private JsFqName getFqName(@NotNull DeclarationDescriptor descriptor) {
+        JsFqName fqn;
+        if (!jsFqnCache.containsKey(descriptor)) {
+            fqn = buildFqName(descriptor);
+            jsFqnCache.put(descriptor, fqn);
+        }
+        else {
+            fqn = jsFqnCache.get(descriptor);
+        }
+        return fqn;
+    }
+
+    @Nullable
+    private JsFqName buildFqName(@NotNull DeclarationDescriptor descriptor) {
+        if (descriptor instanceof ModuleDescriptor) return null;
+
+        if (descriptor instanceof MemberDescriptor) {
+            MemberDescriptor member = (MemberDescriptor) descriptor;
+            if (member.getVisibility().effectiveVisibility(descriptor, false).getPrivateApi()) return null;
+            if (DescriptorUtils.isLocal(descriptor)) return null;
+        }
+
+        SuggestedName suggested = nameSuggestion.suggest(descriptor);
+        assert suggested != null;
+
+        List<JsName> partNames = getActualNameFromSuggested(suggested);
+        Lists.reverse(partNames);
+        JsFqName result = getFqName(DescriptorUtils.getContainingModule(descriptor));
+
+        for (JsName partName : partNames) {
+            result = new JsFqName(partName.getIdent(), result);
+        }
+        return result;
+    }
+
     @NotNull
     private JsExpression getQualifiedExpression(@NotNull DeclarationDescriptor descriptor) {
-        JsExpression fqn = fqnCache.get(descriptor);
+        JsExpression fqn = fqnExpressionCache.get(descriptor);
         if (fqn == null) {
             fqn = buildQualifiedExpression(descriptor);
-            fqnCache.put(descriptor, fqn);
+            fqnExpressionCache.put(descriptor, fqn);
         }
+
         return fqn.deepCopy();
     }
 
@@ -444,7 +480,7 @@ public final class StaticContext {
     }
 
     @NotNull
-    public JsName importDeclaration(@NotNull String suggestedName, @NotNull JsExpression declaration) {
+    public JsName importDeclaration(@NotNull String suggestedName, @NotNull JsFqName fqName, @NotNull JsExpression declaration) {
         // Adding prefix is a workaround for a problem with scopes.
         // Consider we declare name `foo` in functions's local scope, then call top-level function `foo`
         // from another module. It's imported into global scope under name `foo`. If we could somehow
@@ -454,16 +490,25 @@ public final class StaticContext {
 
         JsName result = fragment.getScope().declareTemporaryName(suggestedName);
         MetadataProperties.setImported(result, true);
-        importStatements.add(JsAstUtils.newVar(result, declaration));
+        fragment.getImports().put(fqName, declaration);
         return result;
     }
 
     @NotNull
     private JsName localOrImportedName(@NotNull DeclarationDescriptor descriptor, @NotNull String suggestedName) {
         ModuleDescriptor module = DescriptorUtilsKt.getModule(descriptor);
-        JsName name = module != currentModule ?
-                importDeclaration(suggestedName, getQualifiedReference(descriptor)) :
-                fragment.getScope().declareTemporaryName(suggestedName);
+        JsName name;
+        JsFqName fqName = getFqName(descriptor);
+        if (module != currentModule) {
+            assert fqName != null : "Can't import declaration without fqname: " + descriptor;
+            name = importDeclaration(suggestedName, fqName, getQualifiedReference(descriptor));
+        }
+        else {
+            name = fragment.getScope().declareTemporaryName(suggestedName);
+        }
+        if (fqName != null) {
+            fragment.getNameBindings().add(new JsNameBinding(fqName, name));
+        }
         MetadataProperties.setDescriptor(name, descriptor);
         return name;
     }

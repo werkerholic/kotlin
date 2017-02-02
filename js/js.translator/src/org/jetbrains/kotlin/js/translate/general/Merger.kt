@@ -19,6 +19,7 @@ package org.jetbrains.kotlin.js.translate.general
 import org.jetbrains.kotlin.js.backend.ast.*
 import org.jetbrains.kotlin.js.inline.clean.resolveTemporaryNames
 import org.jetbrains.kotlin.js.translate.declaration.InterfaceFunctionCopier
+import org.jetbrains.kotlin.js.translate.utils.JsAstUtils
 
 class Merger(private val rootFunction: JsFunction) {
     private val nameTable = mutableMapOf<JsFqName, JsName>()
@@ -26,10 +27,19 @@ class Merger(private val rootFunction: JsFunction) {
     private val declarationBlock = JsGlobalBlock()
     private val initializerBlock = JsGlobalBlock()
     private val exportBlock = JsGlobalBlock()
+    private val declaredImports = mutableSetOf<JsFqName>()
 
     fun addFragment(fragment: JsProgramFragment) {
         val nameMap = buildNameMap(fragment)
         rename(fragment, nameMap)
+
+        for ((key, importExpr) in fragment.imports) {
+            if (declaredImports.add(key)) {
+                val name = nameTable[key]!!
+                importBlock.statements += JsAstUtils.newVar(name, importExpr)
+            }
+        }
+
         declarationBlock.statements += fragment.declarationBlock
         initializerBlock.statements += fragment.initializerBlock
         exportBlock.statements += fragment.exportBlock

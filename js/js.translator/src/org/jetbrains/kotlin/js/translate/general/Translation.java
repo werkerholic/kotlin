@@ -72,7 +72,7 @@ import static org.jetbrains.kotlin.js.translate.utils.mutator.LastExpressionMuta
  * Goal is to simplify interaction between translators.
  */
 public final class Translation {
-    private static final JsFqName ENUM_FQ_NAME = new JsFqName("Enum", new JsFqName("kotlin", null));
+    private static final JsFqName ENUM_FQ_NAME = JsFqName.create("kotlin", "Enum");
 
     private Translation() {
     }

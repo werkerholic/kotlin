@@ -23,5 +23,10 @@ data class JsFqName(val id: String, val parent: JsFqName? = null) {
     override fun toString() = parent?.let { "$it." } + id
 
     fun toExpression(): JsExpression = JsNameRef(id, parent?.toExpression()).apply { sideEffects = SideEffectKind.PURE }
+
+    companion object {
+        @JvmStatic
+        fun create(vararg parts: String) = parts.foldRight(null, ::JsFqName)!!
+    }
 }
 

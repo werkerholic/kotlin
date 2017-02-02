@@ -21,6 +21,7 @@ import org.jetbrains.kotlin.js.backend.ast.JsName
 import org.jetbrains.kotlin.builtins.CompanionObjectMapping
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
+import org.jetbrains.kotlin.js.backend.ast.JsFqName
 import org.jetbrains.kotlin.js.translate.context.Namer
 import org.jetbrains.kotlin.js.translate.context.StaticContext
 import org.jetbrains.kotlin.js.translate.context.TranslationContext
@@ -29,10 +30,10 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameUnsafe
 
-class DefaultClassObjectIntrinsic(val staticContext: StaticContext, val fqName: FqName): ObjectIntrinsic {
+class DefaultClassObjectIntrinsic(val staticContext: StaticContext, val jsFqName: JsFqName, val fqName: FqName): ObjectIntrinsic {
     private val innerName: JsName by lazy {
         val declaration = JsAstUtils.replaceRootReference(staticContext.getQualifiedReference(fqName), Namer.kotlinObject())
-        staticContext.importDeclaration(fqName.shortName().asString(), declaration)
+        staticContext.importDeclaration(fqName.shortName().asString(), jsFqName, declaration)
     }
 
     override fun apply(context: TranslationContext) = JsAstUtils.pureFqn(innerName, null)
@@ -53,7 +54,8 @@ class ObjectIntrinsics(private val staticContext: StaticContext) {
         val containingDeclaration = classDescriptor.containingDeclaration
         val name = Name.identifier(containingDeclaration.name.asString() + "CompanionObject")
 
-        return DefaultClassObjectIntrinsic(staticContext, FqName("kotlin.js.internal").child(name))
+        return DefaultClassObjectIntrinsic(
+                staticContext, JsFqName.create("kotlin", "js", "internal", name.asString()), FqName("kotlin.js.internal").child(name))
     }
 }
 

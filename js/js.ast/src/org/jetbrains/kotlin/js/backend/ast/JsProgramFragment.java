@@ -6,15 +6,12 @@ package org.jetbrains.kotlin.js.backend.ast;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class JsProgramFragment extends SourceInfoAwareJsNode {
     private final JsScope scope;
     private final List<JsImportedModule> importedModules = new ArrayList<JsImportedModule>();
-    private final Set<JsFqName> imports = new LinkedHashSet<JsFqName>();
+    private final Map<JsFqName, JsExpression> imports = new LinkedHashMap<JsFqName, JsExpression>();
     private final JsGlobalBlock declarationBlock = new JsGlobalBlock();
     private final JsGlobalBlock exportBlock = new JsGlobalBlock();
     private final JsGlobalBlock initializerBlock = new JsGlobalBlock();
@@ -36,7 +33,7 @@ public class JsProgramFragment extends SourceInfoAwareJsNode {
     }
 
     @NotNull
-    public Set<JsFqName> getImports() {
+    public Map<JsFqName, JsExpression> getImports() {
         return imports;
     }
 
