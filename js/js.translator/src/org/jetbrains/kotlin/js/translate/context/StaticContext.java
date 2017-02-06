@@ -35,6 +35,7 @@ import org.jetbrains.kotlin.js.naming.NameSuggestion;
 import org.jetbrains.kotlin.js.naming.SuggestedName;
 import org.jetbrains.kotlin.js.translate.context.generator.Generator;
 import org.jetbrains.kotlin.js.translate.context.generator.Rule;
+import org.jetbrains.kotlin.js.translate.declaration.ClassModelGenerator;
 import org.jetbrains.kotlin.js.translate.intrinsic.Intrinsics;
 import org.jetbrains.kotlin.js.translate.utils.AnnotationsUtils;
 import org.jetbrains.kotlin.js.translate.utils.JsAstUtils;
@@ -140,6 +141,9 @@ public final class StaticContext {
     @NotNull
     private final Map<FqName, JsScope> packageScopes = new HashMap<FqName, JsScope>();
 
+    @NotNull
+    private final ClassModelGenerator classModelGenerator;
+
     //TODO: too many parameters in constructor
     private StaticContext(
             @NotNull JsProgram program,
@@ -164,6 +168,8 @@ public final class StaticContext {
         JsImportedModule kotlinModule = new JsImportedModule(Namer.KOTLIN_LOWER_NAME, kotlinName, null);
         importedModules.put(kotlinModule.getKey(), kotlinModule);
         fragment.getImportedModules().add(kotlinModule);
+
+        classModelGenerator = new ClassModelGenerator(this);
     }
 
     @NotNull
@@ -517,7 +523,7 @@ public final class StaticContext {
                 @Override
                 public JsName apply(@NotNull DeclarationDescriptor descriptor) {
                     String suggested = getSuggestedName(descriptor) + Namer.OBJECT_INSTANCE_FUNCTION_SUFFIX;
-                    return localOrImportedName(descriptor, suggested);
+                    return fragment.getScope().declareTemporaryName(suggested);
                 }
             });
         }
@@ -745,9 +751,8 @@ public final class StaticContext {
     }
 
     public void addClass(@NotNull ClassDescriptor classDescriptor) {
-        ClassDescriptor parent = DescriptorUtilsKt.getSuperClassNotAny(classDescriptor);
-        if (parent != null && !AnnotationsUtils.isNativeObject(classDescriptor) && !AnnotationsUtils.isLibraryObject(classDescriptor)) {
-            fragment.getParentClasses().put(getInnerNameForDescriptor(classDescriptor), getInnerNameForDescriptor(parent));
+        if (!AnnotationsUtils.isNativeObject(classDescriptor) && !AnnotationsUtils.isLibraryObject(classDescriptor)) {
+            fragment.getClasses().put(getInnerNameForDescriptor(classDescriptor), classModelGenerator.generateClassModel(classDescriptor));
         }
     }
 
@@ -769,12 +774,4 @@ public final class StaticContext {
         String tag = Namer.getFunctionTag(descriptor);
         fragment.getInlineModuleMap().put(tag, getModuleExpressionFor(descriptor));
     }
-
-    /*public void postProcess() {
-        addInterfaceDefaultMethods();
-        rootFunction.getBody().getStatements().addAll(importStatements);
-        rootFunction.getBody().getStatements().addAll(declarationStatements);
-        rootFunction.getBody().getStatements().addAll(exporter.getStatements());
-        rootFunction.getBody().getStatements().addAll(topLevelStatements);
-    }*/
 }

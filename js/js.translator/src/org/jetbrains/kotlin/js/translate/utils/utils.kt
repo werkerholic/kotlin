@@ -16,7 +16,6 @@
 
 package org.jetbrains.kotlin.js.translate.utils
 
-import com.google.common.collect.Lists
 import com.intellij.util.SmartList
 import org.jetbrains.kotlin.backend.common.COROUTINES_INTRINSICS_PACKAGE_FQ_NAME
 import org.jetbrains.kotlin.backend.common.COROUTINE_SUSPENDED_NAME

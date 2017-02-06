@@ -29,7 +29,7 @@ class Merger(private val rootFunction: JsFunction, val internalModuleName: JsNam
     private val initializerBlock = JsGlobalBlock()
     private val exportBlock = JsGlobalBlock()
     private val declaredImports = mutableSetOf<JsFqName>()
-    private val parentClasses = mutableMapOf<JsName, JsName>()
+    private val classes = mutableMapOf<JsName, JsClassModel>()
     private val importedModulesImpl = mutableListOf<JsImportedModule>()
 
     fun addFragment(fragment: JsProgramFragment) {
@@ -46,7 +46,12 @@ class Merger(private val rootFunction: JsFunction, val internalModuleName: JsNam
         declarationBlock.statements += fragment.declarationBlock
         initializerBlock.statements += fragment.initializerBlock
         exportBlock.statements += fragment.exportBlock
-        parentClasses += fragment.parentClasses.map { (cls, parent) -> nameMap.rename(cls) to nameMap.rename(parent) }
+        classes += fragment.classes.values.map { cls ->
+            val name = nameMap.rename(cls.name)
+            name to JsClassModel(name, cls.superName?.let { nameMap.rename(it) }).also { copy ->
+                copy.postDeclarationBlock.statements += cls.postDeclarationBlock.statements.map { nameMap.rename(it) }
+            }
+        }
     }
 
     private fun Map<JsName, JsName>.rename(name: JsName): JsName = getOrElse(name) { name }
@@ -101,6 +106,7 @@ class Merger(private val rootFunction: JsFunction, val internalModuleName: JsNam
             this += importBlock.statements
             addClassPrototypes(this)
             this += declarationBlock.statements
+            addClassPostDeclarations(this)
             this += exportBlock.statements
             this += initializerBlock.statements
         }
@@ -108,30 +114,52 @@ class Merger(private val rootFunction: JsFunction, val internalModuleName: JsNam
 
     private fun addClassPrototypes(statements: MutableList<JsStatement>) {
         val visited = mutableSetOf<JsName>()
-        for (cls in parentClasses.keys) {
+        for (cls in classes.keys) {
             addClassPrototypes(cls, visited, statements)
         }
     }
 
     private fun addClassPrototypes(
-            cls: JsName,
+            name: JsName,
             visited: MutableSet<JsName>,
             statements: MutableList<JsStatement>
     ) {
-        if (!visited.add(cls)) return
-        val superclass = parentClasses[cls] ?: return
+        if (!visited.add(name)) return
+        val cls = classes[name] ?: return
+        val superName = cls.superName ?: return
 
-        addClassPrototypes(superclass, visited, statements)
+        addClassPrototypes(superName, visited, statements)
 
-        val superclassRef = superclass.makeRef()
+        val superclassRef = superName.makeRef()
         val superPrototype = JsAstUtils.prototypeOf(superclassRef)
         val superPrototypeInstance = JsInvocation(JsNameRef("create", "Object"), superPrototype)
 
-        val classRef = cls.makeRef()
+        val classRef = name.makeRef()
         val prototype = JsAstUtils.prototypeOf(classRef)
         statements += JsAstUtils.assignment(prototype, superPrototypeInstance).makeStmt()
 
         val constructorRef = JsNameRef("constructor", prototype.deepCopy())
         statements += JsAstUtils.assignment(constructorRef, classRef.deepCopy()).makeStmt()
+    }
+
+    private fun addClassPostDeclarations(statements: MutableList<JsStatement>) {
+        val visited = mutableSetOf<JsName>()
+        for (cls in classes.keys) {
+            addClassPostDeclarations(cls, visited, statements)
+        }
+    }
+
+    private fun addClassPostDeclarations(
+            name: JsName,
+            visited: MutableSet<JsName>,
+            statements: MutableList<JsStatement>
+    ) {
+        if (!visited.add(name)) return
+        val cls = classes[name] ?: return
+        val superName = cls.superName
+        if (superName != null) {
+            addClassPostDeclarations(superName, visited, statements)
+        }
+        statements += cls.postDeclarationBlock.statements
     }
 }
