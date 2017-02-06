@@ -174,10 +174,12 @@ class DelegationTranslator(
         // TODO: same logic as in AbstractDeclarationVisitor
         if (descriptor.isExtensionProperty || TranslationUtils.shouldAccessViaFunctions(descriptor)) {
             val getter = descriptor.getter!!
-            context().addFunctionToPrototype(classDescriptor, getter, generateDelegateGetterFunction(getter))
+            context().addFunctionToPrototype(classDescriptor, getter, generateDelegateGetterFunction(getter),
+                                             context().declarationStatementConsumer)
             if (descriptor.isVar) {
                 val setter = descriptor.setter!!
-                context().addFunctionToPrototype(classDescriptor, setter, generateDelegateSetterFunction(setter))
+                context().addFunctionToPrototype(classDescriptor, setter, generateDelegateSetterFunction(setter),
+                                                 context().declarationStatementConsumer)
             }
         }
         else {
@@ -194,6 +196,7 @@ class DelegationTranslator(
             delegateName: JsName
     ) {
         val delegateRef = JsNameRef(delegateName, JsLiteral.THIS)
-        generateDelegateCall(classDescriptor, descriptor, overriddenDescriptor, delegateRef, context())
+        generateDelegateCall(classDescriptor, descriptor, overriddenDescriptor, delegateRef, context(),
+                             context().declarationStatementConsumer)
     }
 }
