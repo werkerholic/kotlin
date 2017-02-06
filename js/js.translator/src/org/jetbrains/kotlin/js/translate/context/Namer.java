@@ -200,16 +200,11 @@ public final class Namer {
     @NotNull
     private final JsExpression callSetProperty;
 
-    @NotNull
-    private final JsName isTypeName;
-
     private Namer(@NotNull JsScope rootScope) {
         kotlinScope = new JsObjectScope(rootScope, "Kotlin standard object");
 
         callGetProperty = kotlin("callGetter");
         callSetProperty = kotlin("callSetter");
-
-        isTypeName = kotlinScope.declareName("isType");
     }
 
     // TODO: get rid of this function
@@ -307,8 +302,8 @@ public final class Namer {
     }
 
     @NotNull
-    public JsExpression isInstanceOf(@NotNull JsExpression instance, @NotNull JsExpression type) {
-        JsInvocation result = new JsInvocation(kotlin(isTypeName), instance, type);
+    public static JsExpression isInstanceOf(@NotNull JsExpression instance, @NotNull JsExpression type) {
+        JsInvocation result = new JsInvocation(new JsNameRef("isType", KOTLIN_NAME), instance, type);
         MetadataProperties.setSideEffects(result, SideEffectKind.PURE);
         return result;
     }
