@@ -29,8 +29,8 @@ import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.android.AndroidGradleWrapper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.gradle.tasks.SyncOutputTask
 import java.io.File
+import javax.xml.bind.DatatypeConverter.printBase64Binary
 
 // apply plugin: 'kotlin-kapt'
 class Kapt3GradleSubplugin : Plugin<Project> {
@@ -172,7 +172,7 @@ class Kapt3KotlinGradleSubplugin : KotlinGradleSubplugin<KotlinCompile> {
         val apOptions = kaptExtension.getAdditionalArguments(project, variantData, androidPlugin) + androidOptions
 
         for ((key, value) in apOptions) {
-            pluginOptions += SubpluginOption("apoption", "$key:$value")
+            pluginOptions += SubpluginOption("apoption", printBase64Binary("$key:$value".toByteArray()))
         }
 
         addMiscOptions(pluginOptions)

@@ -37,7 +37,6 @@ import org.jetbrains.kotlin.config.JVMConfigurationKeys
 import org.jetbrains.kotlin.container.ComponentProvider
 import org.jetbrains.kotlin.context.ProjectContext
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
-import org.jetbrains.kotlin.descriptors.PackageFragmentProvider
 import org.jetbrains.kotlin.diagnostics.rendering.DefaultErrorMessages
 import org.jetbrains.kotlin.kapt3.diagnostic.DefaultErrorMessagesKapt3
 import org.jetbrains.kotlin.kapt3.util.KaptLogger
@@ -45,7 +44,7 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.resolve.BindingTrace
 import org.jetbrains.kotlin.resolve.jvm.extensions.AnalysisHandlerExtension
 import java.io.File
-import java.util.*
+import javax.xml.bind.DatatypeConverter
 
 object Kapt3ConfigurationKeys {
     val SOURCE_OUTPUT_DIR: CompilerConfigurationKey<String> =
@@ -171,7 +170,7 @@ class Kapt3ComponentRegistrar : ComponentRegistrar {
         }
 
         val apOptions = (configuration.get(APT_OPTIONS) ?: listOf())
-                .map { it.split(':', limit = 2) }
+                .map { String(DatatypeConverter.parseBase64Binary(it)).split(':', limit = 2) }
                 .filter { it.isNotEmpty() }
                 .map { it[0] to it.getOrElse(1) { "" } }
                 .toMap()
