@@ -25,7 +25,6 @@ import com.intellij.util.PathUtil;
 import com.intellij.util.io.URLUtil;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
-import kotlin.jvm.functions.Function2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.config.CompilerConfiguration;
@@ -128,16 +127,18 @@ public class LibrarySourcesConfig extends JsConfig {
                 return true;
             }
 
-                for (KotlinJavascriptMetadata metadata : metadataList) {
-                    if (!metadata.getVersion().isCompatible()) {
-                        report.error("File '" + path + "' was compiled with an incompatible version of Kotlin. " +
-                                      "The binary version of its metadata is " + metadata.getVersion() +
-                                      ", expected version is " + JsMetadataVersion.INSTANCE);
-                        return true;
-                    }
+            for (KotlinJavascriptMetadata metadata : metadataList) {
+                if (!metadata.getVersion().isCompatible()) {
+                    report.error("File '" + path + "' was compiled with an incompatible version of Kotlin. " +
+                                  "The binary version of its metadata is " + metadata.getVersion() +
+                                  ", expected version is " + JsMetadataVersion.INSTANCE);
+                    return true;
+                }
                 if (!modules.add(metadata.getModuleName())) {
-                        report.warning("Module \"" + metadata.getModuleName() + "\" is defined in more, than one file");
-                    }}
+                    report.warning("Module \"" + metadata.getModuleName() + "\" is defined in more, than one file");
+                }
+            }
+
 
             if (action != null) {
                 action.invoke(file);

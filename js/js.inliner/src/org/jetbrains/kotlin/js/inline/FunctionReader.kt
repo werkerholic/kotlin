@@ -146,7 +146,6 @@ class FunctionReader(private val context: TranslationContext) {
         }
 
         val function = parseFunction(source, offset, ThrowExceptionOnErrorReporter, JsRootScope(JsProgram()))
-        val moduleName = getModuleName(descriptor)
         val moduleReference = context.getModuleExpressionFor(descriptor) ?: getRootPackage()
 
         val replacements = hashMapOf(info.moduleVariable to moduleReference,
