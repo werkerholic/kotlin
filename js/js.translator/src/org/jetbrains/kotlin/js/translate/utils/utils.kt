@@ -177,18 +177,3 @@ fun JsFunction.fillCoroutineMetadata(
             hasReceiver = descriptor.dispatchReceiverParameter != null
     )
 }
-
-fun NameSuggestion.fqNameForDeclaration(declaration: DeclarationDescriptor): JsFqName? {
-    if (declaration is ModuleDescriptor) return null
-    if (declaration is PackageFragmentDescriptor) return if (declaration.fqName.isRoot) null else JsFqName.create(declaration.fqName)
-
-    if (declaration is MemberDescriptor) {
-        if (declaration.visibility.effectiveVisibility(declaration, false).privateApi) return null
-        if (DescriptorUtils.isLocal(declaration)) return null
-    }
-
-    val suggested = suggest(declaration)!!
-    if (!suggested.stable) return null
-
-    return JsFqName(suggested.names.single(), fqNameForDeclaration(suggested.scope))
-}

@@ -39,7 +39,7 @@ import org.jetbrains.kotlin.js.translate.declaration.ClassModelGenerator;
 import org.jetbrains.kotlin.js.translate.intrinsic.Intrinsics;
 import org.jetbrains.kotlin.js.translate.utils.AnnotationsUtils;
 import org.jetbrains.kotlin.js.translate.utils.JsAstUtils;
-import org.jetbrains.kotlin.js.translate.utils.UtilsKt;
+import org.jetbrains.kotlin.js.translate.utils.SignatureUtilsKt;
 import org.jetbrains.kotlin.name.FqName;
 import org.jetbrains.kotlin.resolve.BindingContext;
 import org.jetbrains.kotlin.resolve.BindingTrace;
@@ -127,7 +127,7 @@ public final class StaticContext {
     @NotNull
     private final Map<DeclarationDescriptor, JsExpression> fqnExpressionCache = new HashMap<DeclarationDescriptor, JsExpression>();
 
-    private final Map<DeclarationDescriptor, JsFqName> jsFqnCache = new HashMap<DeclarationDescriptor, JsFqName>();
+    private final Map<DeclarationDescriptor, String> tagCache = new HashMap<DeclarationDescriptor, String>();
 
     @NotNull
     private final Map<JsImportedModuleKey, JsImportedModule> importedModules = new LinkedHashMap<JsImportedModuleKey, JsImportedModule>();
@@ -226,16 +226,19 @@ public final class StaticContext {
     }
 
     @Nullable
-    private JsFqName getFqName(@NotNull DeclarationDescriptor descriptor) {
-        JsFqName fqn;
-        if (!jsFqnCache.containsKey(descriptor)) {
-            fqn = UtilsKt.fqNameForDeclaration(nameSuggestion, descriptor);
-            jsFqnCache.put(descriptor, fqn);
+    private String getTag(@NotNull DeclarationDescriptor descriptor) {
+        String tag;
+        if (!tagCache.containsKey(descriptor)) {
+            tag = SignatureUtilsKt.generateSignature(descriptor);
+            if (tag != null) {
+                tag = "signature:" + tag;
+            }
+            tagCache.put(descriptor, tag);
         }
         else {
-            fqn = jsFqnCache.get(descriptor);
+            tag = tagCache.get(descriptor);
         }
-        return fqn;
+        return tag;
     }
 
     @NotNull
@@ -454,7 +457,7 @@ public final class StaticContext {
     }
 
     @NotNull
-    public JsName importDeclaration(@NotNull String suggestedName, @NotNull JsFqName fqName, @NotNull JsExpression declaration) {
+    public JsName importDeclaration(@NotNull String suggestedName, @NotNull String tag, @NotNull JsExpression declaration) {
         // Adding prefix is a workaround for a problem with scopes.
         // Consider we declare name `foo` in functions's local scope, then call top-level function `foo`
         // from another module. It's imported into global scope under name `foo`. If we could somehow
@@ -464,7 +467,7 @@ public final class StaticContext {
 
         JsName result = fragment.getScope().declareTemporaryName(suggestedName);
         MetadataProperties.setImported(result, true);
-        fragment.getImports().put(fqName, declaration);
+        fragment.getImports().put(tag, declaration);
         return result;
     }
 
@@ -472,16 +475,16 @@ public final class StaticContext {
     private JsName localOrImportedName(@NotNull DeclarationDescriptor descriptor, @NotNull String suggestedName) {
         ModuleDescriptor module = DescriptorUtilsKt.getModule(descriptor);
         JsName name;
-        JsFqName fqName = getFqName(descriptor);
+        String tag = getTag(descriptor);
         if (module != currentModule) {
-            assert fqName != null : "Can't import declaration without fqname: " + descriptor;
-            name = importDeclaration(suggestedName, fqName, getQualifiedReference(descriptor));
+            assert tag != null : "Can't import declaration without tag: " + descriptor;
+            name = importDeclaration(suggestedName, tag, getQualifiedReference(descriptor));
         }
         else {
             name = fragment.getScope().declareTemporaryName(suggestedName);
         }
-        if (fqName != null) {
-            fragment.getNameBindings().add(new JsNameBinding(fqName, name));
+        if (tag != null) {
+            fragment.getNameBindings().add(new JsNameBinding(tag, name));
         }
         MetadataProperties.setDescriptor(name, descriptor);
         return name;
@@ -523,7 +526,12 @@ public final class StaticContext {
                 @Override
                 public JsName apply(@NotNull DeclarationDescriptor descriptor) {
                     String suggested = getSuggestedName(descriptor) + Namer.OBJECT_INSTANCE_FUNCTION_SUFFIX;
-                    return fragment.getScope().declareTemporaryName(suggested);
+                    JsName result = fragment.getScope().declareTemporaryName(suggested);
+                    String tag = SignatureUtilsKt.generateSignature(descriptor);
+                    if (tag != null) {
+                        fragment.getNameBindings().add(new JsNameBinding("object:" + tag, result));
+                    }
+                    return result;
                 }
             });
         }

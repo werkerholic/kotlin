@@ -11,7 +11,7 @@ import java.util.*;
 public class JsProgramFragment extends SourceInfoAwareJsNode {
     private final JsScope scope;
     private final List<JsImportedModule> importedModules = new ArrayList<JsImportedModule>();
-    private final Map<JsFqName, JsExpression> imports = new LinkedHashMap<JsFqName, JsExpression>();
+    private final Map<String, JsExpression> imports = new LinkedHashMap<String, JsExpression>();
     private final JsGlobalBlock declarationBlock = new JsGlobalBlock();
     private final JsGlobalBlock exportBlock = new JsGlobalBlock();
     private final JsGlobalBlock initializerBlock = new JsGlobalBlock();
@@ -34,7 +34,7 @@ public class JsProgramFragment extends SourceInfoAwareJsNode {
     }
 
     @NotNull
-    public Map<JsFqName, JsExpression> getImports() {
+    public Map<String, JsExpression> getImports() {
         return imports;
     }
 

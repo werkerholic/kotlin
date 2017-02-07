@@ -22,13 +22,13 @@ import org.jetbrains.kotlin.js.translate.context.Namer
 import org.jetbrains.kotlin.js.translate.utils.JsAstUtils
 
 class Merger(private val rootFunction: JsFunction, val internalModuleName: JsName, val module: ModuleDescriptor) {
-    private val nameTable = mutableMapOf<JsFqName, JsName>()
+    private val nameTable = mutableMapOf<String, JsName>()
     private val importedModuleTable = mutableMapOf<JsImportedModuleKey, JsName>()
     private val importBlock = JsGlobalBlock()
     private val declarationBlock = JsGlobalBlock()
     private val initializerBlock = JsGlobalBlock()
     private val exportBlock = JsGlobalBlock()
-    private val declaredImports = mutableSetOf<JsFqName>()
+    private val declaredImports = mutableSetOf<String>()
     private val classes = mutableMapOf<JsName, JsClassModel>()
     private val importedModulesImpl = mutableListOf<JsImportedModule>()
 
