@@ -84,7 +84,9 @@ public class JsInliner extends JsVisitorWithContextImpl {
         FunctionReader functionReader = new FunctionReader((LibrarySourcesConfig) config, currentModuleName, fragments);
         JsInliner inliner = new JsInliner(functions, accessors, functionReader, trace);
         for (JsProgramFragment fragment : fragmentsToProcess) {
+            inliner.inliningContexts.push(inliner.new JsInliningContext(null, fragment.getScope()));
             inliner.accept(fragment);
+            inliner.inliningContexts.pop();
             RemoveUnusedFunctionDefinitionsKt.removeUnusedFunctionDefinitions(fragment, functions);
         }
     }
@@ -103,7 +105,7 @@ public class JsInliner extends JsVisitorWithContextImpl {
 
     @Override
     public boolean visit(@NotNull JsFunction function, @NotNull JsContext context) {
-        inliningContexts.push(new JsInliningContext(function));
+        inliningContexts.push(new JsInliningContext(function, function.getScope()));
         assert !inProcessFunctions.contains(function): "Inliner has revisited function";
         inProcessFunctions.add(function);
 
@@ -232,6 +234,8 @@ public class JsInliner extends JsVisitorWithContextImpl {
     private void inlineSuspendWithCurrentContinuation(@NotNull JsInvocation call, @NotNull JsContext context) {
         JsInliningContext inliningContext = getInliningContext();
         JsFunction containingFunction = inliningContext.function;
+        assert containingFunction != null : "suspendWithCurrentContinuation can't be called from top-level scope, therefore" +
+                                            "containing function must be non-null";
         JsExpression lambda = call.getArguments().get(0);
         JsParameter continuationParam = containingFunction.getParameters().get(containingFunction.getParameters().size() - 1);
 
@@ -285,12 +289,12 @@ public class JsInliner extends JsVisitorWithContextImpl {
     private class JsInliningContext implements InliningContext {
         private final FunctionContext functionContext;
 
-        @NotNull
+        @Nullable
         public final JsFunction function;
 
-        JsInliningContext(@NotNull JsFunction function) {
+        JsInliningContext(@Nullable JsFunction function, @NotNull JsScope scope) {
             this.function = function;
-            functionContext = new FunctionContext(function, functionReader) {
+            functionContext = new FunctionContext(scope, functionReader) {
                 @Nullable
                 @Override
                 protected JsFunction lookUpStaticFunction(@Nullable JsName functionName) {
