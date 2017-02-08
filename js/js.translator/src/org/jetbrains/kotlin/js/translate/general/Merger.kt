@@ -18,6 +18,7 @@ package org.jetbrains.kotlin.js.translate.general
 
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.js.backend.ast.*
+import org.jetbrains.kotlin.js.backend.ast.metadata.coroutineMetadata
 import org.jetbrains.kotlin.js.translate.context.Namer
 import org.jetbrains.kotlin.js.translate.utils.JsAstUtils
 
@@ -60,7 +61,7 @@ class Merger(private val rootFunction: JsFunction, val internalModuleName: JsNam
         val nameMap = mutableMapOf<JsName, JsName>()
         for (nameBinding in fragment.nameBindings) {
             nameMap[nameBinding.name] = nameTable.getOrPut(nameBinding.key) {
-                rootFunction.scope.declareTemporaryName(nameBinding.name.ident)
+                rootFunction.scope.declareTemporaryName(nameBinding.name.ident).also { it.copyMetadataFrom(nameBinding.name) }
             }
         }
         fragment.scope.findName(Namer.getRootPackageName())?.let { nameMap[it] = internalModuleName }
@@ -73,6 +74,7 @@ class Merger(private val rootFunction: JsFunction, val internalModuleName: JsNam
                 }
                 newName.also {
                     importedModulesImpl += JsImportedModule(importedModule.externalName, it, importedModule.plainReference)
+                    it.copyMetadataFrom(importedModule.internalName)
                 }
             }
         }
@@ -92,6 +94,15 @@ class Merger(private val rootFunction: JsFunction, val internalModuleName: JsNam
                 super.visitElement(node)
                 if (node is HasName) {
                     node.name = node.name?.let { name -> rename(name) }
+                }
+                if (node is JsFunction) {
+                    val coroutineMetadata = node.coroutineMetadata
+                    if (coroutineMetadata != null) {
+                        node.coroutineMetadata = coroutineMetadata.copy(
+                                baseClassRef = rename(coroutineMetadata.baseClassRef),
+                                suspendObjectRef = rename(coroutineMetadata.suspendObjectRef)
+                        )
+                    }
                 }
             }
         })

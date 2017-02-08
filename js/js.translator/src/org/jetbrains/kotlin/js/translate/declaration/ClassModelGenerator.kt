@@ -23,8 +23,10 @@ import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.backend.ast.*
 import org.jetbrains.kotlin.js.translate.context.StaticContext
 import org.jetbrains.kotlin.js.translate.context.TranslationContext
+import org.jetbrains.kotlin.js.translate.utils.AnnotationsUtils
 import org.jetbrains.kotlin.js.translate.utils.JsAstUtils
-import org.jetbrains.kotlin.js.translate.utils.JsAstUtils.*
+import org.jetbrains.kotlin.js.translate.utils.JsAstUtils.prototypeOf
+import org.jetbrains.kotlin.js.translate.utils.JsAstUtils.pureFqn
 import org.jetbrains.kotlin.js.translate.utils.generateDelegateCall
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
 import org.jetbrains.kotlin.resolve.descriptorUtil.module
@@ -35,7 +37,9 @@ class ClassModelGenerator(val context: StaticContext) {
     fun generateClassModel(descriptor: ClassDescriptor): JsClassModel {
         val superName = descriptor.getSuperClassNotAny()?.let { context.getInnerNameForDescriptor(it) }
         val model = JsClassModel(context.getInnerNameForDescriptor(descriptor), superName)
-        if (descriptor.kind != ClassKind.INTERFACE) {
+        if (descriptor.kind != ClassKind.INTERFACE && descriptor.kind != ClassKind.ANNOTATION_CLASS &&
+            !AnnotationsUtils.isNativeObject(descriptor)
+        ) {
             copyDefaultMembers(descriptor, model)
             generateBridgeMethods(descriptor, model)
         }
@@ -48,11 +52,9 @@ class ClassModelGenerator(val context: StaticContext) {
                 .mapNotNull { it as? CallableMemberDescriptor }
 
         for (member in members.filter { !it.kind.isReal && it.modality != Modality.ABSTRACT }) {
-            val memberToCopy = member.overriddenDescriptors
-                    .filter { it.kind.isReal && it.modality != Modality.ABSTRACT }
-                    .singleOrNull() ?: continue
+            val memberToCopy = findMemberToCopy(member) ?: continue
             val classToCopyFrom = memberToCopy.containingDeclaration as ClassDescriptor
-            if (classToCopyFrom.kind != ClassKind.INTERFACE) continue
+            if (classToCopyFrom.kind != ClassKind.INTERFACE || AnnotationsUtils.isNativeObject(classToCopyFrom)) continue
 
             val name = context.getNameForDescriptor(member).ident
             when (member) {
@@ -64,8 +66,14 @@ class ClassModelGenerator(val context: StaticContext) {
         }
     }
 
+    private fun findMemberToCopy(member: CallableMemberDescriptor): CallableMemberDescriptor? {
+        val memberToCopy = member.overriddenDescriptors
+                .filter { it.modality != Modality.ABSTRACT }
+                .singleOrNull() ?: return null
+        return if (!memberToCopy.kind.isReal) findMemberToCopy(memberToCopy) else memberToCopy
+    }
+
     private fun generateBridgeMethods(descriptor: ClassDescriptor, model: JsClassModel) {
-        if (descriptor.kind == ClassKind.ANNOTATION_CLASS) return
         generateBridgesToTraitImpl(descriptor, model)
         generateOtherBridges(descriptor, model)
     }

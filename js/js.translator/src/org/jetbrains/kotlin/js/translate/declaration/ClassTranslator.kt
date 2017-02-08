@@ -16,9 +16,6 @@
 
 package org.jetbrains.kotlin.js.translate.declaration
 
-import org.jetbrains.kotlin.backend.common.CodegenUtil
-import org.jetbrains.kotlin.backend.common.bridges.Bridge
-import org.jetbrains.kotlin.backend.common.bridges.generateBridgesForFunctionDescriptor
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns
 import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor
 import org.jetbrains.kotlin.descriptors.*
@@ -46,11 +43,11 @@ import org.jetbrains.kotlin.resolve.BindingContextUtils
 import org.jetbrains.kotlin.resolve.DescriptorUtils
 import org.jetbrains.kotlin.resolve.DescriptorUtils.getClassDescriptorForType
 import org.jetbrains.kotlin.resolve.DescriptorUtils.getClassDescriptorForTypeConstructor
+import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
 import org.jetbrains.kotlin.types.CommonSupertypes.topologicallySortSuperclassesAndRecordAllInstances
 import org.jetbrains.kotlin.types.SimpleType
 import org.jetbrains.kotlin.types.TypeConstructor
 import org.jetbrains.kotlin.utils.DFS
-import org.jetbrains.kotlin.utils.identity
 
 /**
  * Generates a definition of a single class.
@@ -115,6 +112,8 @@ class ClassTranslator private constructor(
         if (descriptor.kind == ClassKind.ENUM_CLASS) {
             generateEnumStandardMethods(bodyVisitor.enumEntries)
         }
+
+        descriptor.getSuperClassNotAny()?.let { ReferenceTranslator.translateAsTypeReference(it, context) }
     }
 
     private fun TranslationContext.withUsageTrackerIfNecessary(scope: JsScope, innerDescriptor: MemberDescriptor): TranslationContext {

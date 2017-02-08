@@ -227,4 +227,9 @@ public final class JsDescriptorUtils {
         ModuleDescriptor module = DescriptorUtils.getContainingModule(descriptor);
         return TypeUtilsKt.isSubtypeOf(descriptor.getDefaultType(), module.getBuiltIns().getThrowable().getDefaultType());
     }
+
+    public static boolean shouldBeImported(@NotNull TranslationContext context, @NotNull DeclarationDescriptor descriptor) {
+        return !context.isFromCurrentModule(descriptor) || AnnotationsUtils.isNativeObject(descriptor) ||
+               AnnotationsUtils.isLibraryObject(descriptor);
+    }
 }
