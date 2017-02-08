@@ -19,24 +19,25 @@ package org.jetbrains.kotlin.js.translate.utils
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.naming.encodeSignature
 import org.jetbrains.kotlin.resolve.DescriptorUtils
-import org.jetbrains.kotlin.resolve.descriptorUtil.isEffectivelyPrivateApi
 
 fun generateSignature(descriptor: DeclarationDescriptor): String? {
-    if (descriptor is DeclarationDescriptorWithVisibility && descriptor.isEffectivelyPrivateApi ||
-        DescriptorUtils.isLocal(descriptor)
-    ) {
-        return null
-    }
+    if (DescriptorUtils.isDescriptorWithLocalVisibility(descriptor)) return null
+    if (descriptor is DeclarationDescriptorWithVisibility && descriptor.visibility == Visibilities.PRIVATE) return null
     return when (descriptor) {
         is CallableDescriptor -> {
             val parent = generateSignature(descriptor.containingDeclaration) ?: return null
-            parent + "#" + escape(descriptor.name.asString()) + "(" + encodeSignature(descriptor) + ")"
+            if (descriptor !is VariableAccessorDescriptor && descriptor !is ConstructorDescriptor && descriptor.name.isSpecial) {
+                return null
+            }
+            val separator = if (descriptor is FunctionDescriptor) "#" else "!"
+            parent + separator + escape(descriptor.name.asString()) + "|" + encodeSignature(descriptor)
         }
         is PackageFragmentDescriptor -> {
-            if (descriptor.fqName.isRoot) "" else escape(descriptor.fqName.asString())
+            if (descriptor.fqName.isRoot) "" else escape(descriptor.fqName.pathSegments().map { escape(it.identifier) }.joinToString("."))
         }
         is ClassDescriptor -> {
             val parent = generateSignature(descriptor.containingDeclaration) ?: return null
+            if (descriptor.name.isSpecial) return null
             parent + "$" + escape(descriptor.name.asString())
         }
         else -> return null
@@ -47,7 +48,7 @@ private fun escape(s: String): String {
     val sb = StringBuilder()
     for (c in s) {
         val escapedChar = when (c) {
-            '\\', '"', '.', '$', '#', '<', '>', '|', '+', '-', ':', '*', '?' -> "\\$c"
+            '\\', '"', '.', '$', '#', '!', '<', '>', '|', '+', '-', ':', '*', '?' -> "\\$c"
             else -> c.toString()
         }
         sb.append(escapedChar)
