@@ -16,10 +16,7 @@
 
 package org.jetbrains.kotlin.js.translate.declaration
 
-import org.jetbrains.kotlin.descriptors.FunctionDescriptor
-import org.jetbrains.kotlin.descriptors.Modality
-import org.jetbrains.kotlin.descriptors.PropertyDescriptor
-import org.jetbrains.kotlin.descriptors.isOverridable
+import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.backend.ast.JsExpression
 import org.jetbrains.kotlin.js.translate.context.TranslationContext
 import org.jetbrains.kotlin.js.translate.expression.translateAndAliasParameters
@@ -109,7 +106,6 @@ abstract class AbstractDeclarationVisitor : TranslatorVisitor<Unit>()  {
             }
         }
 
-        innerContext.getInnerNameForDescriptor(descriptor)
         if (!descriptor.isOverridable) {
             function.body.statements += FunctionBodyTranslator.setDefaultValueForArguments(descriptor, innerContext)
         }
