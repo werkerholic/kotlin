@@ -22,7 +22,11 @@ import org.jetbrains.kotlin.resolve.DescriptorUtils
 
 fun generateSignature(descriptor: DeclarationDescriptor): String? {
     if (DescriptorUtils.isDescriptorWithLocalVisibility(descriptor)) return null
-    if (descriptor is DeclarationDescriptorWithVisibility && descriptor.visibility == Visibilities.PRIVATE) return null
+    if (descriptor is DeclarationDescriptorWithVisibility && descriptor.visibility == Visibilities.PRIVATE &&
+        !AnnotationsUtils.isNativeObject(descriptor) && !AnnotationsUtils.isLibraryObject(descriptor)
+    ) {
+        return null
+    }
     return when (descriptor) {
         is CallableDescriptor -> {
             val parent = generateSignature(descriptor.containingDeclaration) ?: return null
