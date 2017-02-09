@@ -19,13 +19,15 @@ package org.jetbrains.kotlin.js.translate.utils
 import com.intellij.util.SmartList
 import org.jetbrains.kotlin.backend.common.COROUTINES_INTRINSICS_PACKAGE_FQ_NAME
 import org.jetbrains.kotlin.backend.common.COROUTINE_SUSPENDED_NAME
-import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.descriptors.ClassDescriptor
+import org.jetbrains.kotlin.descriptors.FunctionDescriptor
+import org.jetbrains.kotlin.descriptors.PropertyDescriptor
+import org.jetbrains.kotlin.descriptors.TypeParameterDescriptor
 import org.jetbrains.kotlin.descriptors.impl.AnonymousFunctionDescriptor
 import org.jetbrains.kotlin.incremental.components.NoLookupLocation
 import org.jetbrains.kotlin.js.backend.ast.*
 import org.jetbrains.kotlin.js.backend.ast.metadata.CoroutineMetadata
 import org.jetbrains.kotlin.js.backend.ast.metadata.coroutineMetadata
-import org.jetbrains.kotlin.js.naming.NameSuggestion
 import org.jetbrains.kotlin.js.translate.context.Namer
 import org.jetbrains.kotlin.js.translate.context.TranslationContext
 import org.jetbrains.kotlin.js.translate.intrinsic.functions.basic.FunctionIntrinsicWithReceiverComputed
@@ -48,17 +50,16 @@ fun generateDelegateCall(
 
     val parameters = SmartList<JsParameter>()
     val args = SmartList<JsExpression>()
-    val functionScope = context.getScopeForDescriptor(fromDescriptor)
 
     if (DescriptorUtils.isExtension(fromDescriptor)) {
-        val extensionFunctionReceiverName = functionScope.declareTemporaryName(Namer.getReceiverParameterName())
+        val extensionFunctionReceiverName = JsScope.declareTemporaryName(Namer.getReceiverParameterName())
         parameters.add(JsParameter(extensionFunctionReceiverName))
         args.add(JsNameRef(extensionFunctionReceiverName))
     }
 
     for (param in fromDescriptor.valueParameters) {
         val paramName = param.name.asString()
-        val jsParamName = functionScope.declareTemporaryName(paramName)
+        val jsParamName = JsScope.declareTemporaryName(paramName)
         parameters.add(JsParameter(jsParamName))
         args.add(JsNameRef(jsParamName))
     }
