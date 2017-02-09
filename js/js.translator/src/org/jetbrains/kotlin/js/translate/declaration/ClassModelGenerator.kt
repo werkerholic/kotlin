@@ -41,9 +41,7 @@ class ClassModelGenerator(val context: StaticContext) {
     fun generateClassModel(descriptor: ClassDescriptor): JsClassModel {
         val superName = descriptor.getSuperClassNotAny()?.let { context.getInnerNameForDescriptor(it) }
         val model = JsClassModel(context.getInnerNameForDescriptor(descriptor), superName)
-        if (descriptor.kind != ClassKind.INTERFACE && descriptor.kind != ClassKind.ANNOTATION_CLASS &&
-            !AnnotationsUtils.isNativeObject(descriptor)
-        ) {
+        if (descriptor.kind != ClassKind.ANNOTATION_CLASS && !AnnotationsUtils.isNativeObject(descriptor)) {
             copyDefaultMembers(descriptor, model)
             generateBridgeMethods(descriptor, model)
         }
@@ -107,7 +105,8 @@ class ClassModelGenerator(val context: StaticContext) {
     }
 
     private fun copyInvisibleFakeMember(descriptor: ClassDescriptor, member: CallableMemberDescriptor, model: JsClassModel) {
-        for (memberToCopy in member.overriddenDescriptors) {
+        for (overriddenMember in member.overriddenDescriptors) {
+            val memberToCopy = if (overriddenMember.kind.isReal) overriddenMember else findMemberToCopy(overriddenMember) ?: continue
             val classToCopyFrom = memberToCopy.containingDeclaration as ClassDescriptor
             if (classToCopyFrom.kind != ClassKind.INTERFACE) continue
 
@@ -179,31 +178,11 @@ class ClassModelGenerator(val context: StaticContext) {
         }
     }
 
-    private fun generateAllBridges(function: FunctionDescriptor): List<Bridge<FunctionDescriptor>> {
-        return mutableListOf<Bridge<FunctionDescriptor>>().apply { generateAllBridgesRec(function, this, mutableSetOf()) }
-    }
-
-    private fun generateAllBridgesRec(
-            function: FunctionDescriptor,
-            target: MutableList<Bridge<FunctionDescriptor>>,
-            visited: MutableSet<FunctionDescriptor>
-    ) {
-        if (!visited.add(function)) return
-
-        for (bridge in generateBridgesForFunctionDescriptor(function, identity()) { false }) {
-            val fromClass = bridge.from.containingDeclaration as ClassDescriptor
-            if (fromClass.kind == ClassKind.INTERFACE && bridge.from.modality == Modality.ABSTRACT) {
-                generateAllBridgesRec(bridge.from, target, visited)
-            }
-            else {
-                target += bridge
-            }
-        }
-    }
-
     private fun generateBridge(descriptor: ClassDescriptor, model: JsClassModel, bridge: Bridge<FunctionDescriptor>) {
         val fromDescriptor = bridge.from
         val toDescriptor = bridge.to
+
+        if (toDescriptor.visibility == Visibilities.INVISIBLE_FAKE) return
 
         val sourceName = context.getNameForDescriptor(fromDescriptor).ident
         val targetName = context.getNameForDescriptor(toDescriptor).ident
