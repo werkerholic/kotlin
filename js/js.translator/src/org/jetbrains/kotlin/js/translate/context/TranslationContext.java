@@ -626,9 +626,8 @@ public class TranslationContext {
         callSites.add(new DeferredCallSite(constructor, invocationArgs, this));
     }
 
-    @Nullable
-    public JsExpression getModuleExpressionFor(@NotNull DeclarationDescriptor descriptor) {
-        return staticContext.getModuleExpressionFor(descriptor);
+    public void addInlineCall(@NotNull CallableDescriptor descriptor) {
+        staticContext.addInlineCall(descriptor);
     }
 
     public void addDeclarationStatement(@NotNull JsStatement statement) {

@@ -506,7 +506,12 @@ public final class StaticContext {
                 @Override
                 public JsName apply(@NotNull DeclarationDescriptor descriptor) {
                     String suggested = getSuggestedName(descriptor) + Namer.OBJECT_INSTANCE_FUNCTION_SUFFIX;
-                    return localOrImportedName(descriptor, suggested);
+                    JsName result = JsScope.declareTemporaryName(suggested);
+                    String tag = SignatureUtilsKt.generateSignature(descriptor);
+                    if (tag != null) {
+                        fragment.getNameBindings().add(new JsNameBinding("object:" + tag, result));
+                    }
+                    return result;
                 }
             });
         }
@@ -651,7 +656,7 @@ public final class StaticContext {
     }
 
     @Nullable
-    public JsExpression getModuleExpressionFor(@NotNull DeclarationDescriptor descriptor) {
+    private JsExpression getModuleExpressionFor(@NotNull DeclarationDescriptor descriptor) {
         JsName name = getModuleInnerName(descriptor);
         return name != null ? JsAstUtils.pureFqn(name, null) : null;
     }
@@ -751,6 +756,11 @@ public final class StaticContext {
     @NotNull
     public ModuleDescriptor getCurrentModule() {
         return currentModule;
+    }
+
+    public void addInlineCall(@NotNull CallableDescriptor descriptor) {
+        String tag = Namer.getFunctionTag(descriptor);
+        fragment.getInlineModuleMap().put(tag, getModuleExpressionFor(descriptor));
     }
 
     /*public void postProcess() {
