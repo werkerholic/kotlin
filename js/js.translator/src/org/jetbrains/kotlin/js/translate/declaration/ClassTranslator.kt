@@ -206,7 +206,7 @@ class ClassTranslator private constructor(
         val constructorInitializer = context.getFunctionObject(constructorDescriptor)
         constructorInitializer.name = context.getInnerNameForDescriptor(constructorDescriptor)
         context.addDeclarationStatement(constructorInitializer.makeStmt())
-        context.translateAndAliasParameters(constructorDescriptor, constructorInitializer.parameters)
+        context.translateAndAliasParameters(constructorDescriptor, constructorInitializer.parameters, false)
                 .translateFunction(constructor, constructorInitializer)
 
         // Translate super/this call
