@@ -96,7 +96,7 @@ class DeclarationBodyVisitor(
     override fun addFunction(descriptor: FunctionDescriptor, expression: JsExpression?) {
         if (!descriptor.hasOrInheritsParametersWithDefaultValue() || !descriptor.isOverridableOrOverrides) {
             if (expression != null) {
-                context.addFunctionToPrototype(containingClass, descriptor, expression)
+                context.addFunctionToPrototype(containingClass, descriptor, expression, context.declarationStatementConsumer)
             }
         }
         else {
@@ -131,7 +131,7 @@ class DeclarationBodyVisitor(
                 val statement = if (KotlinBuiltIns.isUnit(returnType)) chosenInvocation.makeStmt() else JsReturn(chosenInvocation)
                 caller.body.statements += statement
 
-                context.addFunctionToPrototype(containingClass, descriptor, caller)
+                context.addFunctionToPrototype(containingClass, descriptor, caller, context.declarationStatementConsumer)
             }
         }
     }
