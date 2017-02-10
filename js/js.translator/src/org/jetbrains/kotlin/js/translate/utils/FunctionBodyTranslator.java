@@ -18,7 +18,6 @@ package org.jetbrains.kotlin.js.translate.utils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns;
-import org.jetbrains.kotlin.descriptors.CallableDescriptor;
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor;
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor;
 import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor;
@@ -34,7 +33,6 @@ import org.jetbrains.kotlin.js.translate.utils.mutator.Mutator;
 import org.jetbrains.kotlin.psi.KtDeclarationWithBody;
 import org.jetbrains.kotlin.psi.KtExpression;
 import org.jetbrains.kotlin.types.KotlinType;
-import org.jetbrains.kotlin.types.TypeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,7 +57,7 @@ public final class FunctionBodyTranslator extends AbstractTranslator {
 
         for (FunctionDescriptor localFunction : functionCollector.getFunctions()) {
             String localIdent = localFunction.getName().isSpecial() ? "lambda" : localFunction.getName().asString();
-            JsName localName = functionBodyContext.scope().getParent().declareTemporaryName(NameSuggestion.sanitizeName(localIdent));
+            JsName localName = JsScope.declareTemporaryName(NameSuggestion.sanitizeName(localIdent));
             MetadataProperties.setDescriptor(localName, localFunction);
             JsExpression alias = JsAstUtils.pureFqn(localName, null);
             aliases.put(localFunction, alias);
