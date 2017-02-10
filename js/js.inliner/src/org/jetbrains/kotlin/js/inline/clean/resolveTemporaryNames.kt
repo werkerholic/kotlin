@@ -43,23 +43,21 @@ fun JsNode.resolveTemporaryNames() {
 }
 
 private fun JsNode.resolveNames(): Map<JsName, JsName> {
-    val rootScope = computeScopes().liftNonTemporaryNames()
+    val rootScope = computeScopes().liftUsedNames()
     val replacements = mutableMapOf<JsName, JsName>()
-    val usedNames = mutableSetOf<String>()
     fun traverse(scope: Scope) {
-        val newNames = scope.names.asSequence().filter { !it.isTemporary }.map { it.ident }.toMutableSet()
-        usedNames += newNames
-        for (temporaryName in scope.names.asSequence().filter { it.isTemporary }) {
+        val newNames = scope.declaredNames.asSequence().filter { !it.isTemporary }.map { it.ident }.toMutableSet()
+        newNames += scope.usedNames.asSequence().mapNotNull { if (!it.isTemporary) it.ident else replacements[it]?.ident }
+        for (temporaryName in scope.declaredNames.asSequence().filter { it.isTemporary }) {
             var resolvedName = temporaryName.ident
             var suffix = 0
-            while (!usedNames.add(resolvedName)) {
+            while (resolvedName in JsFunctionScope.RESERVED_WORDS || !newNames.add(resolvedName)) {
                 resolvedName = "${temporaryName.ident}_${suffix++}"
             }
             replacements[temporaryName] = JsDynamicScope.declareName(resolvedName).apply { copyMetadataFrom(temporaryName) }
             newNames += resolvedName
         }
         scope.children.forEach(::traverse)
-        usedNames -= newNames
     }
 
     traverse(rootScope)
@@ -68,6 +66,7 @@ private fun JsNode.resolveNames(): Map<JsName, JsName> {
         var labels = mutableSetOf<String>()
 
         override fun visitLabel(x: JsLabel) {
+            val addedNames = mutableSetOf<String>()
             if (x.name.isTemporary) {
                 var resolvedName = x.name.ident
                 var suffix = 0
@@ -75,8 +74,10 @@ private fun JsNode.resolveNames(): Map<JsName, JsName> {
                     resolvedName = "${x.name.ident}_${suffix++}"
                 }
                 replacements[x.name] = JsDynamicScope.declareName(resolvedName)
+                addedNames += resolvedName
             }
             super.visitLabel(x)
+            labels.removeAll(addedNames)
         }
 
         override fun visitFunction(x: JsFunction) {
@@ -90,11 +91,12 @@ private fun JsNode.resolveNames(): Map<JsName, JsName> {
     return replacements
 }
 
-private fun Scope.liftNonTemporaryNames(): Scope {
+private fun Scope.liftUsedNames(): Scope {
     fun traverse(scope: Scope) {
         scope.children.forEach { child ->
+            scope.usedNames += scope.declaredNames
             traverse(child)
-            scope.names += child.names.filter { !it.isTemporary }
+            scope.usedNames += child.usedNames.filter { !it.isTemporary }
         }
     }
     traverse(this)
@@ -107,51 +109,47 @@ private fun JsNode.computeScopes(): Scope {
         var currentScope: Scope = rootScope
 
         override fun visitFunction(x: JsFunction) {
-            x.name?.let { currentScope.names += it }
+            x.name?.let { currentScope.declaredNames += it }
             val oldScope = currentScope
             currentScope = Scope().apply {
                 parent = currentScope
                 currentScope.children += this
             }
-            currentScope.names += x.parameters.map { it.name }
+            currentScope.declaredNames += x.parameters.map { it.name }
             super.visitFunction(x)
             currentScope = oldScope
         }
 
         override fun visitCatch(x: JsCatch) {
-            currentScope.names += x.parameter.name
+            currentScope.declaredNames += x.parameter.name
             super.visitCatch(x)
         }
 
         override fun visit(x: JsVars.JsVar) {
-            currentScope.names += x.name
+            currentScope.declaredNames += x.name
             super.visit(x)
         }
 
         override fun visitNameRef(nameRef: JsNameRef) {
             if (nameRef.qualifier == null) {
                 val name = nameRef.name
-                if (name != null) {
-                    if (!name.isTemporary) {
-                        currentScope.names += name
-                    }
-                }
-                else {
-                    currentScope.names += JsDynamicScope.declareName(nameRef.ident)
-                }
+                currentScope.usedNames += name ?: JsDynamicScope.declareName(nameRef.ident)
             }
 
             super.visitNameRef(nameRef)
         }
-    })
 
-    rootScope.names += JsFunctionScope.RESERVED_WORDS.map { JsDynamicScope.declareName(it) }
+        override fun visitBreak(x: JsBreak) {}
+
+        override fun visitContinue(x: JsContinue) {}
+    })
 
     return rootScope
 }
 
 private class Scope {
     var parent: Scope? = null
-    val names = mutableSetOf<JsName>()
+    val declaredNames = mutableSetOf<JsName>()
+    val usedNames = mutableSetOf<JsName>()
     val children = mutableSetOf<Scope>()
 }
