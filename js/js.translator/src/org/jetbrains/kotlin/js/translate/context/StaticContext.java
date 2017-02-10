@@ -39,6 +39,7 @@ import org.jetbrains.kotlin.js.translate.declaration.ClassModelGenerator;
 import org.jetbrains.kotlin.js.translate.intrinsic.Intrinsics;
 import org.jetbrains.kotlin.js.translate.utils.AnnotationsUtils;
 import org.jetbrains.kotlin.js.translate.utils.JsAstUtils;
+import org.jetbrains.kotlin.js.translate.utils.SignatureUtilsKt;
 import org.jetbrains.kotlin.name.FqName;
 import org.jetbrains.kotlin.resolve.BindingContext;
 import org.jetbrains.kotlin.resolve.BindingTrace;
@@ -113,6 +114,8 @@ public final class StaticContext {
     @NotNull
     private final Map<DeclarationDescriptor, JsExpression> fqnCache = new HashMap<DeclarationDescriptor, JsExpression>();
 
+    private final Map<DeclarationDescriptor, String> tagCache = new HashMap<DeclarationDescriptor, String>();
+
     @NotNull
     private final Map<JsImportedModuleKey, JsImportedModule> importedModules = new LinkedHashMap<JsImportedModuleKey, JsImportedModule>();
 
@@ -120,9 +123,6 @@ public final class StaticContext {
 
     @NotNull
     private final JsScope rootPackageScope;
-
-    @NotNull
-    private final List<JsStatement> importStatements = new ArrayList<JsStatement>();
 
     @NotNull
     private final DeclarationExporter exporter = new DeclarationExporter(this);
@@ -216,6 +216,19 @@ public final class StaticContext {
     @NotNull
     public JsNameRef getQualifiedReference(@NotNull DeclarationDescriptor descriptor) {
         return (JsNameRef) getQualifiedExpression(descriptor);
+    }
+
+    @Nullable
+    private String getTag(@NotNull DeclarationDescriptor descriptor) {
+        String tag;
+        if (!tagCache.containsKey(descriptor)) {
+            tag = SignatureUtilsKt.generateSignature(descriptor);
+            tagCache.put(descriptor, tag);
+        }
+        else {
+            tag = tagCache.get(descriptor);
+        }
+        return tag;
     }
 
     @NotNull
@@ -433,7 +446,7 @@ public final class StaticContext {
     }
 
     @NotNull
-    public JsName importDeclaration(@NotNull String suggestedName, @NotNull JsExpression declaration) {
+    public JsName importDeclaration(@NotNull String suggestedName, @NotNull String tag, @NotNull JsExpression declaration) {
         // Adding prefix is a workaround for a problem with scopes.
         // Consider we declare name `foo` in functions's local scope, then call top-level function `foo`
         // from another module. It's imported into global scope under name `foo`. If we could somehow
@@ -443,16 +456,25 @@ public final class StaticContext {
 
         JsName result = fragment.getScope().declareTemporaryName(suggestedName);
         MetadataProperties.setImported(result, true);
-        importStatements.add(JsAstUtils.newVar(result, declaration));
+        fragment.getImports().put(tag, declaration);
         return result;
     }
 
     @NotNull
     private JsName localOrImportedName(@NotNull DeclarationDescriptor descriptor, @NotNull String suggestedName) {
         ModuleDescriptor module = DescriptorUtilsKt.getModule(descriptor);
-        JsName name = module != currentModule ?
-                      importDeclaration(suggestedName, getQualifiedReference(descriptor)) :
-                      fragment.getScope().declareTemporaryName(suggestedName);
+        JsName name;
+        String tag = getTag(descriptor);
+        if (module != currentModule) {
+            assert tag != null : "Can't import declaration without fqname: " + descriptor;
+            name = importDeclaration(suggestedName, tag, getQualifiedReference(descriptor));
+        }
+        else {
+            name = fragment.getScope().declareTemporaryName(suggestedName);
+        }
+        if (tag != null) {
+            fragment.getNameBindings().add(new JsNameBinding(tag, name));
+        }
         MetadataProperties.setDescriptor(name, descriptor);
         return name;
     }
