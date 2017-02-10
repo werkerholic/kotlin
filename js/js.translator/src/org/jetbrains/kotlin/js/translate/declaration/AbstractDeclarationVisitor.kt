@@ -92,7 +92,7 @@ abstract class AbstractDeclarationVisitor : TranslatorVisitor<Unit>()  {
             context: TranslationContext
     ): JsExpression {
         val function = context.getFunctionObject(descriptor)
-        var innerContext = context.newDeclaration(descriptor).translateAndAliasParameters(descriptor, function.parameters)
+        var innerContext = context.newDeclaration(descriptor).translateAndAliasParameters(descriptor, function.parameters, false)
 
         if (descriptor.isSuspend) {
             if (descriptor.requiresStateMachineTransformation(context)) {

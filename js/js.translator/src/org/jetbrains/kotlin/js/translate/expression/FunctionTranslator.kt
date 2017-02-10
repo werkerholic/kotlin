@@ -30,6 +30,7 @@ import org.jetbrains.kotlin.js.translate.context.TranslationContext
 import org.jetbrains.kotlin.js.translate.reference.CallExpressionTranslator.shouldBeInlined
 import org.jetbrains.kotlin.js.translate.utils.BindingUtils
 import org.jetbrains.kotlin.js.translate.utils.FunctionBodyTranslator.translateFunctionBody
+import org.jetbrains.kotlin.js.translate.utils.JsAstUtils
 import org.jetbrains.kotlin.psi.KtDeclarationWithBody
 import org.jetbrains.kotlin.resolve.DescriptorUtils
 import org.jetbrains.kotlin.resolve.descriptorUtil.hasDefaultValue
@@ -37,7 +38,8 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.isEffectivelyPublicApi
 
 fun TranslationContext.translateAndAliasParameters(
         descriptor: FunctionDescriptor,
-        targetList: MutableList<JsParameter>
+        targetList: MutableList<JsParameter>,
+        aliasValueParams: Boolean
 ): TranslationContext {
     val aliases = mutableMapOf<DeclarationDescriptor, JsExpression>()
 
@@ -60,7 +62,10 @@ fun TranslationContext.translateAndAliasParameters(
     }
 
     for (valueParameter in descriptor.valueParameters) {
-        targetList += JsParameter(getNameForDescriptor(valueParameter)).apply { hasDefaultValue = valueParameter.hasDefaultValue() }
+        val name = getNameForDescriptor(valueParameter)
+        val tmpName = if (aliasValueParams) JsScope.declareTemporaryName(name.ident) else name
+        aliases[valueParameter] = JsAstUtils.pureFqn(tmpName, null)
+        targetList += JsParameter(tmpName).apply { hasDefaultValue = valueParameter.hasDefaultValue() }
     }
 
     val continuationDescriptor = continuationParameterDescriptor
