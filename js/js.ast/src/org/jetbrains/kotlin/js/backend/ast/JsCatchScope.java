@@ -15,7 +15,7 @@ public class JsCatchScope extends JsScope {
 
     public JsCatchScope(JsScope parent, @NotNull String ident) {
         super(parent, "Catch scope");
-        name = new JsName(this, ident, false);
+        name = new JsName(ident, false);
     }
 
     @Override
