@@ -119,8 +119,6 @@ public final class StaticContext {
     @NotNull
     private final Map<JsImportedModuleKey, JsImportedModule> importedModules = new LinkedHashMap<JsImportedModuleKey, JsImportedModule>();
 
-    private Collection<JsImportedModule> readOnlyImportedModules;
-
     @NotNull
     private final JsScope rootPackageScope;
 
@@ -151,8 +149,9 @@ public final class StaticContext {
         rootPackageScope = new JsObjectScope(rootScope, "<root package>");
 
         JsName kotlinName = rootScope.declareName(Namer.KOTLIN_NAME);
-        importedModules.put(new JsImportedModuleKey(Namer.KOTLIN_LOWER_NAME, null),
-                            new JsImportedModule(Namer.KOTLIN_LOWER_NAME, kotlinName, null));
+        JsImportedModule kotlinModule = new JsImportedModule(Namer.KOTLIN_LOWER_NAME, kotlinName, null);
+        importedModules.put(kotlinModule.getKey(), kotlinModule);
+        fragment.getImportedModules().add(kotlinModule);
 
         classModelGenerator = new ClassModelGenerator(this);
     }
@@ -185,14 +184,6 @@ public final class StaticContext {
     @NotNull
     public Namer getNamer() {
         return namer;
-    }
-
-    @NotNull
-    public Collection<JsImportedModule> getImportedModules() {
-        if (readOnlyImportedModules == null) {
-            readOnlyImportedModules = Collections.unmodifiableCollection(importedModules.values());
-        }
-        return readOnlyImportedModules;
     }
 
     @NotNull
@@ -695,6 +686,7 @@ public final class StaticContext {
             JsName internalName = rootScope.declareTemporaryName(Namer.LOCAL_MODULE_PREFIX + Namer.suggestedModuleName(baseName));
             module = new JsImportedModule(baseName, internalName, plainName != null ? pureFqn(plainName, null) : null);
             importedModules.put(key, module);
+            fragment.getImportedModules().add(module);
         }
         return module;
     }
