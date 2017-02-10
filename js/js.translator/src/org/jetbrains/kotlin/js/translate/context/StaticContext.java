@@ -362,9 +362,16 @@ public final class StaticContext {
 
         List<JsName> names = new ArrayList<JsName>();
         if (suggested.getStable()) {
+            String tag = getTag(suggested.getDescriptor());
+            int index = 0;
             for (String namePart : suggested.getNames()) {
                 JsName name = scope.declareName(namePart);
                 MetadataProperties.setDescriptor(name, suggested.getDescriptor());
+                if (tag != null && !AnnotationsUtils.isNativeObject(suggested.getDescriptor()) &&
+                    !AnnotationsUtils.isLibraryObject(suggested.getDescriptor())
+                ) {
+                    fragment.getNameBindings().add(new JsNameBinding(index++ + ":" + tag, name));
+                }
                 names.add(name);
             }
         }
@@ -376,7 +383,7 @@ public final class StaticContext {
                 String baseName = NameSuggestion.sanitizeName(suggested.getNames().get(0));
                 if (suggested.getDescriptor() instanceof LocalVariableDescriptor ||
                     suggested.getDescriptor() instanceof ValueParameterDescriptor
-                        ) {
+                ) {
                     name = JsScope.declareTemporaryName(baseName);
                 }
                 else {
@@ -388,6 +395,10 @@ public final class StaticContext {
             }
             nameCache.put(suggested.getDescriptor(), name);
             MetadataProperties.setDescriptor(name, suggested.getDescriptor());
+            String tag = getTag(suggested.getDescriptor());
+            if (tag != null) {
+                fragment.getNameBindings().add(new JsNameBinding(tag, name));
+            }
             names.add(name);
         }
 
@@ -438,13 +449,13 @@ public final class StaticContext {
 
     @NotNull
     public JsName importDeclaration(@NotNull String suggestedName, @NotNull String tag, @NotNull JsExpression declaration) {
-        // Adding prefix is a workaround for a problem with scopes.
-        // Consider we declare name `foo` in functions's local scope, then call top-level function `foo`
-        // from another module. It's imported into global scope under name `foo`. If we could somehow
-        // declare all names in global scope before running translator, we would have got `foo_1` for local variable,
-        // since local scope inherited from global scope.
-        // TODO: remove prefix when problem with scopes is solved
+        JsName result = importDeclarationImpl(suggestedName, tag, declaration);
+        fragment.getNameBindings().add(new JsNameBinding(tag, result));
+        return result;
+    }
 
+    @NotNull
+    private JsName importDeclarationImpl(@NotNull String suggestedName, @NotNull String tag, @NotNull JsExpression declaration) {
         JsName result = JsScope.declareTemporaryName(suggestedName);
         MetadataProperties.setImported(result, true);
         fragment.getImports().put(tag, declaration);
@@ -456,9 +467,17 @@ public final class StaticContext {
         ModuleDescriptor module = DescriptorUtilsKt.getModule(descriptor);
         JsName name;
         String tag = getTag(descriptor);
-        if (module != currentModule || AnnotationsUtils.isNativeObject(descriptor) || AnnotationsUtils.isLibraryObject(descriptor)) {
-            assert tag != null : "Can't import declaration without fqname: " + descriptor;
-            name = importDeclaration(suggestedName, tag, getQualifiedReference(descriptor));
+        boolean isNative =  AnnotationsUtils.isNativeObject(descriptor) || AnnotationsUtils.isLibraryObject(descriptor);
+        if (module != currentModule || isNative) {
+            assert tag != null : "Can't import declaration without tag: " + descriptor;
+            JsNameRef result = getQualifiedReference(descriptor);
+            if (isNative && result.getQualifier() == null && result.getName() != null) {
+                name = result.getName();
+                tag = null;
+            }
+            else {
+                name = importDeclarationImpl(suggestedName, tag, result);
+            }
         }
         else {
             name = JsScope.declareTemporaryName(suggestedName);
