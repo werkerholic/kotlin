@@ -1,0 +1,13 @@
+// "Specify override for 'size' explicitly" "true"
+// WITH_RUNTIME
+
+import java.util.*
+
+class B(private val f: MutableList<String>): ArrayList<String>(), MutableList<String> by f {
+    override fun isEmpty(): kotlin.Boolean {
+        return f.isEmpty()
+    }
+
+    override val size: kotlin.Int
+        get() = f.size
+}
