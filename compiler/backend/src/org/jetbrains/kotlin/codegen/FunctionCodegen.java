@@ -924,14 +924,17 @@ public class FunctionCodegen {
             if (this.owner instanceof MultifileClassFacadeContext) {
                 mv.visitCode();
                 generateFacadeDelegateMethodBody(mv, defaultMethod, (MultifileClassFacadeContext) this.owner);
-                endVisit(mv, "default method delegation", getSourceFromDescriptor(functionDescriptor));
             }
             else {
                 mv.visitCode();
                 generateDefaultImplBody(owner, functionDescriptor, mv, loadStrategy, function, memberCodegen, defaultMethod);
-                endVisit(mv, "default method", getSourceFromDescriptor(functionDescriptor));
             }
         }
+
+        if (this.owner instanceof MultifileClassFacadeContext)
+            endVisit(mv, "default method delegation", getSourceFromDescriptor(functionDescriptor));
+        else
+            endVisit(mv, "default method", getSourceFromDescriptor(functionDescriptor));
     }
 
     public static void generateDefaultImplBody(

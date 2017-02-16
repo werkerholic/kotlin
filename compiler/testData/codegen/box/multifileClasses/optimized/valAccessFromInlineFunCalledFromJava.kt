@@ -1,5 +1,6 @@
 // TODO: muted automatically, investigate should it be ran for JS or not
 // IGNORE_BACKEND: JS
+// IGNORE_LIGHT_ANALYSIS
 
 // WITH_RUNTIME
 // KOTLIN_CONFIGURATION_FLAGS: +JVM.INHERIT_MULTIFILE_PARTS
