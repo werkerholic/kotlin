@@ -38,7 +38,7 @@ class Concat : IntrinsicMethod() {
             returnType: Type,
             element: PsiElement?,
             arguments: List<KtExpression>,
-            receiver: StackValue
+            lazyArguments: LazyArguments
     ): Type {
         if (element is KtBinaryExpression && element.operationReference.getReferencedNameElementType() == KtTokens.PLUS) {
             // LHS + RHS
@@ -48,7 +48,9 @@ class Concat : IntrinsicMethod() {
         }
         else {
             // Explicit plus call LHS?.plus(RHS) or LHS.plus(RHS)
-            receiver.put(AsmTypes.JAVA_STRING_TYPE, v)
+            //TODO type
+            lazyArguments.generateAllDirectlyTo(v)
+            //receiver.put(AsmTypes.JAVA_STRING_TYPE, v)
             genStringBuilderConstructor(v)
             v.swap()
             genInvokeAppendMethod(v, returnType)
@@ -77,7 +79,7 @@ class Concat : IntrinsicMethod() {
                                 codegen, it, returnType,
                                 resolvedCall.call.callElement,
                                 arguments,
-                                StackValue.receiver(resolvedCall, receiver, codegen, this)
+                                StackValue.receiver(resolvedCall, receiver, codegen, this, LazyArguments())
                         )
                         StackValue.coerce(actualType, returnType, it)
                     }
