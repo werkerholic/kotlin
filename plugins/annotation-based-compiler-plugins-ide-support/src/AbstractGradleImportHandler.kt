@@ -60,12 +60,13 @@ abstract class AbstractGradleImportHandler : GradleProjectImportHandler {
         }?.data as? TaskData ?: return null
 
         val dataStorageTaskDescription = dataStorageTaskData.description ?: return null
-        val (annotationFqNamesList, classpathList) = TASK_DESCRIPTION_REGEX.matchEntire(
+        val (annotationFqNamesList, _) = TASK_DESCRIPTION_REGEX.matchEntire(
                 dataStorageTaskDescription)?.groupValues?.drop(1) ?: return null
 
         val annotationFqNames = annotationFqNamesList.split(',')
 
-        // For now we can't use plugins from Gradle cause they're shaded. So we use ones from the IDEA plugin
+        // For now we can't use plugins from Gradle cause they're shaded and may have an incompatible version.
+        // So we use ones from the IDEA plugin.
         val classpath = listOf(pluginJarFileFromIdea.absolutePath)
 
         return AnnotationBasedCompilerPluginSetup(annotationFqNames, classpath)
