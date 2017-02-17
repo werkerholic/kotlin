@@ -38,4 +38,10 @@ public class JSConfigurationKeys {
 
     public static final CompilerConfigurationKey<ModuleKind> MODULE_KIND =
             CompilerConfigurationKey.create("module kind");
+
+    // TODO: temporary code
+    public static final CompilerConfigurationKey<List<byte[]>> FALLBACK_METADATA =
+            CompilerConfigurationKey.create("fallback metadata");
+
+    public static final CompilerConfigurationKey<Boolean> SERIALIZE_FRAGMENTS = CompilerConfigurationKey.create("serialize fragments");
 }

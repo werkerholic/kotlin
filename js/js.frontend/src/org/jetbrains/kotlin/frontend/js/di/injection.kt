@@ -21,6 +21,8 @@ import org.jetbrains.kotlin.container.get
 import org.jetbrains.kotlin.container.useImpl
 import org.jetbrains.kotlin.container.useInstance
 import org.jetbrains.kotlin.context.ModuleContext
+import org.jetbrains.kotlin.descriptors.PackageFragmentProvider
+import org.jetbrains.kotlin.descriptors.impl.CompositePackageFragmentProvider
 import org.jetbrains.kotlin.descriptors.impl.ModuleDescriptorImpl
 import org.jetbrains.kotlin.frontend.di.configureCommon
 import org.jetbrains.kotlin.frontend.di.configureModule
@@ -34,12 +36,15 @@ import org.jetbrains.kotlin.resolve.lazy.FileScopeProviderImpl
 import org.jetbrains.kotlin.resolve.lazy.KotlinCodeAnalyzer
 import org.jetbrains.kotlin.resolve.lazy.ResolveSession
 import org.jetbrains.kotlin.resolve.lazy.declarations.DeclarationProviderFactory
+import org.jetbrains.kotlin.serialization.deserialization.DeserializationConfiguration
+import org.jetbrains.kotlin.serialization.js.KotlinJavascriptSerializationUtil
 
 fun createTopDownAnalyzerForJs(
         moduleContext: ModuleContext,
         bindingTrace: BindingTrace,
         declarationProviderFactory: DeclarationProviderFactory,
-        compilerConfiguration: CompilerConfiguration
+        compilerConfiguration: CompilerConfiguration,
+        fallbackMetadata: List<ByteArray> = emptyList()
 ): LazyTopDownAnalyzer {
     val storageComponentContainer = createContainer("TopDownAnalyzerForJs", JsPlatform) {
         configureModule(moduleContext, JsPlatform, bindingTrace)
@@ -54,7 +59,13 @@ fun createTopDownAnalyzerForJs(
         useImpl<ResolveSession>()
         useImpl<LazyTopDownAnalyzer>()
     }.apply {
-        get<ModuleDescriptorImpl>().initialize(get<KotlinCodeAnalyzer>().packageFragmentProvider)
+        val packagePartProviders = mutableListOf<PackageFragmentProvider>(get<KotlinCodeAnalyzer>().packageFragmentProvider)
+        val moduleDescriptor = get<ModuleDescriptorImpl>()
+        if (fallbackMetadata.isNotEmpty()) {
+            packagePartProviders += KotlinJavascriptSerializationUtil.readScope(
+                    fallbackMetadata, moduleContext.storageManager, moduleDescriptor, DeserializationConfiguration.Default)
+        }
+        moduleDescriptor.initialize(CompositePackageFragmentProvider(packagePartProviders))
     }
     return storageComponentContainer.get<LazyTopDownAnalyzer>()
 }

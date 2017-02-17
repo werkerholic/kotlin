@@ -211,9 +211,9 @@ public class Visibilities {
         @Override
         public boolean isVisible(@Nullable ReceiverValue receiver, @NotNull DeclarationDescriptorWithVisibility what, @NotNull DeclarationDescriptor from) {
             DeclarationDescriptor fromOrModule = from instanceof PackageViewDescriptor ? ((PackageViewDescriptor) from).getModule() : from;
-            if (!DescriptorUtils.getContainingModule(fromOrModule).shouldSeeInternalsOf(DescriptorUtils.getContainingModule(what))) return false;
 
-            return MODULE_VISIBILITY_HELPER.isInFriendModule(what, from);
+            if (MODULE_VISIBILITY_HELPER.isInFriendModule(what, from)) return true;
+            return DescriptorUtils.getContainingModule(fromOrModule).shouldSeeInternalsOf(DescriptorUtils.getContainingModule(what));
         }
     };
 
