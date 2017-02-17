@@ -60,7 +60,7 @@ class KotlinUClass private constructor(
     }
 
     override val uastMethods: List<UMethod> by lz {
-        val primaryConstructor = ktClass?.getPrimaryConstructor()?.toLightMethods()?.firstOrNull()
+        val primaryConstructor = ktClass?.primaryConstructor?.toLightMethods()?.firstOrNull()
         val initBlocks = ktClass?.getAnonymousInitializers() ?: emptyList()
 
         fun createUMethod(psiMethod: PsiMethod): UMethod {

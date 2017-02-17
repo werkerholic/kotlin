@@ -121,8 +121,8 @@ open class GenericReplCompiler(disposable: Disposable,
             state.beforeCompile()
             KotlinCodegenFacade.generatePackage(
                     state,
-                    psiFile.script!!.getContainingKtFile().packageFqName,
-                    setOf(psiFile.script!!.getContainingKtFile()),
+                    psiFile.script!!.containingKtFile.packageFqName,
+                    setOf(psiFile.script!!.containingKtFile),
                     org.jetbrains.kotlin.codegen.CompilationErrorHandler.THROW_EXCEPTION)
 
             val generatedClassname = makeScriptBaseName(codeLine, currentGeneration)

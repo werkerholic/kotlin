@@ -214,8 +214,8 @@ class ReplInterpreter(
             state.beforeCompile()
             KotlinCodegenFacade.generatePackage(
                     state,
-                    script.getContainingKtFile().packageFqName,
-                    setOf(script.getContainingKtFile()),
+                    script.containingKtFile.packageFqName,
+                    setOf(script.containingKtFile),
                     errorHandler
             )
         }

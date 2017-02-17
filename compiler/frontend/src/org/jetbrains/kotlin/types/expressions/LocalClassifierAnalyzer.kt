@@ -70,7 +70,7 @@ class LocalClassifierAnalyzer(
             classOrObject: KtClassOrObject
     ) {
         val module = DescriptorUtils.getContainingModule(containingDeclaration)
-        val project = classOrObject.getProject()
+        val project = classOrObject.project
         val moduleContext = globalContext.withProject(project).withModule(module)
         val container = createContainerForLazyLocalClassifierAnalyzer(
                 moduleContext,
@@ -161,7 +161,7 @@ class LocalClassDescriptorHolder(
                     }
                     ,
                     containingDeclaration,
-                    classOrObject.getNameAsSafeName(),
+                    classOrObject.nameAsSafeName,
                     KtClassInfoUtil.createClassLikeInfo(classOrObject),
                     classOrObject.hasModifier(KtTokens.EXTERNAL_KEYWORD)
             )

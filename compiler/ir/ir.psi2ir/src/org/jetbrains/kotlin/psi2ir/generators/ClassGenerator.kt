@@ -204,7 +204,7 @@ class ClassGenerator(val declarationGenerator: DeclarationGenerator) : Generator
                                                      primaryConstructorDescriptor)
 
         val bodyGenerator = BodyGenerator(primaryConstructorDescriptor, context)
-        ktClassOrObject.getPrimaryConstructor()?.valueParameterList?.let { ktValueParameterList ->
+        ktClassOrObject.primaryConstructor?.valueParameterList?.let { ktValueParameterList ->
             bodyGenerator.generateDefaultParameters(ktValueParameterList, irPrimaryConstructor)
         }
         irPrimaryConstructor.body = bodyGenerator.generatePrimaryConstructorBody(ktClassOrObject)
@@ -213,7 +213,7 @@ class ClassGenerator(val declarationGenerator: DeclarationGenerator) : Generator
     }
 
     private fun generatePropertiesDeclaredInPrimaryConstructor(irClass: IrClassImpl, ktClassOrObject: KtClassOrObject) {
-        ktClassOrObject.getPrimaryConstructor()?.let { ktPrimaryConstructor ->
+        ktClassOrObject.primaryConstructor?.let { ktPrimaryConstructor ->
             for (ktParameter in ktPrimaryConstructor.valueParameters) {
                 if (ktParameter.hasValOrVar()) {
                     val irProperty = PropertyGenerator(declarationGenerator).generatePropertyForPrimaryConstructorParameter(ktParameter)

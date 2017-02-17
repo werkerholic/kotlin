@@ -34,7 +34,7 @@ import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.resolve.TargetPlatform
 
 val KtElement.platform: TargetPlatform
-    get() = TargetPlatformDetector.getPlatform(getContainingKtFile())
+    get() = TargetPlatformDetector.getPlatform(containingKtFile)
 
 val KtElement.builtIns: KotlinBuiltIns
     get() = getResolutionFacade().moduleDescriptor.builtIns
