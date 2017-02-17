@@ -17,9 +17,12 @@
 package org.jetbrains.kotlin.android.synthetic.descriptors
 
 import org.jetbrains.kotlin.android.synthetic.AndroidConst
+import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.resolve.calls.checkers.DSL_MARKER_FQ_NAME
+import org.jetbrains.kotlin.resolve.calls.checkers.DslScopeViolationCallChecker
 import org.jetbrains.kotlin.resolve.descriptorUtil.module
 import org.jetbrains.kotlin.serialization.deserialization.findClassAcrossModuleDependencies
 import org.jetbrains.kotlin.storage.StorageManager
@@ -36,7 +39,8 @@ class LazySyntheticElementResolveContext(private val module: ModuleDescriptor, s
     internal operator fun invoke() = context()
 
     private fun ModuleDescriptor.createResolveContext(): SyntheticElementResolveContext {
-        fun find(fqName: String) = module.findClassAcrossModuleDependencies(ClassId.topLevel(FqName(fqName)))
+        fun find(fqName: FqName) = module.findClassAcrossModuleDependencies(ClassId.topLevel(fqName))
+        fun find(fqName: String) = find(FqName(fqName))
 
         val viewDescriptor = find(AndroidConst.VIEW_FQNAME) ?: return SyntheticElementResolveContext.ERROR_CONTEXT
         val activityDescriptor = find(AndroidConst.ACTIVITY_FQNAME) ?: return SyntheticElementResolveContext.ERROR_CONTEXT
@@ -44,12 +48,15 @@ class LazySyntheticElementResolveContext(private val module: ModuleDescriptor, s
         val supportActivityDescriptor = find(AndroidConst.SUPPORT_FRAGMENT_ACTIVITY_FQNAME)
         val supportFragmentDescriptor = find(AndroidConst.SUPPORT_FRAGMENT_FQNAME)
 
+        val dslMarkerAnnotationType = find(DSL_MARKER_FQ_NAME)
+
         return SyntheticElementResolveContext(
                 viewDescriptor.defaultType,
                 activityDescriptor.defaultType,
                 fragmentDescriptor?.defaultType,
                 supportActivityDescriptor?.defaultType,
-                supportFragmentDescriptor?.defaultType)
+                supportFragmentDescriptor?.defaultType,
+                dslMarkerAnnotationType?.defaultType)
     }
 }
 
@@ -58,10 +65,12 @@ internal class SyntheticElementResolveContext(
         val activityType: SimpleType,
         val fragmentType: SimpleType?,
         val supportActivityType: SimpleType?,
-        val supportFragmentType: SimpleType?) {
+        val supportFragmentType: SimpleType?,
+        val dslMarkerAnnotationType: SimpleType?
+) {
     companion object {
         private fun errorType() = ErrorUtils.createErrorType("")
-        val ERROR_CONTEXT = SyntheticElementResolveContext(errorType(), errorType(), null, null, null)
+        val ERROR_CONTEXT = SyntheticElementResolveContext(errorType(), errorType(), null, null, null, null)
     }
 
     private val widgetReceivers by lazy {

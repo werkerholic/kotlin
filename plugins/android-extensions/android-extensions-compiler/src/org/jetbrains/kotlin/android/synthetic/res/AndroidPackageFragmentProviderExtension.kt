@@ -76,10 +76,19 @@ abstract class AndroidPackageFragmentProviderExtension : PackageFragmentProvider
             allPackageDescriptors += PredefinedPackageFragmentDescriptor(fqName, module, storageManager)
         }
 
-        // Package with clearFindViewByIdCache()
+        // Package with clearFindViewByIdCache() and AndroidExtensionsDslMarker
         AndroidConst.SYNTHETIC_SUBPACKAGES.last().let { s ->
-            val packageDescriptor = PredefinedPackageFragmentDescriptor(s, module, storageManager, packagesToLookupInCompletion) { descriptor ->
-                lazyContext().getWidgetReceivers(false).map { genClearCacheFunction(descriptor, it) }
+            val packageDescriptor = PredefinedPackageFragmentDescriptor(
+                    s, module, storageManager, packagesToLookupInCompletion
+            ) { packageDescriptor ->
+                mutableListOf<MemberDescriptor>().also { declarations ->
+                    declarations += lazyContext().getWidgetReceivers(false).map { genClearCacheFunction(packageDescriptor, it) }
+
+                    val dslMarkerClass = lazyContext().dslMarkerAnnotationType
+                    if (dslMarkerClass != null) {
+                        declarations += genDslMarkerClass(packageDescriptor, dslMarkerClass)
+                    }
+                }
             }
             packagesToLookupInCompletion += packageDescriptor
             allPackageDescriptors += packageDescriptor

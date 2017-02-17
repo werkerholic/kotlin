@@ -18,16 +18,20 @@ package org.jetbrains.kotlin.android.synthetic.res
 
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.android.synthetic.AndroidConst
+import org.jetbrains.kotlin.android.synthetic.AndroidConst.DSL_MARKER_CLASS_NAME
 import org.jetbrains.kotlin.android.synthetic.descriptors.AndroidSyntheticPackageFragmentDescriptor
 import org.jetbrains.kotlin.android.synthetic.descriptors.SyntheticElementResolveContext
 import org.jetbrains.kotlin.descriptors.*
-import org.jetbrains.kotlin.descriptors.annotations.Annotations
+import org.jetbrains.kotlin.descriptors.annotations.*
+import org.jetbrains.kotlin.descriptors.impl.ClassDescriptorImpl
 import org.jetbrains.kotlin.descriptors.impl.PropertyDescriptorImpl
 import org.jetbrains.kotlin.descriptors.impl.PropertyGetterDescriptorImpl
 import org.jetbrains.kotlin.descriptors.impl.SimpleFunctionDescriptorImpl
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.resolve.DescriptorFactory.createPrimaryConstructorForObject
 import org.jetbrains.kotlin.resolve.descriptorUtil.builtIns
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameUnsafe
+import org.jetbrains.kotlin.resolve.scopes.MemberScope
 import org.jetbrains.kotlin.resolve.source.PsiSourceElement
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.KotlinTypeFactory
@@ -48,6 +52,22 @@ internal fun genClearCacheFunction(packageFragmentDescriptor: PackageFragmentDes
     val unitType = packageFragmentDescriptor.builtIns.unitType
     function.initialize(receiverType, null, emptyList(), emptyList(), unitType, Modality.FINAL, Visibilities.PUBLIC)
     return function
+}
+
+internal fun genDslMarkerClass(
+        containingDeclaration: PackageFragmentDescriptor,
+        dslMarkerType: SimpleType
+): ClassDescriptor {
+    val descriptor = object : ClassDescriptorImpl(containingDeclaration, Name.identifier(DSL_MARKER_CLASS_NAME), Modality.FINAL,
+                               ClassKind.ANNOTATION_CLASS, emptyList<KotlinType>(), SourceElement.NO_SOURCE, false) {
+        val dslMarkerAnnotation = AnnotationDescriptorImpl(dslMarkerType, emptyMap(), SourceElement.NO_SOURCE)
+        val dslMarkerAnnotations = AnnotationsImpl.create(listOf(AnnotationWithTarget(dslMarkerAnnotation, null)))
+
+        override val annotations get() = dslMarkerAnnotations
+    }
+
+    descriptor.initialize(MemberScope.Empty, emptySet(), createPrimaryConstructorForObject(descriptor, SourceElement.NO_SOURCE))
+    return descriptor
 }
 
 internal fun genPropertyForWidget(

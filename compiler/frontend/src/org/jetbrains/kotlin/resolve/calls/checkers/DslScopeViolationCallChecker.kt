@@ -86,4 +86,4 @@ private fun AnnotationDescriptor.isDslMarker(): Boolean {
     return classDescriptor.annotations.hasAnnotation(DSL_MARKER_FQ_NAME)
 }
 
-private val DSL_MARKER_FQ_NAME = FqName("kotlin.DslMarker")
+val DSL_MARKER_FQ_NAME = FqName("kotlin.DslMarker")

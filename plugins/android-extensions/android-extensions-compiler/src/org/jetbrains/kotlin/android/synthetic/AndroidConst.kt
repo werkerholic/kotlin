@@ -37,6 +37,7 @@ object AndroidConst {
 
     val CLEAR_FUNCTION_NAME = "clearFindViewByIdCache"
 
+    val DSL_MARKER_CLASS_NAME = "AndroidExtensionsDslMarker"
 
     //TODO FqName / ClassId
 

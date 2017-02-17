@@ -8,6 +8,7 @@ kotlinx.android.synthetic
 
     public fun android.app.Activity.clearFindViewByIdCache(): kotlin.Unit
     public fun android.app.Fragment.clearFindViewByIdCache(): kotlin.Unit
+    public final annotation class AndroidExtensionsDslMarker
 
 
 kotlinx.android.synthetic.main
