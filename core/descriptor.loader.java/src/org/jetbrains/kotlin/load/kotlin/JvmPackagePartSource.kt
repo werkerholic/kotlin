@@ -50,7 +50,7 @@ class JvmPackagePartSource(
 
     val classId: ClassId get() = ClassId(className.packageFqName, simpleName)
 
-    override fun toString() = "${javaClass.simpleName}: $className"
+    override fun toString() = "${this::class.java.simpleName}: $className"
 
     override fun getContainingFile(): SourceFile = SourceFile.NO_SOURCE_FILE
 }

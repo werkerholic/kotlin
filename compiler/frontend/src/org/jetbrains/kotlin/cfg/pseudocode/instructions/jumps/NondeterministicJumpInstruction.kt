@@ -48,7 +48,7 @@ class NondeterministicJumpInstruction(
 
     var next: Instruction
         get() = _next!!
-        set(value: Instruction) {
+        set(value) {
             _next = outgoingEdgeTo(value)
         }
 
@@ -60,7 +60,7 @@ class NondeterministicJumpInstruction(
         }
 
     override val inputValues: List<PseudoValue>
-        get() = emptyOrSingletonList(inputValue)
+        get() = listOfNotNull(inputValue)
 
     override fun accept(visitor: InstructionVisitor) {
         visitor.visitNondeterministicJump(this)

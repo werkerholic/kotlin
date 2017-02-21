@@ -20,7 +20,6 @@ import com.intellij.openapi.util.Pair
 import org.jetbrains.kotlin.codegen.AsmUtil
 import org.jetbrains.kotlin.codegen.optimization.common.StrictBasicValue
 import org.jetbrains.kotlin.resolve.jvm.AsmTypes
-import org.jetbrains.kotlin.utils.toReadOnlyList
 import org.jetbrains.org.objectweb.asm.Type
 import org.jetbrains.org.objectweb.asm.tree.AbstractInsnNode
 import java.util.*
@@ -66,7 +65,7 @@ class BoxedValueDescriptor(
     var isSafeToRemove = true; private set
     val unboxedType: Type = getUnboxedType(boxedType)
 
-    fun getAssociatedInsns() = associatedInsns.toReadOnlyList()
+    fun getAssociatedInsns() = associatedInsns.toList()
 
     fun addInsn(insnNode: AbstractInsnNode) {
         associatedInsns.add(insnNode)

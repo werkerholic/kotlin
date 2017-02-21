@@ -30,7 +30,7 @@ abstract class AbstractJumpInstruction(
         blockScope: BlockScope
 ) : KtElementInstructionImpl(element, blockScope), JumpInstruction {
     var resolvedTarget: Instruction? = null
-        set(value: Instruction?) {
+        set(value) {
             field = outgoingEdgeTo(value)
         }
 
@@ -45,5 +45,5 @@ abstract class AbstractJumpInstruction(
     }
 
     override val nextInstructions: Collection<Instruction>
-        get() = emptyOrSingletonList(resolvedTarget)
+        get() = listOfNotNull(resolvedTarget)
 }

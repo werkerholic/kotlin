@@ -24,10 +24,10 @@ abstract class InstructionWithNext(
         blockScope: BlockScope
 ) : KtElementInstructionImpl(element, blockScope) {
     var next: Instruction? = null
-        set(value: Instruction?) {
+        set(value) {
             field = outgoingEdgeTo(value)
         }
 
     override val nextInstructions: Collection<Instruction>
-        get() = emptyOrSingletonList(next)
+        get() = listOfNotNull(next)
 }

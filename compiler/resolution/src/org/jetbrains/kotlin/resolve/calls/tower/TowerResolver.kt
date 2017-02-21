@@ -235,11 +235,11 @@ class TowerResolver {
 
         override fun getSuccessfulCandidates(): Collection<C>? = getResolved()
 
-        fun getResolved() = currentCandidates.check { currentLevel == ResolutionCandidateApplicability.RESOLVED }
+        fun getResolved() = currentCandidates.takeIf { currentLevel == ResolutionCandidateApplicability.RESOLVED }
 
-        fun getResolvedLowPriority() = currentCandidates.check { currentLevel == ResolutionCandidateApplicability.RESOLVED_LOW_PRIORITY }
+        fun getResolvedLowPriority() = currentCandidates.takeIf { currentLevel == ResolutionCandidateApplicability.RESOLVED_LOW_PRIORITY }
 
-        fun getErrors() = currentCandidates.check {
+        fun getErrors() = currentCandidates.takeIf {
             currentLevel == null || currentLevel!! > ResolutionCandidateApplicability.RESOLVED_LOW_PRIORITY
         }
 

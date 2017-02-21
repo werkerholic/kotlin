@@ -29,7 +29,6 @@ import org.jetbrains.kotlin.serialization.deserialization.descriptors.Deserializ
 import org.jetbrains.kotlin.serialization.deserialization.descriptors.DeserializedTypeParameterDescriptor
 import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.utils.addToStdlib.check
-import org.jetbrains.kotlin.utils.toReadOnlyList
 import java.util.*
 
 class TypeDeserializer(
@@ -59,7 +58,7 @@ class TypeDeserializer(
         }
 
     val ownTypeParameters: List<TypeParameterDescriptor>
-            get() = typeParameterDescriptors.values.toReadOnlyList()
+            get() = typeParameterDescriptors.values.toList()
 
     // TODO: don't load identical types from TypeTable more than once
     fun type(proto: ProtoBuf.Type, additionalAnnotations: Annotations = Annotations.EMPTY): KotlinType {
@@ -98,7 +97,7 @@ class TypeDeserializer(
 
         val arguments = proto.collectAllArguments().mapIndexed { index, proto ->
             typeArgument(constructor.parameters.getOrNull(index), proto)
-        }.toReadOnlyList()
+        }.toList()
 
         val simpleType = if (Flags.SUSPEND_TYPE.get(proto.flags)) {
             createSuspendFunctionType(annotations, constructor, arguments, proto.nullable)
@@ -142,7 +141,7 @@ class TypeDeserializer(
         val result = when (functionTypeConstructor.parameters.size - arguments.size) {
             0 -> {
                 val functionType = KotlinTypeFactory.simpleType(annotations, functionTypeConstructor, arguments, nullable)
-                functionType.check { it.isFunctionType }?.let(::transformRuntimeFunctionTypeToSuspendFunction)
+                functionType.takeIf { it.isFunctionType }?.let(::transformRuntimeFunctionTypeToSuspendFunction)
             }
             // This case for types written by eap compiler 1.1
             1 -> {

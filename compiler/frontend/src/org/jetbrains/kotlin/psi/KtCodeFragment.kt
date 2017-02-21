@@ -175,7 +175,7 @@ abstract class KtCodeFragment(
     private fun initImports(imports: String?) {
         if (imports != null && !imports.isEmpty()) {
 
-            val importsWithPrefix = imports.split(IMPORT_SEPARATOR).map { it.check { it.startsWith("import ") } ?: "import ${it.trim()}" }
+            val importsWithPrefix = imports.split(IMPORT_SEPARATOR).map { it.takeIf { it.startsWith("import ") } ?: "import ${it.trim()}" }
             importsWithPrefix.forEach {
                 addImport(it)
             }

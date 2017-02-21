@@ -37,13 +37,13 @@ class ConditionalJumpInstruction(
 
     var nextOnTrue: Instruction
         get() = _nextOnTrue!!
-        set(value: Instruction) {
+        set(value) {
             _nextOnTrue = outgoingEdgeTo(value)
         }
 
     var nextOnFalse: Instruction
         get() = _nextOnFalse!!
-        set(value: Instruction) {
+        set(value) {
             _nextOnFalse = outgoingEdgeTo(value)
         }
 
@@ -51,7 +51,7 @@ class ConditionalJumpInstruction(
         get() = Arrays.asList(nextOnFalse, nextOnTrue)
 
     override val inputValues: List<PseudoValue>
-        get() = emptyOrSingletonList(conditionValue)
+        get() = listOfNotNull(conditionValue)
 
     override fun accept(visitor: InstructionVisitor) {
         visitor.visitConditionalJump(this)

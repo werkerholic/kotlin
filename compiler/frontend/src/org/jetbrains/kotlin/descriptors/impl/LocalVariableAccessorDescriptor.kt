@@ -38,7 +38,7 @@ sealed class LocalVariableAccessorDescriptor(
 
     init {
         val valueParameters =
-                if (isGetter) emptyList() else createValueParameter(Name.identifier("value"), correspondingVariable.type).singletonList()
+                if (isGetter) emptyList() else listOf(createValueParameter(Name.identifier("value"), correspondingVariable.type))
         initialize(null, null, emptyList(), valueParameters, correspondingVariable.type, Modality.FINAL, Visibilities.LOCAL)
     }
 

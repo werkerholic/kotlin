@@ -150,7 +150,7 @@ fun KotlinType.extractParameterNameFromFunctionTypeArgument(): Name? {
     val annotation = annotations.findAnnotation(KotlinBuiltIns.FQ_NAMES.parameterName) ?: return null
     val name = (annotation.allValueArguments.values.singleOrNull() as? StringValue)
                        ?.value
-                       ?.check { Name.isValidIdentifier(it) }
+                       ?.takeIf { Name.isValidIdentifier(it) }
                ?: return null
     return Name.identifier(name)
 }
@@ -167,7 +167,7 @@ fun getFunctionTypeArgumentProjections(
     arguments.addIfNotNull(receiverType?.asTypeProjection())
 
     parameterTypes.mapIndexedTo(arguments) { index, type ->
-        val name = parameterNames?.get(index)?.check { !it.isSpecial }
+        val name = parameterNames?.get(index)?.takeIf { !it.isSpecial }
         val typeToUse = if (name != null) {
             val annotationClass = builtIns.getBuiltInClassByName(KotlinBuiltIns.FQ_NAMES.parameterName.shortName())
             val nameValue = ConstantValueFactory(builtIns).createStringValue(name.asString())

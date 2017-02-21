@@ -19,7 +19,6 @@ package org.jetbrains.kotlin.js.coroutine
 import org.jetbrains.kotlin.js.backend.ast.*
 import org.jetbrains.kotlin.js.backend.ast.metadata.*
 import org.jetbrains.kotlin.js.translate.utils.JsAstUtils
-import org.jetbrains.kotlin.utils.singletonOrEmptyList
 
 fun JsNode.collectNodesToSplit(breakContinueTargets: Map<JsContinue, JsStatement>): Set<JsNode> {
     val root = this
@@ -189,7 +188,7 @@ private fun CoroutineBlock.collectTargetBlocks(): Set<CoroutineBlock> {
     val targetBlocks = mutableSetOf<CoroutineBlock>()
     jsBlock.accept(object : RecursiveJsVisitor() {
         override fun visitDebugger(x: JsDebugger) {
-            targetBlocks += x.targetExceptionBlock.singletonOrEmptyList() + x.targetBlock.singletonOrEmptyList()
+            targetBlocks += listOfNotNull(x.targetExceptionBlock) + listOfNotNull(x.targetBlock)
         }
     })
     return targetBlocks

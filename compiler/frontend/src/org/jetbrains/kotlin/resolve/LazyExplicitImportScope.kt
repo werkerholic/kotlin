@@ -68,7 +68,7 @@ class LazyExplicitImportScope(
     }
 
     override fun printStructure(p: Printer) {
-        p.println(javaClass.simpleName, ": ", aliasName)
+        p.println(this::class.java.simpleName, ": ", aliasName)
     }
 
     // should be called only once
@@ -113,5 +113,5 @@ class LazyExplicitImportScope(
 
     private fun <D : CallableMemberDescriptor> Collection<D>.choseOnlyVisibleOrAll() =
             filter { isVisible(it, packageFragmentForVisibilityCheck, position = QualifierPosition.IMPORT) }.
-                    check { it.isNotEmpty() } ?: this
+                    takeIf { it.isNotEmpty() } ?: this
 }

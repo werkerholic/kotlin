@@ -52,7 +52,7 @@ abstract class BinaryVersion(vararg val numbers: Int) {
     }
 
     override fun equals(other: Any?) =
-            this.javaClass == other?.javaClass &&
+            this::class.java == other?.let { it::class.java } &&
             major == (other as BinaryVersion).major && minor == other.minor && patch == other.patch && rest == other.rest
 
     override fun hashCode(): Int{
