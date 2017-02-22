@@ -25,9 +25,12 @@ import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.com.intellij.openapi.util.io.ZipFileCache
 import org.jetbrains.kotlin.com.intellij.openapi.vfs.impl.ZipHandler
 import org.jetbrains.kotlin.com.intellij.openapi.vfs.impl.jar.CoreJarFileSystem
+import org.jetbrains.kotlin.compilerRunner.DELETED_SESSION_FILE_PREFIX
+import org.jetbrains.kotlin.compilerRunner.GradleCompilerRunner
 import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
 import org.jetbrains.kotlin.incremental.BuildCacheStorage
 import org.jetbrains.kotlin.incremental.multiproject.ArtifactDifferenceRegistryProvider
+import org.jetbrains.kotlin.incremental.relativeToRoot
 import java.io.File
 
 private fun comparableVersionStr(version: String) =
@@ -100,6 +103,20 @@ internal class KotlinGradleBuildServices private constructor(gradle: Gradle): Bu
         }
         else {
             log.kotlinDebug("Skipping kotlin cleanup since compiler wasn't called")
+        }
+
+        val rootProject = gradle.rootProject
+        val sessionsDir = GradleCompilerRunner.sessionsDir(rootProject)
+        if (sessionsDir.exists()) {
+            val sessionFiles = sessionsDir.listFiles()
+
+            // it is expected that only one session file per build exists
+            // afaik is is not possible to run multiple gradle builds in one project since gradle locks some dirs
+            // todo: sanity checks?
+            for (file in sessionFiles) {
+                file.delete()
+                log.kotlinDebug { DELETED_SESSION_FILE_PREFIX + file.relativeToRoot(rootProject) }
+            }
         }
 
         if (kotlinCompilerCalled) {
