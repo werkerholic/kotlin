@@ -51,7 +51,17 @@ class JpsKotlinCompilerRunner : KotlinCompilerRunner<JpsCompilerEnvironment>() {
     }
 
     companion object {
-        private @Volatile var jpsDaemonConnection: DaemonConnection? = null
+        @Volatile
+        private var _jpsDaemonConnection: DaemonConnection? = null
+
+        @Synchronized
+        private fun getOrCreateDaemonConnection(newConnection: ()->DaemonConnection?): DaemonConnection? {
+            if (_jpsDaemonConnection == null) {
+                _jpsDaemonConnection = newConnection()
+            }
+
+            return _jpsDaemonConnection
+        }
     }
 
     fun runK2JvmCompiler(
@@ -206,19 +216,15 @@ class JpsKotlinCompilerRunner : KotlinCompilerRunner<JpsCompilerEnvironment>() {
         }
     }
 
-    @Synchronized
-    override fun getDaemonConnection(environment: JpsCompilerEnvironment): DaemonConnection? {
-        if (jpsDaemonConnection == null) {
-            val libPath = CompilerRunnerUtil.getLibPath(environment.kotlinPaths, environment.messageCollector)
-            val compilerPath = File(libPath, "kotlin-compiler.jar")
-            val compilerId = CompilerId.makeCompilerId(compilerPath)
-            // TODO: pass daemon options to newDaemonConnection
-            val daemonOptions = configureDaemonOptions()
+    override fun getDaemonConnection(environment: JpsCompilerEnvironment): DaemonConnection? =
+            getOrCreateDaemonConnection {
+                val libPath = CompilerRunnerUtil.getLibPath(environment.kotlinPaths, environment.messageCollector)
+                val compilerPath = File(libPath, "kotlin-compiler.jar")
+                val compilerId = CompilerId.makeCompilerId(compilerPath)
+                val daemonOptions = configureDaemonOptions()
 
-            val clientFlagFile = KotlinCompilerClient.getOrCreateClientFlagFile(daemonOptions)
-            val sessionFlagFile = makeAutodeletingFlagFile("compiler-jps-session-", File(daemonOptions.runFilesPathOrDefault))
-            jpsDaemonConnection = newDaemonConnection(compilerId, clientFlagFile, sessionFlagFile, environment, daemonOptions)
-        }
-        return jpsDaemonConnection
-    }
+                val clientFlagFile = KotlinCompilerClient.getOrCreateClientFlagFile(daemonOptions)
+                val sessionFlagFile = makeAutodeletingFlagFile("compiler-jps-session-", File(daemonOptions.runFilesPathOrDefault))
+                newDaemonConnection(compilerId, clientFlagFile, sessionFlagFile, environment, daemonOptions)
+            }
 }
