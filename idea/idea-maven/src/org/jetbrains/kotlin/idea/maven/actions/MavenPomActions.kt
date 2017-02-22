@@ -78,7 +78,7 @@ private class KotlinMavenPluginProvider : AbstractDomGenerateProvider<MavenDomPl
     override fun isAvailableForElement(contextElement: DomElement): Boolean {
         val parent = contextElement.findProject() ?: return false
 
-        return parent.build.plugins.plugins.none { plugin -> plugin.isKotlinMavenPlugin() }
+        return parent.build.plugins.plugins.none(MavenDomPlugin::isKotlinMavenPlugin)
     }
 }
 

@@ -29,7 +29,7 @@ import org.jetbrains.org.objectweb.asm.ClassVisitor
 import org.jetbrains.org.objectweb.asm.Opcodes
 
 object KotlinMetadataVersionIndex : KotlinAbiVersionIndexBase<KotlinMetadataVersionIndex, JvmMetadataVersion>(
-        KotlinMetadataVersionIndex::class.java, { JvmMetadataVersion(*it) }
+        KotlinMetadataVersionIndex::class.java, ::JvmMetadataVersion
 ) {
     override fun getIndexer() = INDEXER
 

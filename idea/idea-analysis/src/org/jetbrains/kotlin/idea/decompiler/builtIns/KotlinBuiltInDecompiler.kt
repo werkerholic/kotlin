@@ -55,9 +55,7 @@ class KotlinBuiltInDecompiler : ClassFileDecompilers.Full() {
                 null
             }
             else {
-                KtDecompiledFile(provider) { file ->
-                    buildDecompiledTextForBuiltIns(file)
-                }
+                KtDecompiledFile(provider, ::buildDecompiledTextForBuiltIns)
             }
         }
     }

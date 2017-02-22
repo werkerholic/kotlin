@@ -330,7 +330,7 @@ class DeclarationsChecker(
     ) {
         val upperBounds = descriptor.upperBounds
         val (boundsWhichAreTypeParameters, otherBounds) = upperBounds
-                .map { type -> type.constructor }
+                .map(KotlinType::constructor)
                 .partition { constructor -> constructor.declarationDescriptor is TypeParameterDescriptor }
                 .let { pair -> pair.first.toSet() to pair.second.toSet() }
         if (boundsWhichAreTypeParameters.size > 1 || (boundsWhichAreTypeParameters.size == 1 && otherBounds.isNotEmpty())) {
@@ -545,9 +545,7 @@ class DeclarationsChecker(
                 val declarationDescriptor = it.constructor.declarationDescriptor
                 if (declarationDescriptor is TypeParameterDescriptor && declarationDescriptor in allTypeParameters) {
                     if (allAccessibleTypeParameters.add(declarationDescriptor)) {
-                        declarationDescriptor.upperBounds.forEach {
-                            addAccessibleTypeParametersFromType(it)
-                        }
+                        declarationDescriptor.upperBounds.forEach(::addAccessibleTypeParametersFromType)
                     }
                 }
                 false
