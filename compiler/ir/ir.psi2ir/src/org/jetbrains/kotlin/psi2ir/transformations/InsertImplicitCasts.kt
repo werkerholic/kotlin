@@ -93,7 +93,7 @@ class InsertImplicitCasts(val builtIns: KotlinBuiltIns): IrElementTransformerVoi
     override fun visitReturn(expression: IrReturn): IrExpression {
         expression.transformChildrenVoid(this)
 
-        expression.value = expression.value?.cast(expression.returnTarget.returnType)
+        expression.value = expression.value.cast(expression.returnTarget.returnType)
 
         return expression
     }

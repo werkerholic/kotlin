@@ -293,7 +293,7 @@ abstract class AbstractExtractionTest() : KotlinLightCodeInsightFixtureTestCase(
                             val actualReturnTypes = descriptor.controlFlow.possibleReturnTypes.map {
                                 IdeDescriptorRenderers.SOURCE_CODE.renderType(it)
                             }
-                            val allParameters = emptyOrSingletonList(descriptor.receiverParameter) + descriptor.parameters
+                            val allParameters = listOfNotNull(descriptor.receiverParameter) + descriptor.parameters
                             val actualDescriptors = allParameters.map { renderer.render(it.originalDescriptor) }.joinToString()
                             val actualTypes = allParameters.map {
                                 it.getParameterTypeCandidates(false).map { renderer.renderType(it) }.joinToString(", ", "[", "]")
@@ -405,7 +405,7 @@ abstract class AbstractExtractionTest() : KotlinLightCodeInsightFixtureTestCase(
 
         val mainFileName = mainFile.name
         val mainFileBaseName = FileUtil.getNameWithoutExtension(mainFileName)
-        val extraFiles = mainFile.parentFile.listFiles { file, name ->
+        val extraFiles = mainFile.parentFile.listFiles { _, name ->
             name != mainFileName && name.startsWith("$mainFileBaseName.") && (name.endsWith(".kt") || name.endsWith(".java"))
         }
         val extraFilesToPsi = extraFiles.associateBy { fixture.configureByFile(it.name) }
@@ -436,7 +436,7 @@ abstract class AbstractExtractionTest() : KotlinLightCodeInsightFixtureTestCase(
             KotlinTestUtils.assertEqualsToFile(conflictFile, e.message!!)
         }
         catch(e: RuntimeException) { // RuntimeException is thrown by IDEA code in CodeInsightUtils.java
-            if (e.javaClass != RuntimeException::class.java) throw e
+            if (e::class.java != RuntimeException::class.java) throw e
             KotlinTestUtils.assertEqualsToFile(conflictFile, e.message!!)
         }
         finally {

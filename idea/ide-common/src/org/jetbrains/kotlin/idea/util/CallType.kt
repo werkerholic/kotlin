@@ -261,7 +261,7 @@ fun CallTypeAndReceiver<*, *>.receiverTypesWithIndex(
         is CallTypeAndReceiver.SUPER_MEMBERS -> {
             val qualifier = receiver.superTypeQualifier
             if (qualifier != null) {
-                return bindingContext.getType(receiver).singletonOrEmptyList().map { ReceiverType(it, 0) }
+                return listOfNotNull(bindingContext.getType(receiver)).map { ReceiverType(it, 0) }
             }
             else {
                 val resolutionScope = contextElement.getResolutionScope(bindingContext, resolutionFacade)

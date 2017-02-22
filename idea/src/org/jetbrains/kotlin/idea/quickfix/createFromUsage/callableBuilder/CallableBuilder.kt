@@ -301,7 +301,7 @@ class CallableBuilder(val config: CallableBuilderConfiguration) {
                         .subtract(substitutionMap.keys)
                 fakeFunction = createFakeFunctionDescriptor(scope, typeArgumentsForFakeFunction.size)
                 collectSubstitutionsForCallableTypeParameters(fakeFunction, typeArgumentsForFakeFunction, substitutionMap)
-                mandatoryTypeParametersAsCandidates = receiverTypeCandidate.singletonOrEmptyList() + typeArgumentsForFakeFunction.map { TypeCandidate(substitutionMap[it]!!, scope) }
+                mandatoryTypeParametersAsCandidates = listOfNotNull(receiverTypeCandidate) + typeArgumentsForFakeFunction.map { TypeCandidate(substitutionMap[it]!!, scope) }
             }
             else {
                 fakeFunction = null
@@ -902,7 +902,7 @@ class CallableBuilder(val config: CallableBuilderConfiguration) {
                         // file templates
                         val newDeclaration = PsiTreeUtil.findElementOfClassAtOffset(jetFileToEdit,
                                                                                     declarationMarker.startOffset,
-                                                                                    declaration.javaClass,
+                                                                                    declaration::class.java,
                                                                                     false) ?: return
 
                         runWriteAction {

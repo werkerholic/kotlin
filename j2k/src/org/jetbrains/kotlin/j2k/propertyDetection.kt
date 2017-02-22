@@ -227,7 +227,7 @@ private class PropertyDetector(
                 converter.convertModifiers(field, false).accessModifier()
             else
                 propertyAccess
-            val specialSetterAccess = setterAccess?.check { it != propertyAccess }
+            val specialSetterAccess = setterAccess?.takeIf { it != propertyAccess }
 
             val propertyInfo = PropertyInfo(Identifier.withNoPrototype(propertyName),
                                             isVar,

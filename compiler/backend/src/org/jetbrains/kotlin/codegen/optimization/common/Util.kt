@@ -124,4 +124,4 @@ fun AbstractInsnNode.isLoadOperation(): Boolean = opcode in Opcodes.ILOAD..Opcod
 
 val AbstractInsnNode?.insnText get() = InlineCodegenUtil.getInsnText(this)
 val AbstractInsnNode?.debugText get() =
-        if (this == null) "<null>" else "${this.javaClass.simpleName}: $insnText"
+        if (this == null) "<null>" else "${this::class.java.simpleName}: $insnText"

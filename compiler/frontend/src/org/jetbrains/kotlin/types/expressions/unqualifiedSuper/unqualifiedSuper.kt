@@ -105,7 +105,7 @@ private fun resolveSupertypesForMethodOfAny(supertypes: Collection<KotlinType>, 
     return if (typesWithConcreteOverride.isNotEmpty())
         typesWithConcreteOverride
     else
-        anyType.singletonList()
+        listOf(anyType)
 }
 
 private fun resolveSupertypesByCalleeName(supertypes: Collection<KotlinType>, calleeName: Name): Collection<KotlinType> =

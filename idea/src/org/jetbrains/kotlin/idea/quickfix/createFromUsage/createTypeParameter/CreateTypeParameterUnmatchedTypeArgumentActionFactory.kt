@@ -77,10 +77,10 @@ object CreateTypeParameterUnmatchedTypeArgumentActionFactory : KotlinIntentionAc
             diagnostic: Diagnostic,
             quickFixDataFactory: () -> CreateTypeParameterData?
     ): List<QuickFixWithDelegateFactory> {
-        return QuickFixWithDelegateFactory factory@ {
+        return listOf(QuickFixWithDelegateFactory factory@ {
             val originalElement = originalElementPointer.element ?: return@factory null
             val data = quickFixDataFactory() ?: return@factory null
             CreateTypeParameterFromUsageFix(originalElement, data, false)
-        }.singletonList()
+        })
     }
 }

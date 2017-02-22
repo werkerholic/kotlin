@@ -51,7 +51,7 @@ internal class AnnotationEntryReplacementPerformer(
         val dummyAnnotationEntry = createByPattern("@Dummy($0)", codeToInline.mainExpression!!) { psiFactory.createAnnotationEntry(it) }
         val replaced = elementToBeReplaced.replace(dummyAnnotationEntry)
 
-        codeToInline.performPostInsertionActions(replaced.singletonList())
+        codeToInline.performPostInsertionActions(listOf(replaced))
 
         var range = PsiChildRange.singleElement(replaced)
         range = postProcessing(range)
@@ -98,7 +98,7 @@ internal class ExpressionReplacementPerformer(
             }
         }
 
-        codeToInline.performPostInsertionActions(insertedStatements + replaced.singletonOrEmptyList())
+        codeToInline.performPostInsertionActions(insertedStatements + listOfNotNull(replaced))
 
         var range = if (replaced != null) {
             if (insertedStatements.isEmpty()) {

@@ -60,7 +60,7 @@ class KotlinGradleModelBuilder : ModelBuilderService {
     @Suppress("UNCHECKED_CAST")
     private fun getCompilerArguments(project: Project, methodName: String): List<String>? {
         val compileTask = compileTasks.mapNotNull { project.getTasksByName(it, false).firstOrNull() }.firstOrNull() ?: return null
-        val taskClass = compileTask.javaClass
+        val taskClass = compileTask::class.java
         return try {
             taskClass.getDeclaredMethod(methodName).invoke(compileTask) as List<String>
         }
@@ -72,14 +72,14 @@ class KotlinGradleModelBuilder : ModelBuilderService {
     private fun getCoroutines(project: Project): String? {
         val kotlinExtension = project.extensions.findByName("kotlin") ?: return null
         val experimentalExtension = try {
-            kotlinExtension.javaClass.getMethod("getExperimental").invoke(kotlinExtension)
+            kotlinExtension::class.java.getMethod("getExperimental").invoke(kotlinExtension)
         }
         catch(e: NoSuchMethodException) {
             return null
         }
 
         return try {
-            experimentalExtension.javaClass.getMethod("getCoroutines").invoke(experimentalExtension)?.toString()
+            experimentalExtension::class.java.getMethod("getCoroutines").invoke(experimentalExtension)?.toString()
         }
         catch(e: NoSuchMethodException) {
             null

@@ -354,7 +354,7 @@ class CompileServiceImpl(
                 }
             }
             CompilerMode.NON_INCREMENTAL_COMPILER -> {
-                doCompile(sessionId, daemonReporter, tracer = null) { eventManger, profiler ->
+                doCompile(sessionId, daemonReporter, tracer = null) { _, _ ->
                     execCompiler(targetPlatform, Services.EMPTY, k2PlatformArgs, messageCollector)
                 }
             }
@@ -368,7 +368,7 @@ class CompileServiceImpl(
                 val gradleIncrementalServicesFacade = servicesFacade as IncrementalCompilerServicesFacade
 
                 withIC {
-                    doCompile(sessionId, daemonReporter, tracer = null) { eventManger, profiler ->
+                    doCompile(sessionId, daemonReporter, tracer = null) { _, _ ->
                         execIncrementalCompiler(k2jvmArgs, gradleIncrementalArgs, gradleIncrementalServicesFacade, compilationResults!!,
                                                 messageCollector, daemonReporter)
                     }
@@ -604,7 +604,7 @@ class CompileServiceImpl(
 
         ifAlive {
 
-            val aliveWithOpts = walkDaemons(File(daemonOptions.runFilesPathOrDefault), compilerId, runFile, filter = { f, p -> p != port }, report = { _, msg -> log.info(msg) }).toList()
+            val aliveWithOpts = walkDaemons(File(daemonOptions.runFilesPathOrDefault), compilerId, runFile, filter = { _, p -> p != port }, report = { _, msg -> log.info(msg) }).toList()
             val comparator = compareByDescending<DaemonWithMetadata, DaemonJVMOptions>(DaemonJVMOptionsMemoryComparator(), { it.jvmOptions })
                     .thenBy(FileAgeComparator()) { it.runFile }
             aliveWithOpts.maxWith(comparator)?.let { bestDaemonWithMetadata ->
@@ -702,7 +702,7 @@ class CompileServiceImpl(
                           operationsTracer: RemoteOperationsTracer?,
                           body: (PrintStream, EventManager, Profiler) -> ExitCode): CompileService.CallResult<Int> =
             ifAlive {
-                withValidClientOrSessionProxy(sessionId) { session ->
+                withValidClientOrSessionProxy(sessionId) {
                     operationsTracer?.before("compile")
                     val rpcProfiler = if (daemonOptions.reportPerf) WallAndThreadTotalProfiler() else DummyProfiler()
                     val eventManger = EventManagerImpl()
@@ -732,7 +732,7 @@ class CompileServiceImpl(
                           tracer: RemoteOperationsTracer?,
                           body: (EventManager, Profiler) -> ExitCode): CompileService.CallResult<Int> =
             ifAlive {
-                withValidClientOrSessionProxy(sessionId) { session ->
+                withValidClientOrSessionProxy(sessionId) {
                     tracer?.before("compile")
                     val rpcProfiler = if (daemonOptions.reportPerf) WallAndThreadTotalProfiler() else DummyProfiler()
                     val eventManger = EventManagerImpl()

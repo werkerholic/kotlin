@@ -31,7 +31,7 @@ class ClassUsageReplacementStrategy(
 
     private val factory = KtPsiFactory(project)
 
-    private val typeReplacement = typeReplacement?.check { it.referenceExpression != null }
+    private val typeReplacement = typeReplacement?.takeIf { it.referenceExpression != null }
     private val typeReplacementQualifierAsExpression = typeReplacement?.qualifier?.let { factory.createExpression(it.text) }
 
     private val constructorReplacementStrategy = constructorReplacement?.let(::CallableUsageReplacementStrategy)

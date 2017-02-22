@@ -84,7 +84,7 @@ class ConvertObjectLiteralToClassIntention : SelfTargetingRangeIntention<KtObjec
                                 descriptorWithConflicts: ExtractableCodeDescriptorWithConflicts,
                                 onFinish: (ExtractionResult) -> Unit
                         ) {
-                            val descriptor = descriptorWithConflicts.descriptor.copy(suggestedNames = className.singletonList())
+                            val descriptor = descriptorWithConflicts.descriptor.copy(suggestedNames = listOf(className))
                             doRefactor(
                                     ExtractionGeneratorConfiguration(descriptor, ExtractionGeneratorOptions.DEFAULT),
                                     onFinish

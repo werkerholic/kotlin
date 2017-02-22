@@ -227,7 +227,7 @@ abstract class OperatorReferenceSearcher<TReferenceElement : KtElement>(
     }
 
     private fun extractReceiverType(): FuzzyType? {
-        val descriptor = resolveTargetToDescriptor()?.check { it.isValidOperator() } ?: return null
+        val descriptor = resolveTargetToDescriptor()?.takeIf { it.isValidOperator() } ?: return null
 
         return if (descriptor.isExtension) {
             descriptor.fuzzyExtensionReceiverType()!!

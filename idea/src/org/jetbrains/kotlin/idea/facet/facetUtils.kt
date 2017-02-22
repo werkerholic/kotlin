@@ -169,7 +169,7 @@ fun parseCompilerArgumentsToFacet(arguments: List<String>, defaultArguments: Lis
             else -> commonCompilerArguments
         }!!
 
-        val defaultCompilerArguments = compilerArguments.javaClass.newInstance()
+        val defaultCompilerArguments = compilerArguments::class.java.newInstance()
         parseArguments(defaultArguments.toTypedArray(), defaultCompilerArguments, true)
 
         val oldCoroutineSupport = CoroutineSupport.byCompilerArguments(commonCompilerArguments)
@@ -207,14 +207,14 @@ fun parseCompilerArgumentsToFacet(arguments: List<String>, defaultArguments: Lis
 
         fun exposeAsAdditionalArgument(field: Field) = field.name !in exposedFields && field.get(compilerArguments) != field.get(defaultCompilerArguments)
 
-        val additionalArgumentsString = with(compilerArguments.javaClass.newInstance()) {
+        val additionalArgumentsString = with(compilerArguments::class.java.newInstance()) {
             copyFieldsSatisfying(compilerArguments, this, ::exposeAsAdditionalArgument)
             ArgumentUtils.convertArgumentsToStringList(this).joinToString(separator = " ")
         }
         compilerInfo.compilerSettings!!.additionalArguments =
                 if (additionalArgumentsString.isNotEmpty()) additionalArgumentsString else CompilerSettings.DEFAULT_ADDITIONAL_ARGUMENTS
 
-        with(compilerArguments.javaClass.newInstance()) {
+        with(compilerArguments::class.java.newInstance()) {
             copyFieldsSatisfying(this, compilerArguments, ::exposeAsAdditionalArgument)
         }
 

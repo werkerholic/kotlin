@@ -164,7 +164,7 @@ abstract class KotlinFindMemberUsagesHandler<T : KtNamedDeclaration>
                 addTask {
                     val overriders = HierarchySearchRequest(element, options.searchScope, true).searchOverriders()
                     overriders.all {
-                        val element = runReadAction { it.check { it.isValid }?.navigationElement } ?: return@all true
+                        val element = runReadAction { it.takeIf { it.isValid }?.navigationElement } ?: return@all true
                         KotlinFindUsagesHandler.processUsage(uniqueProcessor, element)
                     }
                 }

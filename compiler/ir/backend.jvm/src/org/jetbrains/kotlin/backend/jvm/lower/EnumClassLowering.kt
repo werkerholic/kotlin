@@ -169,8 +169,8 @@ class EnumClassLowering(val context: JvmBackendContext) : ClassLoweringPass {
         private fun lowerEnumEntries() {
             irClass.declarations.transformFlat { declaration ->
                 if (declaration is IrEnumEntry) {
-                    createFieldForEnumEntry(declaration).singletonList() +
-                    lowerEnumEntryClass(declaration.correspondingClass).singletonOrEmptyList()
+                    listOf(createFieldForEnumEntry(declaration)) +
+                    listOfNotNull(lowerEnumEntryClass(declaration.correspondingClass))
                 }
                 else null
             }

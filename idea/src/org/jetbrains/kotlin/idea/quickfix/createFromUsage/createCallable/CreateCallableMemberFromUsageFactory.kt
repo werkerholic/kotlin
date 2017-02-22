@@ -48,7 +48,7 @@ abstract class CreateCallableMemberFromUsageFactory<E : KtElement>(
     protected open fun createCallableInfo(element: E, diagnostic: Diagnostic): CallableInfo? = null
 
     override fun extractFixData(element: E, diagnostic: Diagnostic): List<CallableInfo>
-            = createCallableInfo(element, diagnostic).singletonOrEmptyList()
+            = listOfNotNull(createCallableInfo(element, diagnostic))
 
     override fun createFixes(
             originalElementPointer: SmartPsiElementPointer<E>,

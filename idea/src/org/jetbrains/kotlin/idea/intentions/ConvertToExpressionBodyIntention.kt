@@ -62,7 +62,7 @@ class ConvertToExpressionBodyIntention(
         val deleteTypeHandler: (KtCallableDeclaration) -> Unit = {
             it.deleteChildRange(it.colon!!, it.typeReference!!)
         }
-        applyTo(declaration, deleteTypeHandler.check { canDeleteTypeRef })
+        applyTo(declaration, deleteTypeHandler.takeIf { canDeleteTypeRef })
     }
 
     private fun applyTo(declaration: KtDeclarationWithBody, deleteTypeHandler: ((KtCallableDeclaration) -> Unit)?) {

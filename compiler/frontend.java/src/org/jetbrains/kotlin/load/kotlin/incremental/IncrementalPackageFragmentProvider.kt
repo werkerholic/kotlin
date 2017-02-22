@@ -53,7 +53,7 @@ class IncrementalPackageFragmentProvider(
     override fun getSubPackagesOf(fqName: FqName, nameFilter: (Name) -> Boolean): Collection<FqName> = emptySet()
 
     override fun getPackageFragments(fqName: FqName): List<PackageFragmentDescriptor> {
-        return fqNameToPackageFragment[fqName].singletonOrEmptyList()
+        return listOfNotNull(fqNameToPackageFragment[fqName])
     }
 
 

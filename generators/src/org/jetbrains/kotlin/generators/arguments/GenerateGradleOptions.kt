@@ -25,6 +25,7 @@ import java.io.PrintStream
 import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KProperty1
 import kotlin.reflect.declaredMemberProperties
+import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.memberProperties
 
 // Additional properties that should be included in interface

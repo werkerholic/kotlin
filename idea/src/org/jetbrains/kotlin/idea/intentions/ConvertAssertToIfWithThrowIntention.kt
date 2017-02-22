@@ -93,7 +93,7 @@ class ConvertAssertToIfWithThrowIntention : SelfTargetingIntention<KtCallExpress
 
     private fun extractMessageSingleExpression(functionLiteral: KtLambdaExpression, bindingContext: BindingContext): KtExpression? {
         return functionLiteral.bodyExpression?.statements?.singleOrNull()?.let { singleStatement ->
-            singleStatement.check { it.isUsedAsExpression(bindingContext) }
+            singleStatement.takeIf { it.isUsedAsExpression(bindingContext) }
         }
     }
 

@@ -47,11 +47,11 @@ fun KtFile.findFacadeClass(): KtLightClass? {
 
 fun KtElement.toLightElements(): List<PsiNamedElement> =
         when (this) {
-            is KtClassOrObject -> toLightClass().singletonOrEmptyList()
+            is KtClassOrObject -> listOfNotNull(toLightClass())
             is KtNamedFunction,
             is KtSecondaryConstructor -> LightClassUtil.getLightClassMethods(this as KtFunction)
             is KtProperty -> LightClassUtil.getLightClassPropertyMethods(this).allDeclarations
-            is KtPropertyAccessor -> LightClassUtil.getLightClassAccessorMethod(this).singletonOrEmptyList()
+            is KtPropertyAccessor -> listOfNotNull(LightClassUtil.getLightClassAccessorMethod(this))
             is KtParameter -> ArrayList<PsiNamedElement>().let { elements ->
                 toPsiParameters().toCollection(elements)
                 LightClassUtil.getLightClassPropertyMethods(this).toCollection(elements)
@@ -60,7 +60,7 @@ fun KtElement.toLightElements(): List<PsiNamedElement> =
                 elements
             }
             is KtTypeParameter -> toPsiTypeParameters()
-            is KtFile -> findFacadeClass().singletonOrEmptyList()
+            is KtFile -> listOfNotNull(findFacadeClass())
             else -> listOf()
         }
 
@@ -70,8 +70,8 @@ fun PsiElement.toLightMethods(): List<PsiMethod> =
             is KtProperty -> LightClassUtil.getLightClassPropertyMethods(this).toList()
             is KtParameter -> LightClassUtil.getLightClassPropertyMethods(this).toList()
             is KtPropertyAccessor -> LightClassUtil.getLightClassAccessorMethods(this)
-            is KtClass -> toLightClass()?.constructors?.firstOrNull().singletonOrEmptyList()
-            is PsiMethod -> this.singletonList()
+            is KtClass -> listOfNotNull(toLightClass()?.constructors?.firstOrNull())
+            is PsiMethod -> listOf(this)
             else -> listOf()
         }
 

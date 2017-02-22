@@ -281,7 +281,7 @@ class ReferenceVariantsHelper(
             val qualifier = bindingContext[BindingContext.QUALIFIER, receiverExpression] ?: return emptyList()
             val staticDescriptors = qualifier.staticScope.getDescriptorsFiltered(kindFilter, nameFilter)
 
-            val objectDescriptor = (qualifier as? ClassQualifier)?.descriptor?.check { it.kind == ClassKind.OBJECT } ?: return staticDescriptors
+            val objectDescriptor = (qualifier as? ClassQualifier)?.descriptor?.takeIf { it.kind == ClassKind.OBJECT } ?: return staticDescriptors
 
             return staticDescriptors + objectDescriptor.defaultType.memberScope.getDescriptorsFiltered(kindFilter, nameFilter)
         }

@@ -347,8 +347,8 @@ class BasicCompletionSession(
             if (userType != typeRef.typeElement) return null
             val parent = typeRef.parent
             return when (parent) {
-                is KtNamedFunction -> parent.check { typeRef == it.receiverTypeReference }
-                is KtProperty -> parent.check { typeRef == it.receiverTypeReference }
+                is KtNamedFunction -> parent.takeIf<KtNamedFunction> { typeRef == it.receiverTypeReference }
+                is KtProperty -> parent.takeIf<KtProperty> { typeRef == it.receiverTypeReference }
                 else -> null
             }
         }

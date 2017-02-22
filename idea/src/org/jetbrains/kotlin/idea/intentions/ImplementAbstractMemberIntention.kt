@@ -129,7 +129,7 @@ abstract class ImplementAbstractMemberIntentionBase :
                                                                descriptorToImplement,
                                                                OverrideMemberChooserObject.BodyType.EMPTY,
                                                                preferConstructorParameters)
-        OverrideImplementMembersHandler.generateMembers(editor, targetClass, chooserObject.singletonList(), false)
+        OverrideImplementMembersHandler.generateMembers(editor, targetClass, listOf(chooserObject), false)
     }
 
     private fun implementInJavaClass(member: KtNamedDeclaration, targetClass: PsiClass) {
@@ -204,7 +204,7 @@ abstract class ImplementAbstractMemberIntentionBase :
         ) { findClassesToProcess(element).toList() } ?: return
         if (classesToProcess.isEmpty()) return
 
-        classesToProcess.singleOrNull()?.let { return implementInClass(element, it.singletonList()) }
+        classesToProcess.singleOrNull()?.let { return implementInClass(element, listOf(it)) }
 
         val renderer = ClassRenderer()
         val sortedClasses = classesToProcess.sortedWith(renderer.comparator)

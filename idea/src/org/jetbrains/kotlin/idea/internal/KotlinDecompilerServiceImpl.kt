@@ -47,7 +47,7 @@ class KotlinDecompilerServiceImpl : KotlinDecompilerService {
         )
 
         val bytecodeProvider = IBytecodeProvider {
-            externalPath, internalPath ->
+            externalPath, _ ->
             val path = File(FileUtil.toSystemIndependentName(externalPath))
             bytecodeMap[path]?.invoke()
         }

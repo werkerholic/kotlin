@@ -163,7 +163,7 @@ private fun processInheritorsDelegatingCallToSpecifiedConstructor(
 ): Boolean {
     return HierarchySearchRequest(klass, scope, false).searchInheritors().all {
         runReadAction {
-            val unwrapped = it.check { it.isValid }?.unwrapped
+            val unwrapped = it.takeIf { it.isValid }?.unwrapped
             if (unwrapped is KtClass)
                 processClassDelegationCallsToSpecifiedConstructor(unwrapped, descriptor, process)
             else

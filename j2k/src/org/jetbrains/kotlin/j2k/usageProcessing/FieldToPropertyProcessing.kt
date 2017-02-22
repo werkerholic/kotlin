@@ -43,11 +43,11 @@ class FieldToPropertyProcessing(
             else if (field.name != propertyName)
                 listOf(ElementRenamedCodeProcessor(propertyName), UseAccessorsJavaCodeProcessor())
             else
-                UseAccessorsJavaCodeProcessor().singletonList()
+                listOf(UseAccessorsJavaCodeProcessor())
 
     override val kotlinCodeProcessors =
             if (field.name != propertyName)
-                ElementRenamedCodeProcessor(propertyName).singletonList()
+                listOf(ElementRenamedCodeProcessor(propertyName))
             else
                 emptyList()
 

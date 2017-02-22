@@ -52,11 +52,11 @@ class StaticMembersCompletion(
         return object : AbstractLookupElementFactory {
             override fun createStandardLookupElementsForDescriptor(descriptor: DeclarationDescriptor, useReceiverTypes: Boolean): Collection<LookupElement> {
                 if (!useReceiverTypes) return emptyList()
-                return lookupElementFactory.createLookupElement(descriptor, useReceiverTypes = false)
-                        .decorateAsStaticMember(descriptor, classNameAsLookupString = false)
-                        ?.assignPriority(itemPriority)
-                        ?.suppressAutoInsertion()
-                        .singletonOrEmptyList()
+                return listOfNotNull(lookupElementFactory.createLookupElement(descriptor, useReceiverTypes = false)
+                                             .decorateAsStaticMember(descriptor, classNameAsLookupString = false)
+                                             ?.assignPriority(itemPriority)
+                                             ?.suppressAutoInsertion()
+                )
             }
 
             override fun createLookupElement(descriptor: DeclarationDescriptor, useReceiverTypes: Boolean,

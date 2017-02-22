@@ -166,7 +166,7 @@ fun KtExpression?.findVariableInitializationBeforeLoop(
     for (statement in prevStatements) {
         val variableInitialization = extractVariableInitialization(statement, variable)
         if (variableInitialization != null) {
-            return variableInitialization.check {
+            return variableInitialization.takeIf<VariableInitialization> {
                 statementsBetween.all { canSwapExecutionOrder(variableInitialization.initializationStatement, it) }
             }
         }

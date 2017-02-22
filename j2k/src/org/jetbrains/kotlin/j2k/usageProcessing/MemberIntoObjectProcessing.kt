@@ -24,7 +24,7 @@ class MemberIntoObjectProcessing(private val member: PsiMember, private val obje
 
     override val convertedCodeProcessor: ConvertedCodeProcessor? get() = null
 
-    override val javaCodeProcessors = AppendObjectNameProcessor().singletonList()
+    override val javaCodeProcessors = listOf(AppendObjectNameProcessor())
 
     override val kotlinCodeProcessors = emptyList<ExternalCodeProcessor>()
 

@@ -147,7 +147,7 @@ class CliLightClassGenerationSupport(project: Project) : LightClassGenerationSup
         val filesForFacade = findFilesForFacade(facadeFqName, scope)
         if (filesForFacade.isEmpty()) return emptyList()
 
-        return emptyOrSingletonList<PsiClass>(
+        return listOfNotNull<PsiClass>(
                 KtLightClassForFacade.createForFacade(psiManager, facadeFqName, scope, filesForFacade))
     }
 

@@ -72,7 +72,7 @@ object CreateLocalVariableActionFactory: KotlinSingleIntentionActionFactory() {
                 )
                 val propertyInfo = PropertyInfo(propertyName, TypeInfo.Empty, typeInfo, varExpected, Collections.singletonList(actualContainer))
 
-                with (CallableBuilderConfiguration(propertyInfo.singletonOrEmptyList(), originalElement, file, editor).createBuilder()) {
+                with (CallableBuilderConfiguration(listOfNotNull(propertyInfo), originalElement, file, editor).createBuilder()) {
                     placement = CallablePlacement.NoReceiver(actualContainer)
                     project.executeCommand(text) { build() }
                 }

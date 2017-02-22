@@ -34,6 +34,8 @@ import org.jetbrains.kotlin.idea.KotlinIcons
 import org.jetbrains.kotlin.idea.actions.JavaToKotlinAction
 import org.jetbrains.kotlin.idea.refactoring.toPsiFile
 import java.io.File
+import kotlin.reflect.full.functions
+import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.functions
 import kotlin.reflect.memberFunctions
 

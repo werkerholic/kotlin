@@ -61,11 +61,11 @@ private fun orderEntryToModuleInfo(project: Project, orderEntry: OrderEntry, pro
         }
         is LibraryOrderEntry -> {
             val library = orderEntry.library ?: return listOf()
-            emptyOrSingletonList(LibraryInfo(project, library))
+            listOfNotNull(LibraryInfo(project, library))
         }
         is JdkOrderEntry -> {
             val sdk = orderEntry.jdk ?: return listOf()
-            emptyOrSingletonList(SdkInfo(project, sdk))
+            listOfNotNull(SdkInfo(project, sdk))
         }
         else -> {
             throw IllegalStateException("Unexpected order entry $orderEntry")

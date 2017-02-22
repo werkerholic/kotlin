@@ -210,7 +210,7 @@ open class KotlinChangeInfo(
 
             for (caller in value) {
                 add(caller)
-                OverridingMethodsSearch.search(caller.getRepresentativeLightMethod() ?: continue).forEach { add(it); true }
+                OverridingMethodsSearch.search(caller.getRepresentativeLightMethod() ?: continue).forEach { add(it) }
             }
 
             propagationTargetUsageInfos = result.toList()
@@ -458,14 +458,14 @@ open class KotlinChangeInfo(
                 currentPsiMethod: PsiMethod,
                 isGetter: Boolean
         ): JavaChangeInfo? {
-            val newParameterList = receiverParameterInfo.singletonOrEmptyList() + getNonReceiverParameters()
+            val newParameterList = listOfNotNull(receiverParameterInfo) + getNonReceiverParameters()
             val newJavaParameters = getJavaParameterInfos(originalPsiMethod, currentPsiMethod, newParameterList).toTypedArray()
             val newName = if (isGetter) JvmAbi.getterName(newName) else newName
             return createJavaChangeInfo(originalPsiMethod, currentPsiMethod, newName, currentPsiMethod.returnType, newJavaParameters)
         }
 
         fun createJavaChangeInfoForSetter(originalPsiMethod: PsiMethod, currentPsiMethod: PsiMethod): JavaChangeInfo? {
-            val newJavaParameters = getJavaParameterInfos(originalPsiMethod, currentPsiMethod, receiverParameterInfo.singletonOrEmptyList())
+            val newJavaParameters = getJavaParameterInfos(originalPsiMethod, currentPsiMethod, listOfNotNull(receiverParameterInfo))
             val oldIndex = if (methodDescriptor.receiver != null) 1 else 0
             if (isPrimaryMethodUpdated) {
                 val newIndex = if (receiverParameterInfo != null) 1 else 0

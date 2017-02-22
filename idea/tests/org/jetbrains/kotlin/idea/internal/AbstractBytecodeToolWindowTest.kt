@@ -34,7 +34,7 @@ abstract class AbstractBytecodeToolWindowTest: KotlinLightCodeInsightFixtureTest
     fun doTest(testPath: String) {
         val mainDir = File(testPath)
         val mainFileName = mainDir.name + ".kt"
-        mainDir.listFiles { file, name -> name != mainFileName }.forEach { myFixture.configureByFile(testPath + "/" + it.name) }
+        mainDir.listFiles { _, name -> name != mainFileName }.forEach { myFixture.configureByFile(testPath + "/" + it.name) }
 
         val mainFileText = File("$testPath/$mainFileName").readText()
         myFixture.configureByText(KotlinFileType.INSTANCE, mainFileText)

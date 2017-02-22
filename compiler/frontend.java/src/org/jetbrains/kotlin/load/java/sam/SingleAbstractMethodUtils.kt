@@ -43,7 +43,7 @@ internal fun nonProjectionParametrization(samType: SimpleType): SimpleType? {
                     projection.projectionKind == Variance.INVARIANT -> projection
 
                     projection.isStarProjection ->
-                        parameter.upperBounds.first().check {
+                        parameter.upperBounds.first().takeIf {
                             t -> !t.contains { it.constructor.declarationDescriptor in parametersSet }
                         }?.asTypeProjection() ?: return@nonProjectionParametrization null
 

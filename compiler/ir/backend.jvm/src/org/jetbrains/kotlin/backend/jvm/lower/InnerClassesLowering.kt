@@ -69,7 +69,7 @@ class InnerClassesLowering(val context: JvmBackendContext) : ClassLoweringPass {
         private fun lowerConstructors() {
             irClass.declarations.transformFlat { irMember ->
                 if (irMember is IrConstructor)
-                    lowerConstructor(irMember).singletonList()
+                    listOf(lowerConstructor(irMember))
                 else
                     null
             }

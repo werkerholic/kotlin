@@ -25,7 +25,7 @@ class ToObjectWithOnlyMethodsProcessing(private val psiClass: PsiClass) : UsageP
 
     override val convertedCodeProcessor: ConvertedCodeProcessor? get() = null
 
-    override val javaCodeProcessors = ToObjectWithOnlyMethodsProcessor().singletonList()
+    override val javaCodeProcessors = listOf(ToObjectWithOnlyMethodsProcessor())
 
     override val kotlinCodeProcessors = emptyList<ExternalCodeProcessor>()
 

@@ -105,7 +105,7 @@ open class GenericReplCompiler(disposable: Disposable,
             val scriptDescriptor = when (analysisResult) {
                 is GenericReplAnalyzer.ReplLineAnalysisResult.WithErrors -> return ReplCompileResult.Error(descriptorsHistory.copySources(), errorHolder.renderedDiagnostics)
                 is GenericReplAnalyzer.ReplLineAnalysisResult.Successful -> analysisResult.scriptDescriptor
-                else -> error("Unexpected result ${analysisResult.javaClass}")
+                else -> error("Unexpected result ${analysisResult::class.java}")
             }
 
             val state = GenerationState(

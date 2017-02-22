@@ -138,7 +138,7 @@ fun match(loop: KtForExpression, useLazySequence: Boolean): MatchResult? {
 
 
                         return MatchResult(sequenceExpression, result, state.initializationStatementsToDelete)
-                                .check { checkSmartCastsPreserved(loop, it) }
+                                .takeIf { checkSmartCastsPreserved(loop, it) }
                     }
                 }
             }

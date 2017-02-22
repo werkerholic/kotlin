@@ -59,7 +59,7 @@ class AccessorToPropertyProcessing(val accessorMethod: PsiMethod, val accessorKi
             if (accessorMethod.hasModifierProperty(PsiModifier.PRIVATE))
                 emptyList()
             else
-                AccessorToPropertyProcessor().singletonList()
+                listOf(AccessorToPropertyProcessor())
 
     inner class AccessorToPropertyProcessor: ExternalCodeProcessor {
         override fun processUsage(reference: PsiReference): Array<PsiReference>? {

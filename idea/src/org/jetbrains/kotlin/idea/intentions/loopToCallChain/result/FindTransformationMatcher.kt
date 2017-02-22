@@ -361,8 +361,8 @@ object FindTransformationMatcher : TransformationMatcher {
         if (this !is KtBinaryExpression) return null
         if (operationToken != KtTokens.EQEQ) return null
         return when {
-            left.isVariableReference(inputVariable) -> right?.check { it.isStableInLoop(loop, false) }
-            right.isVariableReference(inputVariable) -> left?.check { it.isStableInLoop(loop, false) }
+            left.isVariableReference(inputVariable) -> right?.takeIf { it.isStableInLoop(loop, false) }
+            right.isVariableReference(inputVariable) -> left?.takeIf { it.isStableInLoop(loop, false) }
             else -> null
         }
     }

@@ -46,7 +46,7 @@ object CreateClassFromCallWithConstructorCalleeActionFactory : CreateClassFromUs
     }
 
     override fun getPossibleClassKinds(element: KtCallElement, diagnostic: Diagnostic): List<ClassKind> {
-        return (if (element is KtAnnotationEntry) ClassKind.ANNOTATION_CLASS else ClassKind.PLAIN_CLASS).singletonList()
+        return listOf((if (element is KtAnnotationEntry) ClassKind.ANNOTATION_CLASS else ClassKind.PLAIN_CLASS))
     }
 
     override fun extractFixData(element: KtCallElement, diagnostic: Diagnostic): ClassInfo? {

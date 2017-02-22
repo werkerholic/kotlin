@@ -70,7 +70,7 @@ internal class MutableCodeToInline(
     }
 
     val expressions: Collection<KtExpression>
-        get() = statementsBefore + mainExpression.singletonOrEmptyList()
+        get() = statementsBefore + listOfNotNull(mainExpression)
 
     operator fun contains(element: PsiElement): Boolean {
         return expressions.any { it.isAncestor(element) }

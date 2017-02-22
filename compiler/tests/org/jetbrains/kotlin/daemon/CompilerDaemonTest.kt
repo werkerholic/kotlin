@@ -364,7 +364,7 @@ class CompilerDaemonTest : KotlinIntegrationTestBase() {
             val daemon = KotlinCompilerClient.connectToCompileService(compilerId, flagFile, daemonJVMOptions, daemonOptions, DaemonReportingTargets(out = System.err), autostart = true)
             assertNotNull("failed to connect daemon", daemon)
 
-            val (registry, port) = findPortAndCreateRegistry(10, 16384, 65535)
+            val (_, port) = findPortAndCreateRegistry(10, 16384, 65535)
             val tracer = SynchronizationTracer(CountDownLatch(1), CountDownLatch(PARALLEL_THREADS_TO_COMPILE), port)
 
             val resultCodes = arrayOfNulls<Int>(PARALLEL_THREADS_TO_COMPILE)
@@ -710,13 +710,13 @@ internal fun File.ifLogNotContainsSequence(vararg patterns: String, body: (LineP
 internal fun File.assertLogContainsSequence(vararg patterns: String) {
     ifLogNotContainsSequence(*patterns)
     {
-        pattern,lineNo -> fail("Pattern '${pattern.regex}' is not found in the log file '$absolutePath'")
+        pattern, _ -> fail("Pattern '${pattern.regex}' is not found in the log file '$absolutePath'")
     }
 }
 
 internal fun File.isLogContainsSequence(vararg patterns: String): Boolean {
     var res = true
-    ifLogNotContainsSequence(*patterns) { l,c -> res = false }
+    ifLogNotContainsSequence(*patterns) { _, _ -> res = false }
     return res
 }
 

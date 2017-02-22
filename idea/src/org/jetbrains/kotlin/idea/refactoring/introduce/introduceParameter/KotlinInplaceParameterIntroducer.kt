@@ -261,7 +261,7 @@ class KotlinInplaceParameterIntroducer(
         val originalRange = expr.toRange()
         return descriptor.copy(
                 originalRange = originalRange,
-                occurrencesToReplace = if (replaceAll) occurrences.map { it.toRange() } else originalRange.singletonList(),
+                occurrencesToReplace = if (replaceAll) occurrences.map { it.toRange() } else listOf(originalRange),
                 argumentValue = expr!!
         )
     }

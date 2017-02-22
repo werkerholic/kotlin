@@ -166,7 +166,7 @@ private fun LexicalScope.getRelevantDescriptors(
     val nameAsName = Name.identifier(name)
     return when (declaration) {
         is KtProperty, is KtParameter, is PsiField -> getAllAccessibleVariables(nameAsName)
-        is KtClassOrObject, is PsiClass -> findClassifier(nameAsName, NoLookupLocation.FROM_IDE).singletonOrEmptyList()
+        is KtClassOrObject, is PsiClass -> listOfNotNull(findClassifier(nameAsName, NoLookupLocation.FROM_IDE))
         else -> emptyList()
     }
 }

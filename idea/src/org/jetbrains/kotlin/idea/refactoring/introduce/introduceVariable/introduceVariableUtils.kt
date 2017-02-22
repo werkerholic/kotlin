@@ -54,7 +54,7 @@ private fun getApplicableComponentFunctions(
     PrimitiveType.values().mapTo(forbiddenClasses) { builtIns.getPrimitiveArrayClassDescriptor(it) }
 
     (receiverType ?: context.getType(contextExpression))?.let {
-        if ((it.singletonList() + it.supertypes()).any {
+        if ((listOf(it) + it.supertypes()).any {
             val fqName = it.constructor.declarationDescriptor?.importableFqName
             forbiddenClasses.any { it.fqNameSafe == fqName }
         }) return emptyList()

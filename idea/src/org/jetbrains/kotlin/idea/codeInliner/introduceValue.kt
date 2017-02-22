@@ -93,7 +93,7 @@ internal fun MutableCodeToInline.introduceValue(
             val declaration = psiFactory.createDeclarationByPattern<KtVariableDeclaration>("val $0 = $1", name, value)
             statementsBefore.add(0, declaration)
 
-            val explicitType = valueType?.check {
+            val explicitType = valueType?.takeIf {
                 variableNeedsExplicitType(value, valueType, expressionToBeReplaced, resolutionScope, bindingContext)
             }
             if (explicitType != null) {

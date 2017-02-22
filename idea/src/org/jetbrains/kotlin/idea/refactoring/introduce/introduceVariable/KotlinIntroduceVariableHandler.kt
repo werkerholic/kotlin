@@ -562,11 +562,11 @@ object KotlinIntroduceVariableHandler : RefactoringActionHandler {
                     componentFunctions.map { suggestNamesForComponent(it, project, collectingValidator) }
                 }
                 else {
-                    KotlinNameSuggester.suggestNamesByExpressionAndType(expression,
-                                                                        substringInfo?.type,
-                                                                        bindingContext,
-                                                                        validator,
-                                                                        "value").singletonList()
+                    listOf(KotlinNameSuggester.suggestNamesByExpressionAndType(expression,
+                                                                               substringInfo?.type,
+                                                                               bindingContext,
+                                                                               validator,
+                                                                               "value"))
                 }
 
                 val introduceVariableContext = IntroduceVariableContext(

@@ -299,7 +299,7 @@ fun DeclarationDescriptor.fuzzyTypesForSmartCompletion(
 ): Collection<FuzzyType> {
     if (callTypeAndReceiver is CallTypeAndReceiver.CALLABLE_REFERENCE) {
         val lhs = callTypeAndReceiver.receiver?.let { bindingContext[BindingContext.DOUBLE_COLON_LHS, it] }
-        return (this as? CallableDescriptor)?.callableReferenceType(resolutionFacade, lhs).singletonOrEmptyList()
+        return listOfNotNull((this as? CallableDescriptor)?.callableReferenceType(resolutionFacade, lhs))
     }
 
     if (this is CallableDescriptor) {

@@ -38,11 +38,11 @@ abstract class KotlinSingleIntentionActionFactoryWithDelegate<E : KtElement, D :
             diagnostic: Diagnostic,
             quickFixDataFactory: () -> D?
     ): List<QuickFixWithDelegateFactory> {
-        return QuickFixWithDelegateFactory(actionPriority) factory@ {
+        return listOf(QuickFixWithDelegateFactory(actionPriority) factory@ {
             val originalElement = originalElementPointer.element ?: return@factory null
             val data = quickFixDataFactory() ?: return@factory null
             createFix(originalElement, data)
-        }.singletonList()
+        })
     }
 }
 

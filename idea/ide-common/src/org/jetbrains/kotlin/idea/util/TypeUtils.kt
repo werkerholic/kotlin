@@ -118,7 +118,7 @@ fun KotlinType.anonymousObjectSuperTypeOrNull(): KotlinType? {
 }
 
 fun KotlinType.getResolvableApproximations(scope: LexicalScope?, checkTypeParameters: Boolean): Sequence<KotlinType> {
-    return (singletonList() + TypeUtils.getAllSupertypes(this))
+    return (listOf(this) + TypeUtils.getAllSupertypes(this))
             .asSequence()
             .filter { it.isResolvableInScope(scope, checkTypeParameters) }
             .mapNotNull mapArgs@ {

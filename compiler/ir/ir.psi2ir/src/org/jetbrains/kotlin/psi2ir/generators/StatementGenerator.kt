@@ -70,7 +70,7 @@ class StatementGenerator(
             genStmt().assertCast()
 
     override fun visitExpression(expression: KtExpression, data: Nothing?): IrStatement =
-            createDummyExpression(expression, expression.javaClass.simpleName)
+            createDummyExpression(expression, expression::class.java.simpleName)
 
     override fun visitProperty(property: KtProperty, data: Nothing?): IrStatement {
         val variableDescriptor = getOrFail(BindingContext.VARIABLE, property)
@@ -289,7 +289,7 @@ class StatementGenerator(
                 else ->
                     IrErrorExpressionImpl(
                             expression.startOffset, expression.endOffset, getInferredTypeWithImplicitCastsOrFail(expression),
-                            expression.text + ": ${descriptor.name} ${descriptor.javaClass.simpleName}"
+                            expression.text + ": ${descriptor.name} ${descriptor::class.java.simpleName}"
                     )
             }
 

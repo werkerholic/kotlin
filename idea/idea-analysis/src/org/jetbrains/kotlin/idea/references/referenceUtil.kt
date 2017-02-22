@@ -56,7 +56,7 @@ val PsiReference.unwrappedTargets: Set<PsiElement>
 
         return when (this) {
             is PsiPolyVariantReference -> multiResolve(false).mapNotNullTo(HashSet<PsiElement>()) { it.element?.adjust() }
-            else -> emptyOrSingletonList(resolve()?.adjust()).toSet()
+            else -> listOfNotNull(resolve()?.adjust()).toSet()
         }
     }
 

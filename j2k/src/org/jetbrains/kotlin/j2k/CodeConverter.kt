@@ -81,7 +81,7 @@ class CodeConverter(
     fun convertLocalVariable(variable: PsiLocalVariable): LocalVariable {
         val isVal = canChangeType(variable)
         val type = typeConverter.convertVariableType(variable)
-        val explicitType = type.check { settings.specifyLocalVariableTypeByDefault || converter.shouldDeclareVariableType(variable, type, isVal) }
+        val explicitType = type.takeIf { settings.specifyLocalVariableTypeByDefault || converter.shouldDeclareVariableType(variable, type, isVal) }
         return LocalVariable(variable.declarationIdentifier(),
                              converter.convertAnnotations(variable),
                              converter.convertModifiers(variable, false),

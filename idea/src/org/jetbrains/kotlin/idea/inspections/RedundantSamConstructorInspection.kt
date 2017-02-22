@@ -179,7 +179,7 @@ class RedundantSamConstructorInspection : AbstractKotlinInspection() {
             for (staticFunWithSameName in containingClass.staticScope.getContributedFunctions(functionResolvedCall.resultingDescriptor.name, NoLookupLocation.FROM_IDE)) {
                 if (staticFunWithSameName is SamAdapterDescriptor<*>) {
                     if (isSamAdapterSuitableForCall(staticFunWithSameName, originalFunctionDescriptor, samConstructorCallArguments.size)) {
-                        return samConstructorCallArguments.check { canBeReplaced(functionCall, it) } ?: emptyList()
+                        return samConstructorCallArguments.takeIf { canBeReplaced(functionCall, it) } ?: emptyList()
                     }
                 }
             }
@@ -187,13 +187,13 @@ class RedundantSamConstructorInspection : AbstractKotlinInspection() {
             // SAM adapters for member functions
             val syntheticScopes = functionCall.getResolutionFacade().getFrontendService(SyntheticScopes::class.java)
             val syntheticExtensions = syntheticScopes.collectSyntheticMemberFunctions(
-                        containingClass.defaultType.singletonList(),
-                        functionResolvedCall.resultingDescriptor.name,
-                        NoLookupLocation.FROM_IDE)
+                    listOf(containingClass.defaultType),
+                    functionResolvedCall.resultingDescriptor.name,
+                    NoLookupLocation.FROM_IDE)
             for (syntheticExtension in syntheticExtensions) {
                 val samAdapter = syntheticExtension as? SamAdapterExtensionFunctionDescriptor ?: continue
                 if (isSamAdapterSuitableForCall(samAdapter, originalFunctionDescriptor, samConstructorCallArguments.size)) {
-                    return samConstructorCallArguments.check { canBeReplaced(functionCall, it) } ?: emptyList()
+                    return samConstructorCallArguments.takeIf { canBeReplaced(functionCall, it) } ?: emptyList()
                 }
             }
 
@@ -204,7 +204,7 @@ class RedundantSamConstructorInspection : AbstractKotlinInspection() {
                 = argument.toCallExpression()?.samConstructorValueArgument() != null
 
         private fun KtCallExpression.samConstructorValueArgument(): KtValueArgument? {
-            return valueArguments.singleOrNull()?.check { it.getArgumentExpression() is KtLambdaExpression }
+            return valueArguments.singleOrNull()?.takeIf { it.getArgumentExpression() is KtLambdaExpression }
         }
 
         private fun ValueArgument.toCallExpression(): KtCallExpression? {

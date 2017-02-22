@@ -72,7 +72,7 @@ class KotlinSpacingBuilder(val codeStyleSettings: CodeStyleSettings, val spacing
 
         fun lineBreakIfLineBreakInParent(numSpacesOtherwise: Int, allowBlankLines: Boolean = true) {
             newRule {
-                p, l, r ->
+                p, _, _ ->
                 Spacing.createDependentLFSpacing(numSpacesOtherwise, numSpacesOtherwise, p.textRange,
                                                  codeStyleSettings.KEEP_LINE_BREAKS,
                                                  if (allowBlankLines) codeStyleSettings.KEEP_BLANK_LINES_IN_CODE else 0)
@@ -80,7 +80,7 @@ class KotlinSpacingBuilder(val codeStyleSettings: CodeStyleSettings, val spacing
         }
 
         fun emptyLinesIfLineBreakInLeft(emptyLines: Int, numberOfLineFeedsOtherwise: Int = 1, numSpacesOtherwise: Int = 0) {
-            newRule { parent: ASTBlock, left: ASTBlock, right: ASTBlock ->
+            newRule { _: ASTBlock, left: ASTBlock, _: ASTBlock ->
                 val dependentSpacingRule = DependentSpacingRule(Trigger.HAS_LINE_FEEDS).registerData(Anchor.MIN_LINE_FEEDS, emptyLines + 1)
                 spacingBuilderUtil.createLineFeedDependentSpacing(numSpacesOtherwise,
                                                                   numSpacesOtherwise,
@@ -93,7 +93,7 @@ class KotlinSpacingBuilder(val codeStyleSettings: CodeStyleSettings, val spacing
         }
 
         fun spacing(spacing: Spacing) {
-            newRule { parent, left, right -> spacing }
+            newRule { _, _, _ -> spacing }
         }
 
         fun customRule(block: (parent: ASTBlock, left: ASTBlock, right: ASTBlock) -> Spacing?) {

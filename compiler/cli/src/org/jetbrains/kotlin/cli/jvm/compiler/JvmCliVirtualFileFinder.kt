@@ -61,6 +61,6 @@ class JvmCliVirtualFileFinder(
 
     private fun findBinaryClass(classId: ClassId, fileName: String): VirtualFile? =
             index.findClass(classId, acceptedRootTypes = JavaRoot.OnlyBinary) { dir, _ ->
-                dir.findChild(fileName)?.check(VirtualFile::isValid)
-            }?.check { it in scope }
+                dir.findChild(fileName)?.takeIf(VirtualFile::isValid)
+            }?.takeIf { it in scope }
 }

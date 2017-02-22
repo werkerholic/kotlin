@@ -168,7 +168,7 @@ class ConvertTextJavaCopyPasteProcessor : CopyPastePostProcessor<TextBlockTransf
         if (isParsedAsKotlinCode(text, pasteContext, project)) return null
 
         fun JavaContext.check(): JavaContext? {
-            return check { isParsedAsJavaCode(text, it, project) }
+            return takeIf { isParsedAsJavaCode(text, it, project) }
         }
 
         when (pasteContext) {

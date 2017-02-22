@@ -99,7 +99,7 @@ class KotlinInlineValHandler : InlineActionHandler() {
             return inlinedExpressions
         }
 
-        return expression.replaced(replacement).singletonList()
+        return listOf(expression.replaced(replacement))
     }
 
     override fun inlineElement(project: Project, editor: Editor?, element: PsiElement) {

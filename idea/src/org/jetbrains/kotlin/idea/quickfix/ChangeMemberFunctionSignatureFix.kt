@@ -254,7 +254,7 @@ class ChangeMemberFunctionSignatureFix private constructor(
 
         object MatchNames : ParameterChooser {
             override fun choose(parameter: ValueParameterDescriptor, superParameter: ValueParameterDescriptor): ValueParameterDescriptor? {
-                return superParameter.check { parameter.name == superParameter.name }
+                return superParameter.takeIf { parameter.name == superParameter.name }
             }
         }
 

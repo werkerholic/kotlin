@@ -50,7 +50,7 @@ object CreateClassFromConstructorCallActionFactory: CreateClassFromUsageFactory<
         val fullCallExpr = element.getQualifiedExpressionForSelectorOrThis()
         if (!fullCallExpr.getInheritableTypeInfo(context, moduleDescriptor, targetParent).second(classKind)) return emptyList()
 
-        return classKind.singletonList()
+        return listOf(classKind)
     }
 
     override fun extractFixData(element: KtCallExpression, diagnostic: Diagnostic): ClassInfo? {
