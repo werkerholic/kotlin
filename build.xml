@@ -1356,7 +1356,7 @@
     </target>
 
     <target name="pack-gradle-runtime">
-        <pack-runtime-jar jar-name="kotlin-runtime-gradle.jar" implementation-title="${manifest.impl.title.kotlin.jvm.runtime}">
+        <pack-runtime-jar jar-name="kotlin-stdlib-gradle.jar" implementation-title="${manifest.impl.title.kotlin.jvm.runtime}">
             <jar-content>
                 <fileset dir="${basedir}/libraries/tools/runtime/build/classes/main"/>
                 <fileset dir="${basedir}/libraries/stdlib/build/classes/main"/>
