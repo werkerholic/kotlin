@@ -900,7 +900,7 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
         );
         generateMethodCallTo(constructor, null, codegen.v);
         StackValue instance = StackValue.onStack(typeMapper.mapClass(companionObject));
-        StackValue.singleton(companionObject, typeMapper).store(instance, codegen.v, true);
+        StackValue.singleton(companionObject, typeMapper).storeWithArguments(instance, codegen.v, new LazyArguments());
     }
 
     private void generatePrimaryConstructor(final DelegationFieldsInfo delegationFieldsInfo) {
