@@ -13,3 +13,33 @@ class Test {
         BLACK, WHITE
     }
 }
+
+class Foo {
+    companion object Foo
+}
+
+class A {
+    interface B {
+        class A {
+            object B
+        }
+    }
+
+    object C {
+        interface C
+    }
+}
+
+class A2 {
+    class B {
+        class C {
+            class D {
+                class A2
+                class B
+                class Cme
+                class D
+                class E
+            }
+        }
+    }
+}
