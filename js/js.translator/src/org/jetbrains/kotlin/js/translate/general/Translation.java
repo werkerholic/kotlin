@@ -269,6 +269,7 @@ public final class Translation {
 
         Map<KtFile, JsProgramFragment> fragmentMap = new HashMap<KtFile, JsProgramFragment>();
         List<JsProgramFragment> fragments = new ArrayList<JsProgramFragment>();
+        List<JsProgramFragment> newFragments = new ArrayList<JsProgramFragment>();
 
         Map<KtFile, List<DeclarationDescriptor>> fileMemberScopes = new HashMap<KtFile, List<DeclarationDescriptor>>();
 
@@ -281,6 +282,7 @@ public final class Translation {
                 List<DeclarationDescriptor> fileMemberScope = new ArrayList<DeclarationDescriptor>();
                 translateFile(context, file, fileMemberScope);
                 fragments.add(staticContext.getFragment());
+                newFragments.add(staticContext.getFragment());
                 fragmentMap.put(file, staticContext.getFragment());
                 fileMemberScopes.put(file, fileMemberScope);
                 merger.addFragment(staticContext.getFragment());
@@ -295,6 +297,7 @@ public final class Translation {
 
         JsProgramFragment testFragment = mayBeGenerateTests(config, bindingTrace, moduleDescriptor);
         fragments.add(testFragment);
+        newFragments.add(testFragment);
         merger.addFragment(testFragment);
         rootFunction.getParameters().add(new JsParameter(internalModuleName));
 
@@ -303,6 +306,7 @@ public final class Translation {
                     bindingTrace, config, moduleDescriptor, mainCallParameters.arguments());
             if (mainCallFragment != null) {
                 fragments.add(mainCallFragment);
+                newFragments.add(mainCallFragment);
                 merger.addFragment(mainCallFragment);
             }
         }
@@ -332,7 +336,8 @@ public final class Translation {
         block.getStatements().addAll(wrapIfNecessary(config.getModuleId(), rootFunction, importedModuleList, program,
                                                      config.getModuleKind()));
 
-        return new AstGenerationResult(program, internalModuleName, fragments, fragmentMap, fileMemberScopes, importedModuleList);
+        return new AstGenerationResult(program, internalModuleName, fragments, fragmentMap, newFragments,
+                                       fileMemberScopes, importedModuleList);
     }
 
     private static boolean isBuiltinModule(@NotNull List<JsProgramFragment> fragments) {
