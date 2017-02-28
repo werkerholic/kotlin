@@ -237,10 +237,17 @@ abstract class BasicBoxTest(
             translateFiles(allTranslationUnits, recompiledOutputFile, recompiledConfig)
 
             val originalOutput = FileUtil.loadFile(outputFile)
-            val recompiledOutput = FileUtil.loadFile(recompiledOutputFile)
+            val recompiledOutput = removeRecompiledSuffix(FileUtil.loadFile(recompiledOutputFile))
             TestCase.assertEquals("Output file changed after recompilation", originalOutput, recompiledOutput)
+
+            val originalSourceMap = FileUtil.loadFile(File(outputFile.parentFile, outputFile.name + ".map"))
+            val recompiledSourceMap = removeRecompiledSuffix(
+                    FileUtil.loadFile(File(recompiledOutputFile.parentFile, recompiledOutputFile.name + ".map")))
+            TestCase.assertEquals("Source map file changed after recompilation", originalSourceMap, recompiledSourceMap)
         }
     }
+
+    private fun removeRecompiledSuffix(text: String): String = text.replace("-recompiled.js", ".js")
 
     protected fun translateFiles(units: List<TranslationUnit>, outputFile: File, config: JsConfig) {
         val translator = K2JSTranslator(config)
@@ -320,10 +327,10 @@ abstract class BasicBoxTest(
         configuration.put(JSConfigurationKeys.MODULE_KIND, module.moduleKind)
         configuration.put(JSConfigurationKeys.TARGET, EcmaVersion.v5)
 
-        //configuration.put(JSConfigurationKeys.SOURCE_MAP, shouldGenerateSourceMap())
         val hasFilesToRecompile = module.hasFilesToRecompile
         configuration.put(JSConfigurationKeys.META_INFO, multiModule)
         configuration.put(JSConfigurationKeys.SERIALIZE_FRAGMENTS, hasFilesToRecompile)
+        configuration.put(JSConfigurationKeys.SOURCE_MAP, hasFilesToRecompile)
 
         if (additionalMetadata != null) {
             configuration.put(JSConfigurationKeys.FALLBACK_METADATA, additionalMetadata.map { FileUtil.loadFileBytes(it) })
