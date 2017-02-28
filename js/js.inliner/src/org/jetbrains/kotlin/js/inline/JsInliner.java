@@ -86,7 +86,7 @@ public class JsInliner extends JsVisitorWithContextImpl {
         FunctionReader functionReader = new FunctionReader((LibrarySourcesConfig) config, currentModuleName, fragments);
         JsInliner inliner = new JsInliner(functions, accessors, functionReader, trace);
         for (JsProgramFragment fragment : fragmentsToProcess) {
-            inliner.inliningContexts.push(inliner.new JsInliningContext(null, fragment.getScope()));
+            inliner.inliningContexts.push(inliner.new JsInliningContext(null));
             inliner.accept(fragment.getDeclarationBlock());
 
             // There can be inlined function in top-level initializers, we need to optimize them as well
@@ -113,7 +113,7 @@ public class JsInliner extends JsVisitorWithContextImpl {
 
     @Override
     public boolean visit(@NotNull JsFunction function, @NotNull JsContext context) {
-        inliningContexts.push(new JsInliningContext(function, function.getScope()));
+        inliningContexts.push(new JsInliningContext(function));
         assert !inProcessFunctions.contains(function): "Inliner has revisited function";
         inProcessFunctions.add(function);
 
@@ -188,12 +188,11 @@ public class JsInliner extends JsVisitorWithContextImpl {
         // at top level of js ast, contexts stack can be empty,
         // but there is no inline calls anyway
         if(!inliningContexts.isEmpty()) {
-            JsScope scope = getFunctionContext().getScope();
             int i = 0;
 
             while (i < statements.size()) {
                 List<JsStatement> additionalStatements =
-                        ExpressionDecomposer.preserveEvaluationOrder(scope, statements.get(i), canBeExtractedByInliner);
+                        ExpressionDecomposer.preserveEvaluationOrder(statements.get(i), canBeExtractedByInliner);
                 statements.addAll(i, additionalStatements);
                 i += additionalStatements.size() + 1;
             }
@@ -300,9 +299,9 @@ public class JsInliner extends JsVisitorWithContextImpl {
         @Nullable
         public final JsFunction function;
 
-        JsInliningContext(@Nullable JsFunction function, @NotNull JsScope scope) {
+        JsInliningContext(@Nullable JsFunction function) {
             this.function = function;
-            functionContext = new FunctionContext(scope, functionReader) {
+            functionContext = new FunctionContext(functionReader) {
                 @Nullable
                 @Override
                 protected JsFunction lookUpStaticFunction(@Nullable JsName functionName) {
@@ -320,8 +319,7 @@ public class JsInliner extends JsVisitorWithContextImpl {
         @NotNull
         @Override
         public NamingContext newNamingContext() {
-            JsScope scope = getFunctionContext().getScope();
-            return new NamingContext(scope, getStatementContext());
+            return new NamingContext(getStatementContext());
         }
 
         @NotNull
