@@ -29,7 +29,12 @@ external fun <T : Any> jsClass(): JsClass<T>
 
 @Deprecated("Use class literal and extension property `js` instead.", replaceWith = ReplaceWith("this::class.js"), level = DeprecationLevel.WARNING)
 val <T : Any> T.jsClass: JsClass<T>
-    get() = js("Object").getPrototypeOf(this).constructor
+    get() = when (jsTypeOf(this)) {
+        "string" -> js("String")
+        "number" -> js("Number")
+        "boolean" -> js("Boolean")
+        else -> js("Object").getPrototypeOf(this).constructor
+    }
 
 val <T : Any> KClass<T>.js: JsClass<T>
     get() = (this as KClassImpl<T>).jClass
