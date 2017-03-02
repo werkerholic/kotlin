@@ -19,7 +19,6 @@ package org.jetbrains.kotlin.builtins
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.serialization.builtins.BuiltInsProtoBuf
-import org.jetbrains.kotlin.serialization.deserialization.ClassDeserializer
 import org.jetbrains.kotlin.serialization.deserialization.DeserializedPackageFragment
 import org.jetbrains.kotlin.serialization.deserialization.NameResolverImpl
 import org.jetbrains.kotlin.serialization.deserialization.descriptors.DeserializedPackageMemberScope
@@ -55,7 +54,7 @@ class BuiltInsPackageFragment(
             DeserializedPackageMemberScope(
                     this, proto.`package`, nameResolver, containerSource = null, components = components,
                     classNames = { classDataFinder.allClassIds.filter { classId ->
-                        !classId.isNestedClass && classId !in ClassDeserializer.BLACK_LIST
+                        !classId.isNestedClass && classId !in components.classBlackList
                     }.map { it.shortClassName } }
             )
 }

@@ -16,9 +16,11 @@
 
 package org.jetbrains.kotlin.load.kotlin
 
+import org.jetbrains.kotlin.builtins.KotlinBuiltIns
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.incremental.components.LookupTracker
 import org.jetbrains.kotlin.load.java.lazy.LazyJavaPackageFragmentProvider
+import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.platform.JvmBuiltIns
 import org.jetbrains.kotlin.serialization.deserialization.*
 import org.jetbrains.kotlin.storage.StorageManager
@@ -44,9 +46,21 @@ class DeserializationComponentsForJava(
         components = DeserializationComponents(
                 storageManager, moduleDescriptor, configuration, classDataFinder, annotationAndConstantLoader, packageFragmentProvider,
                 LocalClassifierTypeSettings.Default, errorReporter, lookupTracker, JavaFlexibleTypeDeserializer,
-                emptyList(), notFoundClasses,
+                emptyList(), notFoundClasses, BLACK_LIST,
                 additionalClassPartsProvider = jvmBuiltIns?.settings ?: AdditionalClassPartsProvider.None,
                 platformDependentDeclarationFilter = jvmBuiltIns?.settings ?: PlatformDependentDeclarationFilter.NoPlatformDependent
+        )
+    }
+
+    companion object {
+        /**
+         * FQ names of classes that should be ignored during deserialization.
+         *
+         * We ignore kotlin.Cloneable because since Kotlin 1.1, the descriptor for it is created via JvmBuiltInClassDescriptorFactory,
+         * but the metadata is still serialized for kotlin-reflect 1.0 to work (see BuiltInsSerializer.kt).
+         */
+        val BLACK_LIST = setOf(
+                ClassId.topLevel(KotlinBuiltIns.FQ_NAMES.cloneable.toSafe())
         )
     }
 }

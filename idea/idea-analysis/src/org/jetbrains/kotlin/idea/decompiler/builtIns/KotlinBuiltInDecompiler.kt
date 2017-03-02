@@ -31,10 +31,10 @@ import org.jetbrains.kotlin.idea.decompiler.common.createIncompatibleAbiVersionD
 import org.jetbrains.kotlin.idea.decompiler.textBuilder.DecompiledText
 import org.jetbrains.kotlin.idea.decompiler.textBuilder.buildDecompiledText
 import org.jetbrains.kotlin.idea.decompiler.textBuilder.defaultDecompilerRendererOptions
+import org.jetbrains.kotlin.load.kotlin.DeserializationComponentsForJava
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.renderer.DescriptorRenderer
 import org.jetbrains.kotlin.serialization.builtins.BuiltInsProtoBuf
-import org.jetbrains.kotlin.serialization.deserialization.ClassDeserializer
 import org.jetbrains.kotlin.serialization.deserialization.MetadataPackageFragment
 import org.jetbrains.kotlin.serialization.deserialization.NameResolverImpl
 import org.jetbrains.kotlin.utils.addIfNotNull
@@ -103,7 +103,7 @@ sealed class BuiltInDefinitionFile {
         val classesToDecompile =
                 proto.class_List.filter { proto ->
                     val classId = nameResolver.getClassId(proto.fqName)
-                    !classId.isNestedClass && classId !in ClassDeserializer.BLACK_LIST
+                    !classId.isNestedClass && classId !in DeserializationComponentsForJava.BLACK_LIST
                 }.let { classes ->
                     if (isMetadata || !FILTER_OUT_CLASSES_EXISTING_AS_JVM_CLASS_FILES) classes
                     else classes.filter { classProto ->

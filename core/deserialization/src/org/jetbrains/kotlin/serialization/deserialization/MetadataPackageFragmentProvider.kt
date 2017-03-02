@@ -55,7 +55,7 @@ class MetadataPackageFragmentProvider(
                 LookupTracker.Companion.DO_NOTHING,
                 FlexibleTypeDeserializer.ThrowException,
                 emptyList(),
-                notFoundClasses, AdditionalClassPartsProvider.None, PlatformDependentDeclarationFilter.All
+                notFoundClasses
         )
     }
 

@@ -19,6 +19,7 @@ package org.jetbrains.kotlin.builtins
 import org.jetbrains.kotlin.builtins.functions.BuiltInFictitiousFunctionClassFactory
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.incremental.components.LookupTracker
+import org.jetbrains.kotlin.load.kotlin.DeserializationComponentsForJava
 import org.jetbrains.kotlin.load.kotlin.KotlinClassFinder
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.serialization.deserialization.*
@@ -48,7 +49,10 @@ class JvmBuiltInsPackageFragmentProvider(
                         BuiltInFictitiousFunctionClassFactory(storageManager, moduleDescriptor),
                         JvmBuiltInClassDescriptorFactory(storageManager, moduleDescriptor)
                 ),
-                notFoundClasses, additionalClassPartsProvider, platformDependentDeclarationFilter
+                notFoundClasses,
+                DeserializationComponentsForJava.BLACK_LIST,
+                additionalClassPartsProvider,
+                platformDependentDeclarationFilter
         )
     }
 
