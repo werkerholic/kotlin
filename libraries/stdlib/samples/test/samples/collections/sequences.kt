@@ -36,24 +36,21 @@ class Sequences {
 
         @Sample
         fun generateSequenceWithLazySeed() {
-            open class LList<out T>
-            data class Node<out T>(val head: T, val tail: LList<T>): LList<T>()
-            class Empty : LList<Nothing>()
+            class LinkedValue<T>(val value: T, val next: LinkedValue<T>? = null)
 
-            fun <T> LList<T>.nodeSequence(): Sequence<Node<T>> = generateSequence(
-                seedFunction = { this as? Node },   // if this is Node return it, otherwise null
-                nextFunction = { it.tail as? Node } // if tail is Node return it, otherwise null
+            fun <T> LinkedValue<T>?.asSequence(): Sequence<LinkedValue<T>> = generateSequence(
+                    seedFunction = { this },
+                    nextFunction = { it.next }
             )
 
-            fun <T> LList<T>.valueSequence(): Sequence<T> = nodeSequence().map { it.head }
+            fun <T> LinkedValue<T>?.valueSequence(): Sequence<T> = asSequence().map { it.value }
 
-            val emptyLList = Empty()
-            val singleItemLList = Node(42, emptyLList)
-            val twoItemLList = Node(24, singleItemLList)
+            val singleItem = LinkedValue(42)
+            val twoItems = LinkedValue(24, singleItem)
 
-            assertPrints(emptyLList.valueSequence().toList(), "[]")
-            assertPrints(singleItemLList.valueSequence().toList(), "[42]")
-            assertPrints(twoItemLList.valueSequence().toList(), "[24, 42]")
+            assertPrints(twoItems.valueSequence().toList(), "[24, 42]")
+            assertPrints(singleItem.valueSequence().toList(), "[42]")
+            assertPrints(singleItem.next.valueSequence().toList(), "[]")
         }
 
         @Sample
