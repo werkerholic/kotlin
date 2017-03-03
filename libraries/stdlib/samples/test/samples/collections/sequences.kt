@@ -14,7 +14,8 @@ class Sequences {
             var count = 3
 
             val sequence = generateSequence {
-                (count--).takeIf { it > 0 }
+                (count--).takeIf { it > 0 } // will return null, when value becomes non-positive,
+                                            // and that will terminate the sequence
             }
 
             assertPrints(sequence.toList(), "[3, 2, 1]")
@@ -60,6 +61,38 @@ class Sequences {
         }
 
         @Sample
+        fun sequenceFromCollection() {
+            val collection = listOf('a', 'b', 'c')
+            val sequence = collection.asSequence()
+
+            assertPrints(sequence.joinToString(), "a, b, c")
+        }
+
+        @Sample
+        fun sequenceFromArray() {
+            val array = arrayOf('a', 'b', 'c')
+            val sequence = array.asSequence()
+
+            assertPrints(sequence.joinToString(), "a, b, c")
+        }
+
+        @Sample
+        fun sequenceFromIterator() {
+            val array = arrayOf(1, 2, 3)
+
+            // create a sequence with a function, returning an iterator
+            val sequence1 = Sequence { array.iterator() }
+            assertPrints(sequence1.joinToString(), "1, 2, 3")
+            assertPrints(sequence1.drop(1).joinToString(), "2, 3")
+
+            // create a sequence from an existing iterator
+            // can be iterated only once
+            val sequence2 = array.iterator().asSequence()
+            assertPrints(sequence2.joinToString(), "1, 2, 3")
+            // sequence2.drop(1).joinToString() // <- iterating sequence second time will fail
+        }
+
+        @Sample
         fun buildFibonacciSequence() {
             fun fibonacci() = buildSequence {
                 var terms = Pair(0, 1)
@@ -90,32 +123,19 @@ class Sequences {
         }
 
         @Sample
-        fun sequenceFromIterator() {
-            val array = arrayOf(2, 3, 1)
+        fun buildIterator() {
+            val collection = listOf(1, 2, 3)
+            val wrappedCollection = object : AbstractCollection<Any>() {
+                override val size: Int = collection.size + 2
 
-            // create a sequence with function, returning as iterator
-            val sequence = Sequence { array.iterator() }
-            // same as
-            val sequence2 = array.asSequence()
-            // same as
-            val sequence3 = Sequence {
-                buildIterator {
-                    yield(2)
-                    yield(3)
-                    yield(1)
+                override fun iterator(): Iterator<Any> = buildIterator {
+                    yield("first")
+                    yieldAll(collection)
+                    yield("last")
                 }
             }
 
-            assertPrints(sequence.toList(), "[2, 3, 1]")
-            assertPrints(sequence2.toList(), "[2, 3, 1]")
-            assertPrints(sequence3.toList(), "[2, 3, 1]")
-
-            // but not same as
-            val sequence4 = array.iterator().asSequence()
-            assertPrints(sequence4.toList(), "[2, 3, 1]")
-
-            // because the latter can be iterated only once
-            // sequence4.forEach {  }  // <- iterating that sequence second time will fail
+            assertPrints(wrappedCollection, "[first, 1, 2, 3, last]")
         }
 
     }

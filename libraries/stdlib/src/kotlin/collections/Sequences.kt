@@ -558,6 +558,7 @@ private class ConstrainedOnceSequence<T>(sequence: Sequence<T>) : Sequence<T> {
  * The returned sequence is constrained to be iterated only once.
  *
  * @see constrainOnce
+ * @see kotlin.coroutines.experimental.buildSequence
  *
  * @sample samples.collections.Sequences.Building.generateSequence
  */
@@ -573,6 +574,8 @@ public fun <T : Any> generateSequence(nextFunction: () -> T?): Sequence<T> {
  * If [seed] is `null`, an empty sequence is produced.
  *
  * The sequence can be iterated multiple times, each time starting with [seed].
+ *
+ * @see kotlin.coroutines.experimental.buildSequence
  *
  * @sample samples.collections.Sequences.Building.generateSequenceWithSeed
  */
@@ -591,6 +594,8 @@ public fun <T : Any> generateSequence(seed: T?, nextFunction: (T) -> T?): Sequen
  * If [seedFunction] returns `null`, an empty sequence is produced.
  *
  * The sequence can be iterated multiple times.
+ *
+ * @see kotlin.coroutines.experimental.buildSequence
  *
  * @sample samples.collections.Sequences.Building.generateSequenceWithLazySeed
  */

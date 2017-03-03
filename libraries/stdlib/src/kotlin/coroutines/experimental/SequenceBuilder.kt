@@ -23,6 +23,8 @@ import kotlin.coroutines.experimental.intrinsics.*
 /**
  * Builds a [Sequence] lazily yielding values one by one.
  *
+ * @see kotlin.sequences.generateSequence
+ *
  * @sample samples.collections.Sequences.Building.buildSequenceYieldAll
  * @sample samples.collections.Sequences.Building.buildFibonacciSequence
  */
@@ -32,7 +34,7 @@ public fun <T> buildSequence(builderAction: suspend SequenceBuilder<T>.() -> Uni
 /**
  * Builds an [Iterator] lazily yielding values one by one.
  *
- * @sample samples.collections.Sequences.Building.sequenceFromIterator
+ * @sample samples.collections.Sequences.Building.buildIterator
  */
 @SinceKotlin("1.1")
 public fun <T> buildIterator(builderAction: suspend SequenceBuilder<T>.() -> Unit): Iterator<T> {
