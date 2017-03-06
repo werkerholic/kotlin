@@ -16,6 +16,7 @@
 
 package org.jetbrains.kotlin.psi2ir.generators
 
+import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.TypeParameterDescriptor
 import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor
@@ -31,6 +32,7 @@ import org.jetbrains.kotlin.psi.psiUtil.endOffset
 import org.jetbrains.kotlin.psi.psiUtil.startOffset
 import org.jetbrains.kotlin.psi2ir.intermediate.*
 import org.jetbrains.kotlin.resolve.BindingContext
+import org.jetbrains.kotlin.resolve.ImportedFromObjectCallableDescriptor
 import org.jetbrains.kotlin.resolve.calls.callResolverUtil.getSuperCallExpression
 import org.jetbrains.kotlin.resolve.calls.callUtil.isSafeCall
 import org.jetbrains.kotlin.resolve.calls.model.*
@@ -100,12 +102,22 @@ fun StatementGenerator.generateBackingFieldReceiver(
 
 fun StatementGenerator.generateCallReceiver(
         ktDefaultElement: KtElement,
+        calleeDescriptor: CallableDescriptor,
         dispatchReceiver: ReceiverValue?,
         extensionReceiver: ReceiverValue?,
         isSafe: Boolean,
         isAssignmentReceiver: Boolean = false
 ) : CallReceiver {
-    val dispatchReceiverValue = generateReceiverOrNull(ktDefaultElement, dispatchReceiver)
+    val dispatchReceiverValue: IntermediateValue? =
+            if (calleeDescriptor is ImportedFromObjectCallableDescriptor<*>) {
+                assert(dispatchReceiver == null) {
+                    "Call for member imported from object $calleeDescriptor has non-null dispatch receiver $dispatchReceiver"
+                }
+                generateReceiverForCalleeImportedFromObject(ktDefaultElement.startOffset, ktDefaultElement.endOffset, calleeDescriptor)
+            }
+            else
+                generateReceiverOrNull(ktDefaultElement, dispatchReceiver)
+
     val extensionReceiverValue = generateReceiverOrNull(ktDefaultElement, extensionReceiver)
 
     return when {
@@ -116,6 +128,18 @@ fun StatementGenerator.generateCallReceiver(
                              extensionReceiverValue, dispatchReceiverValue, isAssignmentReceiver)
         else ->
             throw AssertionError("Safe call should have an explicit receiver: ${ktDefaultElement.text}")
+    }
+}
+
+private fun generateReceiverForCalleeImportedFromObject(
+        startOffset: Int,
+        endOffset: Int,
+        calleeDescriptor: ImportedFromObjectCallableDescriptor<*>
+): ExpressionValue {
+    val objectDescriptor = calleeDescriptor.containingObject
+    val objectType = objectDescriptor.defaultType
+    return generateExpressionValue(objectType) {
+        IrGetObjectValueImpl(startOffset, endOffset, objectType, objectDescriptor)
     }
 }
 
@@ -195,9 +219,10 @@ fun StatementGenerator.pregenerateCallWithReceivers(resolvedCall: ResolvedCall<*
     val call = CallBuilder(resolvedCall)
 
     call.callReceiver = generateCallReceiver(resolvedCall.call.callElement,
+                                             resolvedCall.resultingDescriptor,
                                              resolvedCall.dispatchReceiver,
                                              resolvedCall.extensionReceiver,
-                                             resolvedCall.call.isSafeCall())
+                                             isSafe = resolvedCall.call.isSafeCall())
 
     call.superQualifier = getSuperQualifier(resolvedCall)
 
