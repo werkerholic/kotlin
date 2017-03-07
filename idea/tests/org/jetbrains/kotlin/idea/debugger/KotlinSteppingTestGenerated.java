@@ -1142,6 +1142,18 @@ public class KotlinSteppingTestGenerated extends AbstractKotlinSteppingTest {
             doCustomTest(fileName);
         }
 
+        @TestMetadata("smartStepIntoWithDelegates.kt")
+        public void testSmartStepIntoWithDelegates() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/debugger/tinyApp/src/stepping/custom/smartStepIntoWithDelegates.kt");
+            doCustomTest(fileName);
+        }
+
+        @TestMetadata("smartStepIntoWithOverrides.kt")
+        public void testSmartStepIntoWithOverrides() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/debugger/tinyApp/src/stepping/custom/smartStepIntoWithOverrides.kt");
+            doCustomTest(fileName);
+        }
+
         @TestMetadata("stepIntoStdlibInlineFun2step.kt")
         public void testStepIntoStdlibInlineFun2step() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("idea/testData/debugger/tinyApp/src/stepping/custom/stepIntoStdlibInlineFun2step.kt");
