@@ -56,9 +56,11 @@ artifacts {
 }
 
 compileBuiltinsKotlin {
+    compilerJarFile = bootstrapCompilerFile
     kotlinOptions {
         jdkHome = JDK_16
         freeCompilerArgs = [
+                "-version",
                 "-Xallow-kotlin-package",
                 "-Xdump-declarations-to", "${buildDir}/runtime-declarations.json".toString(),
                 "-cp", "${rootDir}/../dist/builtins".toString(),
@@ -70,6 +72,7 @@ compileKotlin {
     kotlinOptions {
         jdkHome = JDK_16
         freeCompilerArgs = [
+                "-version",
                 "-Xallow-kotlin-package",
                 "-Xmultifile-parts-inherit",
                 "-Xdump-declarations-to", "${buildDir}/stdlib-declarations.json".toString(),
