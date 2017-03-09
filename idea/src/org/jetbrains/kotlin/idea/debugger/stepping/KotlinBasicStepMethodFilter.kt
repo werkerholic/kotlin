@@ -92,6 +92,6 @@ class KotlinBasicStepMethodFilter(
     }
 }
 
-fun compareDescriptors(d1: DeclarationDescriptor, d2: DeclarationDescriptor): Boolean {
+private fun compareDescriptors(d1: DeclarationDescriptor, d2: DeclarationDescriptor): Boolean {
     return d1 == d2 || d1.original == d2.original
 }
