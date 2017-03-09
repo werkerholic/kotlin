@@ -41,6 +41,15 @@ fun test3() {
 fun test4() {
     val a: A = B()
     val d: D = D()
+    // SMART_STEP_INTO_BY_INDEX: 1
+    // RESUME: 1
+    //Breakpoint!
+    a.foo() + d.foo()                        // 8
+}
+
+fun test5() {
+    val a: A = B()
+    val d: D = D()
     // SMART_STEP_INTO_BY_INDEX: 2
     // RESUME: 1
     //Breakpoint!
@@ -52,5 +61,6 @@ fun main(args: Array<String>) {
     test2()
     test3()
     test4()
+    test5()
 }
 
