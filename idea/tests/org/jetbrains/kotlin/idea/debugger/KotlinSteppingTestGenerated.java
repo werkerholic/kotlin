@@ -1088,6 +1088,12 @@ public class KotlinSteppingTestGenerated extends AbstractKotlinSteppingTest {
             doCustomTest(fileName);
         }
 
+        @TestMetadata("smartStepIntoComponentFunction.kt")
+        public void testSmartStepIntoComponentFunction() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/debugger/tinyApp/src/stepping/custom/smartStepIntoComponentFunction.kt");
+            doCustomTest(fileName);
+        }
+
         @TestMetadata("smartStepIntoConstructor.kt")
         public void testSmartStepIntoConstructor() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("idea/testData/debugger/tinyApp/src/stepping/custom/smartStepIntoConstructor.kt");

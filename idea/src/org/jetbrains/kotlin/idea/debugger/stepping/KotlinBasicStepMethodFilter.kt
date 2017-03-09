@@ -36,12 +36,6 @@ class KotlinBasicStepMethodFilter(
         val targetDescriptor: CallableMemberDescriptor,
         val myCallingExpressionLines: Range<Int>
 ) : NamedMethodFilter {
-    init {
-        if (targetDescriptor.kind == SYNTHESIZED) {
-            throw IllegalArgumentException("Target descriptor shouldn't be synthesised")
-        }
-    }
-
     private val myTargetMethodName = when (targetDescriptor) {
         is ClassDescriptor, is ConstructorDescriptor -> "<init>"
         is PropertyAccessorDescriptor -> JvmAbi.getterName(targetDescriptor.correspondingProperty.name.asString())
@@ -84,10 +78,8 @@ class KotlinBasicStepMethodFilter(
         val baseDescriptors = when (targetDescriptor.kind) {
             DELEGATION, FAKE_OVERRIDE ->
                 targetDescriptor.getDirectlyOverriddenDeclarations()
-            DECLARATION ->
+            DECLARATION, SYNTHESIZED ->
                 listOf(targetDescriptor)
-            SYNTHESIZED ->
-                error("Should never be there because of check in init")
         }
 
         if (baseDescriptors.any { baseOfTarget -> compareDescriptors(baseOfTarget, currentDescriptor) }) {
