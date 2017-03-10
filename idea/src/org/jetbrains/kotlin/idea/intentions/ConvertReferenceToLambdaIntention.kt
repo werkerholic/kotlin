@@ -48,7 +48,7 @@ class ConvertReferenceToLambdaIntention : SelfTargetingOffsetIndependentIntentio
         val parameterNamesAndTypes = targetDescriptor.valueParameters.map { it.name.asString() to it.type }
         val receiverExpression = element.receiverExpression
         val receiverType = receiverExpression?.let {
-            (context[DOUBLE_COLON_LHS, it] as? DoubleColonLHS.Type)?.type ?: return
+            (context[DOUBLE_COLON_LHS, it] as? DoubleColonLHS.Type)?.type
         }
         val receiverNameAndType = receiverType?.let { KotlinNameSuggester.suggestNamesByType(it, validator = {
             name -> name !in parameterNamesAndTypes.map { it.first }
@@ -117,13 +117,5 @@ class ConvertReferenceToLambdaIntention : SelfTargetingOffsetIndependentIntentio
         }
     }
 
-    override fun isApplicableTo(element: KtCallableReferenceExpression): Boolean {
-        val context = element.analyze(BodyResolveMode.PARTIAL)
-        val receiverExpression = element.receiverExpression
-        if (receiverExpression != null) {
-            val lhs = context[DOUBLE_COLON_LHS, receiverExpression]
-            if (lhs is DoubleColonLHS.Expression) return false
-        }
-        return true
-    }
+    override fun isApplicableTo(element: KtCallableReferenceExpression) = true
 }
