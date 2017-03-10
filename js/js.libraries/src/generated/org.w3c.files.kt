@@ -22,6 +22,9 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
+/**
+ * [MDN Blob](https://developer.mozilla.org/en/docs/Web/API/Blob)
+ */
 public external open class Blob(blobParts: Array<dynamic> = definedExternally, options: BlobPropertyBag = definedExternally) {
     open val size: Int
     open val type: String
@@ -45,6 +48,9 @@ public inline fun BlobPropertyBag(type: String? = ""): BlobPropertyBag {
     return o
 }
 
+/**
+ * [MDN File](https://developer.mozilla.org/en/docs/Web/API/File)
+ */
 public external open class File(fileBits: Array<dynamic>, fileName: String, options: FilePropertyBag = definedExternally) : Blob {
     open val name: String
     open val lastModified: Int
@@ -66,11 +72,17 @@ public inline fun FilePropertyBag(lastModified: Int? = null, type: String? = "")
     return o
 }
 
+/**
+ * [MDN FileList](https://developer.mozilla.org/en/docs/Web/API/FileList)
+ */
 public external abstract class FileList : ItemArrayLike<File> {
     override fun item(index: Int): File?
 }
 @kotlin.internal.InlineOnly inline operator fun FileList.get(index: Int): File? = asDynamic()[index]
 
+/**
+ * [MDN FileReader](https://developer.mozilla.org/en/docs/Web/API/FileReader)
+ */
 public external open class FileReader : EventTarget {
     open val readyState: Short
     open val result: dynamic
@@ -94,6 +106,9 @@ public external open class FileReader : EventTarget {
     }
 }
 
+/**
+ * [MDN FileReaderSync](https://developer.mozilla.org/en/docs/Web/API/FileReaderSync)
+ */
 public external open class FileReaderSync {
     fun readAsArrayBuffer(blob: Blob): ArrayBuffer
     fun readAsBinaryString(blob: Blob): String

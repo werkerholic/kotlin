@@ -22,6 +22,9 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
+/**
+ * [MDN CSSStyleDeclaration](https://developer.mozilla.org/en/docs/Web/API/CSSStyleDeclaration)
+ */
 public external abstract class CSSStyleDeclaration : ItemArrayLike<String> {
     open var cssText: String
     open val parentRule: CSSRule?
@@ -270,6 +273,9 @@ public external abstract class MediaList : ItemArrayLike<String> {
 }
 @kotlin.internal.InlineOnly inline operator fun MediaList.get(index: Int): String? = asDynamic()[index]
 
+/**
+ * [MDN StyleSheet](https://developer.mozilla.org/en/docs/Web/API/StyleSheet)
+ */
 public external abstract class StyleSheet {
     open val type: String
     open val href: String?
@@ -280,6 +286,9 @@ public external abstract class StyleSheet {
     open var disabled: Boolean
 }
 
+/**
+ * [MDN CSSStyleSheet](https://developer.mozilla.org/en/docs/Web/API/CSSStyleSheet)
+ */
 public external abstract class CSSStyleSheet : StyleSheet {
     open val ownerRule: CSSRule?
     open val cssRules: CSSRuleList
@@ -287,20 +296,32 @@ public external abstract class CSSStyleSheet : StyleSheet {
     fun deleteRule(index: Int): Unit
 }
 
+/**
+ * [MDN StyleSheetList](https://developer.mozilla.org/en/docs/Web/API/StyleSheetList)
+ */
 public external abstract class StyleSheetList : ItemArrayLike<StyleSheet> {
     override fun item(index: Int): StyleSheet?
 }
 @kotlin.internal.InlineOnly inline operator fun StyleSheetList.get(index: Int): StyleSheet? = asDynamic()[index]
 
+/**
+ * [MDN LinkStyle](https://developer.mozilla.org/en/docs/Web/API/LinkStyle)
+ */
 public external interface LinkStyle {
     val sheet: StyleSheet?
 }
 
+/**
+ * [MDN CSSRuleList](https://developer.mozilla.org/en/docs/Web/API/CSSRuleList)
+ */
 public external abstract class CSSRuleList : ItemArrayLike<CSSRule> {
     override fun item(index: Int): CSSRule?
 }
 @kotlin.internal.InlineOnly inline operator fun CSSRuleList.get(index: Int): CSSRule? = asDynamic()[index]
 
+/**
+ * [MDN CSSRule](https://developer.mozilla.org/en/docs/Web/API/CSSRule)
+ */
 public external abstract class CSSRule {
     open val type: Short
     open var cssText: String
@@ -319,6 +340,9 @@ public external abstract class CSSRule {
     }
 }
 
+/**
+ * [MDN CSSStyleRule](https://developer.mozilla.org/en/docs/Web/API/CSSStyleRule)
+ */
 public external abstract class CSSStyleRule : CSSRule {
     open var selectorText: String
     open val style: CSSStyleDeclaration
@@ -330,16 +354,25 @@ public external abstract class CSSImportRule : CSSRule {
     open val styleSheet: CSSStyleSheet
 }
 
+/**
+ * [MDN CSSGroupingRule](https://developer.mozilla.org/en/docs/Web/API/CSSGroupingRule)
+ */
 public external abstract class CSSGroupingRule : CSSRule {
     open val cssRules: CSSRuleList
     fun insertRule(rule: String, index: Int): Int
     fun deleteRule(index: Int): Unit
 }
 
+/**
+ * [MDN CSSMediaRule](https://developer.mozilla.org/en/docs/Web/API/CSSMediaRule)
+ */
 public external abstract class CSSMediaRule : CSSGroupingRule {
     open val media: MediaList
 }
 
+/**
+ * [MDN CSSPageRule](https://developer.mozilla.org/en/docs/Web/API/CSSPageRule)
+ */
 public external abstract class CSSPageRule : CSSGroupingRule {
     open var selectorText: String
     open val style: CSSStyleDeclaration
@@ -350,6 +383,9 @@ public external abstract class CSSMarginRule : CSSRule {
     open val style: CSSStyleDeclaration
 }
 
+/**
+ * [MDN CSSNamespaceRule](https://developer.mozilla.org/en/docs/Web/API/CSSNamespaceRule)
+ */
 public external abstract class CSSNamespaceRule : CSSRule {
     open val namespaceURI: String
     open val prefix: String
@@ -359,6 +395,9 @@ public external interface ElementCSSInlineStyle {
     val style: CSSStyleDeclaration
 }
 
+/**
+ * [MDN CSS](https://developer.mozilla.org/en/docs/Web/API/CSS)
+ */
 public external abstract class CSS {
 
     companion object {

@@ -22,6 +22,9 @@ import org.w3c.notifications.*
 import org.w3c.performance.*
 import org.w3c.xhr.*
 
+/**
+ * [MDN ServiceWorkerRegistration](https://developer.mozilla.org/en/docs/Web/API/ServiceWorkerRegistration)
+ */
 public external abstract class ServiceWorkerRegistration : EventTarget {
     open val installing: ServiceWorker?
     open val waiting: ServiceWorker?
@@ -36,6 +39,9 @@ public external abstract class ServiceWorkerRegistration : EventTarget {
     fun getNotifications(filter: GetNotificationOptions = definedExternally): Promise<dynamic>
 }
 
+/**
+ * [MDN ServiceWorkerGlobalScope](https://developer.mozilla.org/en/docs/Web/API/ServiceWorkerGlobalScope)
+ */
 public external abstract class ServiceWorkerGlobalScope : WorkerGlobalScope {
     open val clients: Clients
     open val registration: ServiceWorkerRegistration
@@ -50,6 +56,9 @@ public external abstract class ServiceWorkerGlobalScope : WorkerGlobalScope {
     fun skipWaiting(): Promise<Unit>
 }
 
+/**
+ * [MDN ServiceWorker](https://developer.mozilla.org/en/docs/Web/API/ServiceWorker)
+ */
 public external abstract class ServiceWorker : EventTarget, AbstractWorker, UnionMessagePortOrServiceWorker, UnionClientOrMessagePortOrServiceWorker {
     open val scriptURL: String
     open val state: ServiceWorkerState
@@ -57,6 +66,9 @@ public external abstract class ServiceWorker : EventTarget, AbstractWorker, Unio
     fun postMessage(message: Any?, transfer: Array<dynamic> = definedExternally): Unit
 }
 
+/**
+ * [MDN ServiceWorkerContainer](https://developer.mozilla.org/en/docs/Web/API/ServiceWorkerContainer)
+ */
 public external abstract class ServiceWorkerContainer : EventTarget {
     open val controller: ServiceWorker?
     open val ready: Promise<ServiceWorkerRegistration>
@@ -87,6 +99,9 @@ public inline fun RegistrationOptions(scope: String? = null, type: WorkerType? =
     return o
 }
 
+/**
+ * [MDN ServiceWorkerMessageEvent](https://developer.mozilla.org/en/docs/Web/API/ServiceWorkerMessageEvent)
+ */
 public external open class ServiceWorkerMessageEvent(type: String, eventInitDict: ServiceWorkerMessageEventInit = definedExternally) : Event {
     open val data: Any?
     open val origin: String
@@ -129,6 +144,9 @@ public inline fun ServiceWorkerMessageEventInit(data: Any? = null, origin: Strin
     return o
 }
 
+/**
+ * [MDN Client](https://developer.mozilla.org/en/docs/Web/API/Client)
+ */
 public external abstract class Client : UnionClientOrMessagePortOrServiceWorker {
     open val url: String
     open val frameType: FrameType
@@ -136,6 +154,9 @@ public external abstract class Client : UnionClientOrMessagePortOrServiceWorker 
     fun postMessage(message: Any?, transfer: Array<dynamic> = definedExternally): Unit
 }
 
+/**
+ * [MDN WindowClient](https://developer.mozilla.org/en/docs/Web/API/WindowClient)
+ */
 public external abstract class WindowClient : Client {
     open val visibilityState: dynamic
     open val focused: Boolean
@@ -143,6 +164,9 @@ public external abstract class WindowClient : Client {
     fun navigate(url: String): Promise<WindowClient>
 }
 
+/**
+ * [MDN Clients](https://developer.mozilla.org/en/docs/Web/API/Clients)
+ */
 public external abstract class Clients {
     fun get(id: String): Promise<Any?>
     fun matchAll(options: ClientQueryOptions = definedExternally): Promise<dynamic>
@@ -169,6 +193,9 @@ public inline fun ClientQueryOptions(includeUncontrolled: Boolean? = false, type
     return o
 }
 
+/**
+ * [MDN ExtendableEvent](https://developer.mozilla.org/en/docs/Web/API/ExtendableEvent)
+ */
 public external open class ExtendableEvent(type: String, eventInitDict: ExtendableEventInit = definedExternally) : Event {
     fun waitUntil(f: Promise<Any?>): Unit
 }
@@ -187,6 +214,9 @@ public inline fun ExtendableEventInit(bubbles: Boolean? = false, cancelable: Boo
     return o
 }
 
+/**
+ * [MDN InstallEvent](https://developer.mozilla.org/en/docs/Web/API/InstallEvent)
+ */
 public external open class InstallEvent(type: String, eventInitDict: ExtendableEventInit = definedExternally) : ExtendableEvent {
     fun registerForeignFetch(options: ForeignFetchOptions): Unit
 }
@@ -210,6 +240,9 @@ public inline fun ForeignFetchOptions(scopes: Array<String>?, origins: Array<Str
     return o
 }
 
+/**
+ * [MDN FetchEvent](https://developer.mozilla.org/en/docs/Web/API/FetchEvent)
+ */
 public external open class FetchEvent(type: String, eventInitDict: FetchEventInit) : ExtendableEvent {
     open val request: Request
     open val clientId: String?
@@ -294,6 +327,9 @@ public inline fun ForeignFetchResponse(response: Response?, origin: String? = nu
     return o
 }
 
+/**
+ * [MDN ExtendableMessageEvent](https://developer.mozilla.org/en/docs/Web/API/ExtendableMessageEvent)
+ */
 public external open class ExtendableMessageEvent(type: String, eventInitDict: ExtendableMessageEventInit = definedExternally) : ExtendableEvent {
     open val data: Any?
     open val origin: String
@@ -336,6 +372,9 @@ public inline fun ExtendableMessageEventInit(data: Any? = null, origin: String? 
     return o
 }
 
+/**
+ * [MDN Cache](https://developer.mozilla.org/en/docs/Web/API/Cache)
+ */
 public external abstract class Cache {
     fun match(request: dynamic, options: CacheQueryOptions = definedExternally): Promise<Any?>
     fun matchAll(request: dynamic = definedExternally, options: CacheQueryOptions = definedExternally): Promise<dynamic>
@@ -400,6 +439,9 @@ public inline fun CacheBatchOperation(type: String? = null, request: Request? = 
     return o
 }
 
+/**
+ * [MDN CacheStorage](https://developer.mozilla.org/en/docs/Web/API/CacheStorage)
+ */
 public external abstract class CacheStorage {
     fun match(request: dynamic, options: CacheQueryOptions = definedExternally): Promise<Any?>
     fun has(cacheName: String): Promise<Boolean>

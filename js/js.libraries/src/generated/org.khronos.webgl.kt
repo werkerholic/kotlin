@@ -68,33 +68,60 @@ public inline fun WebGLContextAttributes(alpha: Boolean? = true, depth: Boolean?
 public external abstract class WebGLObject {
 }
 
+/**
+ * [MDN WebGLBuffer](https://developer.mozilla.org/en/docs/Web/API/WebGLBuffer)
+ */
 public external abstract class WebGLBuffer : WebGLObject {
 }
 
+/**
+ * [MDN WebGLFramebuffer](https://developer.mozilla.org/en/docs/Web/API/WebGLFramebuffer)
+ */
 public external abstract class WebGLFramebuffer : WebGLObject {
 }
 
+/**
+ * [MDN WebGLProgram](https://developer.mozilla.org/en/docs/Web/API/WebGLProgram)
+ */
 public external abstract class WebGLProgram : WebGLObject {
 }
 
+/**
+ * [MDN WebGLRenderbuffer](https://developer.mozilla.org/en/docs/Web/API/WebGLRenderbuffer)
+ */
 public external abstract class WebGLRenderbuffer : WebGLObject {
 }
 
+/**
+ * [MDN WebGLShader](https://developer.mozilla.org/en/docs/Web/API/WebGLShader)
+ */
 public external abstract class WebGLShader : WebGLObject {
 }
 
+/**
+ * [MDN WebGLTexture](https://developer.mozilla.org/en/docs/Web/API/WebGLTexture)
+ */
 public external abstract class WebGLTexture : WebGLObject {
 }
 
+/**
+ * [MDN WebGLUniformLocation](https://developer.mozilla.org/en/docs/Web/API/WebGLUniformLocation)
+ */
 public external abstract class WebGLUniformLocation {
 }
 
+/**
+ * [MDN WebGLActiveInfo](https://developer.mozilla.org/en/docs/Web/API/WebGLActiveInfo)
+ */
 public external abstract class WebGLActiveInfo {
     open val size: Int
     open val type: Int
     open val name: String
 }
 
+/**
+ * [MDN WebGLShaderPrecisionFormat](https://developer.mozilla.org/en/docs/Web/API/WebGLShaderPrecisionFormat)
+ */
 public external abstract class WebGLShaderPrecisionFormat {
     open val rangeMin: Int
     open val rangeMax: Int
@@ -557,6 +584,9 @@ public external interface WebGLRenderingContextBase {
     }
 }
 
+/**
+ * [MDN WebGLRenderingContext](https://developer.mozilla.org/en/docs/Web/API/WebGLRenderingContext)
+ */
 public external abstract class WebGLRenderingContext : WebGLRenderingContextBase, RenderingContext {
 
     companion object {
@@ -860,6 +890,9 @@ public external abstract class WebGLRenderingContext : WebGLRenderingContextBase
     }
 }
 
+/**
+ * [MDN WebGLContextEvent](https://developer.mozilla.org/en/docs/Web/API/WebGLContextEvent)
+ */
 public external open class WebGLContextEvent(type: String, eventInit: WebGLContextEventInit = definedExternally) : Event {
     open val statusMessage: String
 }
@@ -882,6 +915,9 @@ public inline fun WebGLContextEventInit(statusMessage: String? = "", bubbles: Bo
     return o
 }
 
+/**
+ * [MDN ArrayBuffer](https://developer.mozilla.org/en/docs/Web/API/ArrayBuffer)
+ */
 public external open class ArrayBuffer(length: Int) : BufferDataSource {
     open val byteLength: Int
     fun slice(begin: Int, end: Int = definedExternally): ArrayBuffer
@@ -891,12 +927,18 @@ public external open class ArrayBuffer(length: Int) : BufferDataSource {
     }
 }
 
+/**
+ * [MDN ArrayBufferView](https://developer.mozilla.org/en/docs/Web/API/ArrayBufferView)
+ */
 public external interface ArrayBufferView : BufferDataSource {
     val buffer: ArrayBuffer
     val byteOffset: Int
     val byteLength: Int
 }
 
+/**
+ * [MDN Int8Array](https://developer.mozilla.org/en/docs/Web/API/Int8Array)
+ */
 public external open class Int8Array : ArrayBufferView {
     constructor(length: Int)
     constructor(array: Int8Array)
@@ -917,6 +959,9 @@ public external open class Int8Array : ArrayBufferView {
 @kotlin.internal.InlineOnly inline operator fun Int8Array.get(index: Int): Byte = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun Int8Array.set(index: Int, value: Byte): Unit { asDynamic()[index] = value; }
 
+/**
+ * [MDN Uint8Array](https://developer.mozilla.org/en/docs/Web/API/Uint8Array)
+ */
 public external open class Uint8Array : ArrayBufferView {
     constructor(length: Int)
     constructor(array: Uint8Array)
@@ -937,6 +982,9 @@ public external open class Uint8Array : ArrayBufferView {
 @kotlin.internal.InlineOnly inline operator fun Uint8Array.get(index: Int): Byte = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun Uint8Array.set(index: Int, value: Byte): Unit { asDynamic()[index] = value; }
 
+/**
+ * [MDN Uint8ClampedArray](https://developer.mozilla.org/en/docs/Web/API/Uint8ClampedArray)
+ */
 public external open class Uint8ClampedArray : ArrayBufferView {
     constructor(length: Int)
     constructor(array: Uint8ClampedArray)
@@ -957,6 +1005,9 @@ public external open class Uint8ClampedArray : ArrayBufferView {
 @kotlin.internal.InlineOnly inline operator fun Uint8ClampedArray.get(index: Int): Byte = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun Uint8ClampedArray.set(index: Int, value: Byte): Unit { asDynamic()[index] = value; }
 
+/**
+ * [MDN Int16Array](https://developer.mozilla.org/en/docs/Web/API/Int16Array)
+ */
 public external open class Int16Array : ArrayBufferView {
     constructor(length: Int)
     constructor(array: Int16Array)
@@ -977,6 +1028,9 @@ public external open class Int16Array : ArrayBufferView {
 @kotlin.internal.InlineOnly inline operator fun Int16Array.get(index: Int): Short = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun Int16Array.set(index: Int, value: Short): Unit { asDynamic()[index] = value; }
 
+/**
+ * [MDN Uint16Array](https://developer.mozilla.org/en/docs/Web/API/Uint16Array)
+ */
 public external open class Uint16Array : ArrayBufferView {
     constructor(length: Int)
     constructor(array: Uint16Array)
@@ -997,6 +1051,9 @@ public external open class Uint16Array : ArrayBufferView {
 @kotlin.internal.InlineOnly inline operator fun Uint16Array.get(index: Int): Short = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun Uint16Array.set(index: Int, value: Short): Unit { asDynamic()[index] = value; }
 
+/**
+ * [MDN Int32Array](https://developer.mozilla.org/en/docs/Web/API/Int32Array)
+ */
 public external open class Int32Array : ArrayBufferView {
     constructor(length: Int)
     constructor(array: Int32Array)
@@ -1017,6 +1074,9 @@ public external open class Int32Array : ArrayBufferView {
 @kotlin.internal.InlineOnly inline operator fun Int32Array.get(index: Int): Int = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun Int32Array.set(index: Int, value: Int): Unit { asDynamic()[index] = value; }
 
+/**
+ * [MDN Uint32Array](https://developer.mozilla.org/en/docs/Web/API/Uint32Array)
+ */
 public external open class Uint32Array : ArrayBufferView {
     constructor(length: Int)
     constructor(array: Uint32Array)
@@ -1037,6 +1097,9 @@ public external open class Uint32Array : ArrayBufferView {
 @kotlin.internal.InlineOnly inline operator fun Uint32Array.get(index: Int): Int = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun Uint32Array.set(index: Int, value: Int): Unit { asDynamic()[index] = value; }
 
+/**
+ * [MDN Float32Array](https://developer.mozilla.org/en/docs/Web/API/Float32Array)
+ */
 public external open class Float32Array : ArrayBufferView {
     constructor(length: Int)
     constructor(array: Float32Array)
@@ -1057,6 +1120,9 @@ public external open class Float32Array : ArrayBufferView {
 @kotlin.internal.InlineOnly inline operator fun Float32Array.get(index: Int): Float = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun Float32Array.set(index: Int, value: Float): Unit { asDynamic()[index] = value; }
 
+/**
+ * [MDN Float64Array](https://developer.mozilla.org/en/docs/Web/API/Float64Array)
+ */
 public external open class Float64Array : ArrayBufferView {
     constructor(length: Int)
     constructor(array: Float64Array)
@@ -1077,6 +1143,9 @@ public external open class Float64Array : ArrayBufferView {
 @kotlin.internal.InlineOnly inline operator fun Float64Array.get(index: Int): Double = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun Float64Array.set(index: Int, value: Double): Unit { asDynamic()[index] = value; }
 
+/**
+ * [MDN DataView](https://developer.mozilla.org/en/docs/Web/API/DataView)
+ */
 public external open class DataView(buffer: ArrayBuffer, byteOffset: Int = definedExternally, byteLength: Int = definedExternally) : ArrayBufferView {
     override val buffer: ArrayBuffer
     override val byteOffset: Int

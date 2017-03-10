@@ -22,6 +22,9 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
+/**
+ * [MDN UIEvent](https://developer.mozilla.org/en/docs/Web/API/UIEvent)
+ */
 public external open class UIEvent(type: String, eventInitDict: UIEventInit = definedExternally) : Event {
     open val view: Window?
     open val detail: Int
@@ -49,6 +52,9 @@ public inline fun UIEventInit(view: Window? = null, detail: Int? = 0, bubbles: B
     return o
 }
 
+/**
+ * [MDN FocusEvent](https://developer.mozilla.org/en/docs/Web/API/FocusEvent)
+ */
 public external open class FocusEvent(type: String, eventInitDict: FocusEventInit = definedExternally) : UIEvent {
     open val relatedTarget: EventTarget?
 }
@@ -73,6 +79,9 @@ public inline fun FocusEventInit(relatedTarget: EventTarget? = null, view: Windo
     return o
 }
 
+/**
+ * [MDN MouseEvent](https://developer.mozilla.org/en/docs/Web/API/MouseEvent)
+ */
 public external open class MouseEvent(type: String, eventInitDict: MouseEventInit = definedExternally) : UIEvent, UnionElementOrMouseEvent {
     open val region: String?
     open val screenX: Int
@@ -223,6 +232,9 @@ public inline fun EventModifierInit(ctrlKey: Boolean? = false, shiftKey: Boolean
     return o
 }
 
+/**
+ * [MDN WheelEvent](https://developer.mozilla.org/en/docs/Web/API/WheelEvent)
+ */
 public external open class WheelEvent(type: String, eventInitDict: WheelEventInit = definedExternally) : MouseEvent {
     open val deltaX: Double
     open val deltaY: Double
@@ -289,6 +301,9 @@ public inline fun WheelEventInit(deltaX: Double? = 0.0, deltaY: Double? = 0.0, d
     return o
 }
 
+/**
+ * [MDN InputEvent](https://developer.mozilla.org/en/docs/Web/API/InputEvent)
+ */
 public external open class InputEvent(type: String, eventInitDict: InputEventInit = definedExternally) : UIEvent {
     open val data: String
     open val isComposing: Boolean
@@ -318,6 +333,9 @@ public inline fun InputEventInit(data: String? = "", isComposing: Boolean? = fal
     return o
 }
 
+/**
+ * [MDN KeyboardEvent](https://developer.mozilla.org/en/docs/Web/API/KeyboardEvent)
+ */
 public external open class KeyboardEvent(type: String, eventInitDict: KeyboardEventInit = definedExternally) : UIEvent {
     open val key: String
     open val code: String
@@ -391,6 +409,9 @@ public inline fun KeyboardEventInit(key: String? = "", code: String? = "", locat
     return o
 }
 
+/**
+ * [MDN CompositionEvent](https://developer.mozilla.org/en/docs/Web/API/CompositionEvent)
+ */
 public external open class CompositionEvent(type: String, eventInitDict: CompositionEventInit = definedExternally) : UIEvent {
     open val data: String
 }
@@ -415,6 +436,9 @@ public inline fun CompositionEventInit(data: String? = "", view: Window? = null,
     return o
 }
 
+/**
+ * [MDN Event](https://developer.mozilla.org/en/docs/Web/API/Event)
+ */
 public external open class Event(type: String, eventInitDict: EventInit = definedExternally) {
     open val type: String
     open val target: EventTarget?
@@ -440,6 +464,9 @@ public external open class Event(type: String, eventInitDict: EventInit = define
     }
 }
 
+/**
+ * [MDN EventTarget](https://developer.mozilla.org/en/docs/Web/API/EventTarget)
+ */
 public external abstract class EventTarget {
     fun addEventListener(type: String, callback: EventListener?, options: dynamic = definedExternally): Unit
     fun addEventListener(type: String, callback: ((Event) -> Unit)?, options: dynamic = definedExternally): Unit
@@ -448,6 +475,9 @@ public external abstract class EventTarget {
     fun dispatchEvent(event: Event): Boolean
 }
 
+/**
+ * [MDN EventListener](https://developer.mozilla.org/en/docs/Web/API/EventListener)
+ */
 public external interface EventListener {
     fun handleEvent(event: Event): Unit
 }

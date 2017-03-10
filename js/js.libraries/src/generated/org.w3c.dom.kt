@@ -22,6 +22,9 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
+/**
+ * [MDN Document](https://developer.mozilla.org/en/docs/Web/API/Document)
+ */
 public external open class Document : Node, GlobalEventHandlers, DocumentAndElementEventHandlers, NonElementParentNode, DocumentOrShadowRoot, ParentNode, GeometryUtils {
     open val fullscreenEnabled: Boolean
     open val fullscreen: Boolean
@@ -191,6 +194,9 @@ public external open class Document : Node, GlobalEventHandlers, DocumentAndElem
 }
 @kotlin.internal.InlineOnly inline operator fun Document.get(name: String): dynamic = asDynamic()[name]
 
+/**
+ * [MDN Window](https://developer.mozilla.org/en/docs/Web/API/Window)
+ */
 public external abstract class Window : EventTarget, GlobalEventHandlers, WindowEventHandlers, WindowOrWorkerGlobalScope, WindowSessionStorage, WindowLocalStorage, GlobalPerformance, UnionMessagePortOrWindow {
     open val window: Window
     open val self: Window
@@ -266,15 +272,24 @@ public external abstract class HTMLAllCollection {
 //@kotlin.internal.InlineOnly inline operator fun HTMLAllCollection.get(index: Int): Element? = asDynamic()[index]
 //@kotlin.internal.InlineOnly inline operator fun HTMLAllCollection.get(name: String): UnionElementOrHTMLCollection? = asDynamic()[name]
 
+/**
+ * [MDN HTMLFormControlsCollection](https://developer.mozilla.org/en/docs/Web/API/HTMLFormControlsCollection)
+ */
 public external abstract class HTMLFormControlsCollection : HTMLCollection {
 //    override fun namedItem(name: String): UnionElementOrRadioNodeList?
 }
 //@kotlin.internal.InlineOnly override inline operator fun HTMLFormControlsCollection.get(name: String): UnionElementOrRadioNodeList? = asDynamic()[name]
 
+/**
+ * [MDN RadioNodeList](https://developer.mozilla.org/en/docs/Web/API/RadioNodeList)
+ */
 public external abstract class RadioNodeList : NodeList, UnionElementOrRadioNodeList {
     open var value: String
 }
 
+/**
+ * [MDN HTMLOptionsCollection](https://developer.mozilla.org/en/docs/Web/API/HTMLOptionsCollection)
+ */
 public external abstract class HTMLOptionsCollection : HTMLCollection {
     override var length: Int
     open var selectedIndex: Int
@@ -283,6 +298,9 @@ public external abstract class HTMLOptionsCollection : HTMLCollection {
 }
 @kotlin.internal.InlineOnly inline operator fun HTMLOptionsCollection.set(index: Int, option: HTMLOptionElement?): Unit { asDynamic()[index] = option; }
 
+/**
+ * [MDN HTMLElement](https://developer.mozilla.org/en/docs/Web/API/HTMLElement)
+ */
 public external abstract class HTMLElement : Element, ElementCSSInlineStyle, GlobalEventHandlers, DocumentAndElementEventHandlers, ElementContentEditable {
     open var title: String
     open var lang: String
@@ -309,30 +327,51 @@ public external abstract class HTMLElement : Element, ElementCSSInlineStyle, Glo
     fun forceSpellCheck(): Unit
 }
 
+/**
+ * [MDN HTMLUnknownElement](https://developer.mozilla.org/en/docs/Web/API/HTMLUnknownElement)
+ */
 public external abstract class HTMLUnknownElement : HTMLElement {
 }
 
+/**
+ * [MDN DOMStringMap](https://developer.mozilla.org/en/docs/Web/API/DOMStringMap)
+ */
 public external abstract class DOMStringMap {
 }
 @kotlin.internal.InlineOnly inline operator fun DOMStringMap.get(name: String): String? = asDynamic()[name]
 @kotlin.internal.InlineOnly inline operator fun DOMStringMap.set(name: String, value: String): Unit { asDynamic()[name] = value; }
 
+/**
+ * [MDN HTMLHtmlElement](https://developer.mozilla.org/en/docs/Web/API/HTMLHtmlElement)
+ */
 public external abstract class HTMLHtmlElement : HTMLElement {
     open var version: String
 }
 
+/**
+ * [MDN HTMLHeadElement](https://developer.mozilla.org/en/docs/Web/API/HTMLHeadElement)
+ */
 public external abstract class HTMLHeadElement : HTMLElement {
 }
 
+/**
+ * [MDN HTMLTitleElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTitleElement)
+ */
 public external abstract class HTMLTitleElement : HTMLElement {
     open var text: String
 }
 
+/**
+ * [MDN HTMLBaseElement](https://developer.mozilla.org/en/docs/Web/API/HTMLBaseElement)
+ */
 public external abstract class HTMLBaseElement : HTMLElement {
     open var href: String
     open var target: String
 }
 
+/**
+ * [MDN HTMLLinkElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLinkElement)
+ */
 public external abstract class HTMLLinkElement : HTMLElement, LinkStyle {
     open var scope: String
     open var workerType: WorkerType
@@ -352,6 +391,9 @@ public external abstract class HTMLLinkElement : HTMLElement, LinkStyle {
     open var target: String
 }
 
+/**
+ * [MDN HTMLMetaElement](https://developer.mozilla.org/en/docs/Web/API/HTMLMetaElement)
+ */
 public external abstract class HTMLMetaElement : HTMLElement {
     open var name: String
     open var httpEquiv: String
@@ -359,12 +401,18 @@ public external abstract class HTMLMetaElement : HTMLElement {
     open var scheme: String
 }
 
+/**
+ * [MDN HTMLStyleElement](https://developer.mozilla.org/en/docs/Web/API/HTMLStyleElement)
+ */
 public external abstract class HTMLStyleElement : HTMLElement, LinkStyle {
     open var media: String
     open var nonce: String
     open var type: String
 }
 
+/**
+ * [MDN HTMLBodyElement](https://developer.mozilla.org/en/docs/Web/API/HTMLBodyElement)
+ */
 public external abstract class HTMLBodyElement : HTMLElement, WindowEventHandlers {
     open var text: String
     open var link: String
@@ -374,14 +422,23 @@ public external abstract class HTMLBodyElement : HTMLElement, WindowEventHandler
     open var background: String
 }
 
+/**
+ * [MDN HTMLHeadingElement](https://developer.mozilla.org/en/docs/Web/API/HTMLHeadingElement)
+ */
 public external abstract class HTMLHeadingElement : HTMLElement {
     open var align: String
 }
 
+/**
+ * [MDN HTMLParagraphElement](https://developer.mozilla.org/en/docs/Web/API/HTMLParagraphElement)
+ */
 public external abstract class HTMLParagraphElement : HTMLElement {
     open var align: String
 }
 
+/**
+ * [MDN HTMLHRElement](https://developer.mozilla.org/en/docs/Web/API/HTMLHRElement)
+ */
 public external abstract class HTMLHRElement : HTMLElement {
     open var align: String
     open var color: String
@@ -390,14 +447,23 @@ public external abstract class HTMLHRElement : HTMLElement {
     open var width: String
 }
 
+/**
+ * [MDN HTMLPreElement](https://developer.mozilla.org/en/docs/Web/API/HTMLPreElement)
+ */
 public external abstract class HTMLPreElement : HTMLElement {
     open var width: Int
 }
 
+/**
+ * [MDN HTMLQuoteElement](https://developer.mozilla.org/en/docs/Web/API/HTMLQuoteElement)
+ */
 public external abstract class HTMLQuoteElement : HTMLElement {
     open var cite: String
 }
 
+/**
+ * [MDN HTMLOListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOListElement)
+ */
 public external abstract class HTMLOListElement : HTMLElement {
     open var reversed: Boolean
     open var start: Int
@@ -405,24 +471,39 @@ public external abstract class HTMLOListElement : HTMLElement {
     open var compact: Boolean
 }
 
+/**
+ * [MDN HTMLUListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLUListElement)
+ */
 public external abstract class HTMLUListElement : HTMLElement {
     open var compact: Boolean
     open var type: String
 }
 
+/**
+ * [MDN HTMLLIElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLIElement)
+ */
 public external abstract class HTMLLIElement : HTMLElement {
     open var value: Int
     open var type: String
 }
 
+/**
+ * [MDN HTMLDListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDListElement)
+ */
 public external abstract class HTMLDListElement : HTMLElement {
     open var compact: Boolean
 }
 
+/**
+ * [MDN HTMLDivElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDivElement)
+ */
 public external abstract class HTMLDivElement : HTMLElement {
     open var align: String
 }
 
+/**
+ * [MDN HTMLAnchorElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAnchorElement)
+ */
 public external abstract class HTMLAnchorElement : HTMLElement, HTMLHyperlinkElementUtils {
     open var target: String
     open var download: String
@@ -440,21 +521,36 @@ public external abstract class HTMLAnchorElement : HTMLElement, HTMLHyperlinkEle
     open var shape: String
 }
 
+/**
+ * [MDN HTMLDataElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDataElement)
+ */
 public external abstract class HTMLDataElement : HTMLElement {
     open var value: String
 }
 
+/**
+ * [MDN HTMLTimeElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTimeElement)
+ */
 public external abstract class HTMLTimeElement : HTMLElement {
     open var dateTime: String
 }
 
+/**
+ * [MDN HTMLSpanElement](https://developer.mozilla.org/en/docs/Web/API/HTMLSpanElement)
+ */
 public external abstract class HTMLSpanElement : HTMLElement {
 }
 
+/**
+ * [MDN HTMLBRElement](https://developer.mozilla.org/en/docs/Web/API/HTMLBRElement)
+ */
 public external abstract class HTMLBRElement : HTMLElement {
     open var clear: String
 }
 
+/**
+ * [MDN HTMLHyperlinkElementUtils](https://developer.mozilla.org/en/docs/Web/API/HTMLHyperlinkElementUtils)
+ */
 public external interface HTMLHyperlinkElementUtils {
     var href: String
     val origin: String
@@ -469,14 +565,23 @@ public external interface HTMLHyperlinkElementUtils {
     var hash: String
 }
 
+/**
+ * [MDN HTMLModElement](https://developer.mozilla.org/en/docs/Web/API/HTMLModElement)
+ */
 public external abstract class HTMLModElement : HTMLElement {
     open var cite: String
     open var dateTime: String
 }
 
+/**
+ * [MDN HTMLPictureElement](https://developer.mozilla.org/en/docs/Web/API/HTMLPictureElement)
+ */
 public external abstract class HTMLPictureElement : HTMLElement {
 }
 
+/**
+ * [MDN HTMLSourceElement](https://developer.mozilla.org/en/docs/Web/API/HTMLSourceElement)
+ */
 public external abstract class HTMLSourceElement : HTMLElement {
     open var src: String
     open var type: String
@@ -485,6 +590,9 @@ public external abstract class HTMLSourceElement : HTMLElement {
     open var media: String
 }
 
+/**
+ * [MDN HTMLImageElement](https://developer.mozilla.org/en/docs/Web/API/HTMLImageElement)
+ */
 public external abstract class HTMLImageElement : HTMLElement, TexImageSource, HTMLOrSVGImageElement {
     open var alt: String
     open var src: String
@@ -511,6 +619,9 @@ public external abstract class HTMLImageElement : HTMLElement, TexImageSource, H
     open val y: Int
 }
 
+/**
+ * [MDN HTMLIFrameElement](https://developer.mozilla.org/en/docs/Web/API/HTMLIFrameElement)
+ */
 public external abstract class HTMLIFrameElement : HTMLElement {
     open var src: String
     open var srcdoc: String
@@ -532,6 +643,9 @@ public external abstract class HTMLIFrameElement : HTMLElement {
     fun getSVGDocument(): Document?
 }
 
+/**
+ * [MDN HTMLEmbedElement](https://developer.mozilla.org/en/docs/Web/API/HTMLEmbedElement)
+ */
 public external abstract class HTMLEmbedElement : HTMLElement {
     open var src: String
     open var type: String
@@ -542,6 +656,9 @@ public external abstract class HTMLEmbedElement : HTMLElement {
     fun getSVGDocument(): Document?
 }
 
+/**
+ * [MDN HTMLObjectElement](https://developer.mozilla.org/en/docs/Web/API/HTMLObjectElement)
+ */
 public external abstract class HTMLObjectElement : HTMLElement {
     open var data: String
     open var type: String
@@ -572,6 +689,9 @@ public external abstract class HTMLObjectElement : HTMLElement {
     fun setCustomValidity(error: String): Unit
 }
 
+/**
+ * [MDN HTMLParamElement](https://developer.mozilla.org/en/docs/Web/API/HTMLParamElement)
+ */
 public external abstract class HTMLParamElement : HTMLElement {
     open var name: String
     open var value: String
@@ -579,6 +699,9 @@ public external abstract class HTMLParamElement : HTMLElement {
     open var valueType: String
 }
 
+/**
+ * [MDN HTMLVideoElement](https://developer.mozilla.org/en/docs/Web/API/HTMLVideoElement)
+ */
 public external abstract class HTMLVideoElement : HTMLMediaElement, TexImageSource {
     open var width: Int
     open var height: Int
@@ -588,9 +711,15 @@ public external abstract class HTMLVideoElement : HTMLMediaElement, TexImageSour
     open var playsInline: Boolean
 }
 
+/**
+ * [MDN HTMLAudioElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAudioElement)
+ */
 public external abstract class HTMLAudioElement : HTMLMediaElement {
 }
 
+/**
+ * [MDN HTMLTrackElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTrackElement)
+ */
 public external abstract class HTMLTrackElement : HTMLElement {
     open var kind: String
     open var src: String
@@ -608,6 +737,9 @@ public external abstract class HTMLTrackElement : HTMLElement {
     }
 }
 
+/**
+ * [MDN HTMLMediaElement](https://developer.mozilla.org/en/docs/Web/API/HTMLMediaElement)
+ */
 public external abstract class HTMLMediaElement : HTMLElement {
     open val error: MediaError?
     open var src: String
@@ -657,6 +789,9 @@ public external abstract class HTMLMediaElement : HTMLElement {
     }
 }
 
+/**
+ * [MDN MediaError](https://developer.mozilla.org/en/docs/Web/API/MediaError)
+ */
 public external abstract class MediaError {
     open val code: Short
 
@@ -712,6 +847,9 @@ public external abstract class TextTrackList : EventTarget {
 }
 @kotlin.internal.InlineOnly inline operator fun TextTrackList.get(index: Int): TextTrack? = asDynamic()[index]
 
+/**
+ * [MDN TextTrack](https://developer.mozilla.org/en/docs/Web/API/TextTrack)
+ */
 public external abstract class TextTrack : EventTarget, UnionAudioTrackOrTextTrackOrVideoTrack {
     open val kind: TextTrackKind
     open val label: String
@@ -742,6 +880,9 @@ public external abstract class TextTrackCue : EventTarget {
     open var onexit: ((Event) -> dynamic)?
 }
 
+/**
+ * [MDN TimeRanges](https://developer.mozilla.org/en/docs/Web/API/TimeRanges)
+ */
 public external abstract class TimeRanges {
     open val length: Int
     fun start(index: Int): Double
@@ -770,11 +911,17 @@ public inline fun TrackEventInit(track: UnionAudioTrackOrTextTrackOrVideoTrack? 
     return o
 }
 
+/**
+ * [MDN HTMLMapElement](https://developer.mozilla.org/en/docs/Web/API/HTMLMapElement)
+ */
 public external abstract class HTMLMapElement : HTMLElement {
     open var name: String
     open val areas: HTMLCollection
 }
 
+/**
+ * [MDN HTMLAreaElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAreaElement)
+ */
 public external abstract class HTMLAreaElement : HTMLElement, HTMLHyperlinkElementUtils {
     open var alt: String
     open var coords: String
@@ -788,6 +935,9 @@ public external abstract class HTMLAreaElement : HTMLElement, HTMLHyperlinkEleme
     open var noHref: Boolean
 }
 
+/**
+ * [MDN HTMLTableElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableElement)
+ */
 public external abstract class HTMLTableElement : HTMLElement {
     open var caption: HTMLTableCaptionElement?
     open var tHead: HTMLTableSectionElement?
@@ -814,10 +964,16 @@ public external abstract class HTMLTableElement : HTMLElement {
     fun deleteRow(index: Int): Unit
 }
 
+/**
+ * [MDN HTMLTableCaptionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableCaptionElement)
+ */
 public external abstract class HTMLTableCaptionElement : HTMLElement {
     open var align: String
 }
 
+/**
+ * [MDN HTMLTableColElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableColElement)
+ */
 public external abstract class HTMLTableColElement : HTMLElement {
     open var span: Int
     open var align: String
@@ -827,6 +983,9 @@ public external abstract class HTMLTableColElement : HTMLElement {
     open var width: String
 }
 
+/**
+ * [MDN HTMLTableSectionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableSectionElement)
+ */
 public external abstract class HTMLTableSectionElement : HTMLElement {
     open val rows: HTMLCollection
     open var align: String
@@ -837,6 +996,9 @@ public external abstract class HTMLTableSectionElement : HTMLElement {
     fun deleteRow(index: Int): Unit
 }
 
+/**
+ * [MDN HTMLTableRowElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableRowElement)
+ */
 public external abstract class HTMLTableRowElement : HTMLElement {
     open val rowIndex: Int
     open val sectionRowIndex: Int
@@ -850,6 +1012,9 @@ public external abstract class HTMLTableRowElement : HTMLElement {
     fun deleteCell(index: Int): Unit
 }
 
+/**
+ * [MDN HTMLTableCellElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableCellElement)
+ */
 public external abstract class HTMLTableCellElement : HTMLElement {
     open var colSpan: Int
     open var rowSpan: Int
@@ -868,6 +1033,9 @@ public external abstract class HTMLTableCellElement : HTMLElement {
     open var bgColor: String
 }
 
+/**
+ * [MDN HTMLFormElement](https://developer.mozilla.org/en/docs/Web/API/HTMLFormElement)
+ */
 public external abstract class HTMLFormElement : HTMLElement {
     open var acceptCharset: String
     open var action: String
@@ -888,12 +1056,18 @@ public external abstract class HTMLFormElement : HTMLElement {
 @kotlin.internal.InlineOnly inline operator fun HTMLFormElement.get(index: Int): Element? = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun HTMLFormElement.get(name: String): UnionElementOrRadioNodeList? = asDynamic()[name]
 
+/**
+ * [MDN HTMLLabelElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLabelElement)
+ */
 public external abstract class HTMLLabelElement : HTMLElement {
     open val form: HTMLFormElement?
     open var htmlFor: String
     open val control: HTMLElement?
 }
 
+/**
+ * [MDN HTMLInputElement](https://developer.mozilla.org/en/docs/Web/API/HTMLInputElement)
+ */
 public external abstract class HTMLInputElement : HTMLElement {
     open var accept: String
     open var alt: String
@@ -953,6 +1127,9 @@ public external abstract class HTMLInputElement : HTMLElement {
     fun setSelectionRange(start: Int, end: Int, direction: String = definedExternally): Unit
 }
 
+/**
+ * [MDN HTMLButtonElement](https://developer.mozilla.org/en/docs/Web/API/HTMLButtonElement)
+ */
 public external abstract class HTMLButtonElement : HTMLElement {
     open var autofocus: Boolean
     open var disabled: Boolean
@@ -975,6 +1152,9 @@ public external abstract class HTMLButtonElement : HTMLElement {
     fun setCustomValidity(error: String): Unit
 }
 
+/**
+ * [MDN HTMLSelectElement](https://developer.mozilla.org/en/docs/Web/API/HTMLSelectElement)
+ */
 public external abstract class HTMLSelectElement : HTMLElement, ItemArrayLike<Element> {
     open var autocomplete: String
     open var autofocus: Boolean
@@ -1005,15 +1185,24 @@ public external abstract class HTMLSelectElement : HTMLElement, ItemArrayLike<El
 @kotlin.internal.InlineOnly inline operator fun HTMLSelectElement.get(index: Int): Element? = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun HTMLSelectElement.set(index: Int, option: HTMLOptionElement?): Unit { asDynamic()[index] = option; }
 
+/**
+ * [MDN HTMLDataListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDataListElement)
+ */
 public external abstract class HTMLDataListElement : HTMLElement {
     open val options: HTMLCollection
 }
 
+/**
+ * [MDN HTMLOptGroupElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOptGroupElement)
+ */
 public external abstract class HTMLOptGroupElement : HTMLElement, UnionHTMLOptGroupElementOrHTMLOptionElement {
     open var disabled: Boolean
     open var label: String
 }
 
+/**
+ * [MDN HTMLOptionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOptionElement)
+ */
 public external abstract class HTMLOptionElement : HTMLElement, UnionHTMLOptGroupElementOrHTMLOptionElement {
     open var disabled: Boolean
     open val form: HTMLFormElement?
@@ -1025,6 +1214,9 @@ public external abstract class HTMLOptionElement : HTMLElement, UnionHTMLOptGrou
     open val index: Int
 }
 
+/**
+ * [MDN HTMLTextAreaElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTextAreaElement)
+ */
 public external abstract class HTMLTextAreaElement : HTMLElement {
     open var autocomplete: String
     open var autofocus: Boolean
@@ -1061,6 +1253,9 @@ public external abstract class HTMLTextAreaElement : HTMLElement {
     fun setSelectionRange(start: Int, end: Int, direction: String = definedExternally): Unit
 }
 
+/**
+ * [MDN HTMLKeygenElement](https://developer.mozilla.org/en/docs/Web/API/HTMLKeygenElement)
+ */
 public external abstract class HTMLKeygenElement : HTMLElement {
     open var autofocus: Boolean
     open var challenge: String
@@ -1078,6 +1273,9 @@ public external abstract class HTMLKeygenElement : HTMLElement {
     fun setCustomValidity(error: String): Unit
 }
 
+/**
+ * [MDN HTMLOutputElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOutputElement)
+ */
 public external abstract class HTMLOutputElement : HTMLElement {
     open val htmlFor: DOMTokenList
     open val form: HTMLFormElement?
@@ -1094,6 +1292,9 @@ public external abstract class HTMLOutputElement : HTMLElement {
     fun setCustomValidity(error: String): Unit
 }
 
+/**
+ * [MDN HTMLProgressElement](https://developer.mozilla.org/en/docs/Web/API/HTMLProgressElement)
+ */
 public external abstract class HTMLProgressElement : HTMLElement {
     open var value: Double
     open var max: Double
@@ -1101,6 +1302,9 @@ public external abstract class HTMLProgressElement : HTMLElement {
     open val labels: NodeList
 }
 
+/**
+ * [MDN HTMLMeterElement](https://developer.mozilla.org/en/docs/Web/API/HTMLMeterElement)
+ */
 public external abstract class HTMLMeterElement : HTMLElement {
     open var value: Double
     open var min: Double
@@ -1111,6 +1315,9 @@ public external abstract class HTMLMeterElement : HTMLElement {
     open val labels: NodeList
 }
 
+/**
+ * [MDN HTMLFieldSetElement](https://developer.mozilla.org/en/docs/Web/API/HTMLFieldSetElement)
+ */
 public external abstract class HTMLFieldSetElement : HTMLElement {
     open var disabled: Boolean
     open val form: HTMLFormElement?
@@ -1125,11 +1332,17 @@ public external abstract class HTMLFieldSetElement : HTMLElement {
     fun setCustomValidity(error: String): Unit
 }
 
+/**
+ * [MDN HTMLLegendElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLegendElement)
+ */
 public external abstract class HTMLLegendElement : HTMLElement {
     open val form: HTMLFormElement?
     open var align: String
 }
 
+/**
+ * [MDN ValidityState](https://developer.mozilla.org/en/docs/Web/API/ValidityState)
+ */
 public external abstract class ValidityState {
     open val valueMissing: Boolean
     open val typeMismatch: Boolean
@@ -1186,6 +1399,9 @@ public inline fun RelatedEventInit(relatedTarget: EventTarget? = null, bubbles: 
     return o
 }
 
+/**
+ * [MDN HTMLDialogElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDialogElement)
+ */
 public external abstract class HTMLDialogElement : HTMLElement {
     open var open: Boolean
     open var returnValue: String
@@ -1194,6 +1410,9 @@ public external abstract class HTMLDialogElement : HTMLElement {
     fun close(returnValue: String = definedExternally): Unit
 }
 
+/**
+ * [MDN HTMLScriptElement](https://developer.mozilla.org/en/docs/Web/API/HTMLScriptElement)
+ */
 public external abstract class HTMLScriptElement : HTMLElement, HTMLOrSVGScriptElement {
     open var src: String
     open var type: String
@@ -1207,10 +1426,16 @@ public external abstract class HTMLScriptElement : HTMLElement, HTMLOrSVGScriptE
     open var htmlFor: String
 }
 
+/**
+ * [MDN HTMLTemplateElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTemplateElement)
+ */
 public external abstract class HTMLTemplateElement : HTMLElement {
     open val content: DocumentFragment
 }
 
+/**
+ * [MDN HTMLSlotElement](https://developer.mozilla.org/en/docs/Web/API/HTMLSlotElement)
+ */
 public external abstract class HTMLSlotElement : HTMLElement {
     open var name: String
     fun assignedNodes(options: AssignedNodesOptions = definedExternally): Array<Node>
@@ -1231,6 +1456,9 @@ public inline fun AssignedNodesOptions(flatten: Boolean? = false): AssignedNodes
     return o
 }
 
+/**
+ * [MDN HTMLCanvasElement](https://developer.mozilla.org/en/docs/Web/API/HTMLCanvasElement)
+ */
 public external abstract class HTMLCanvasElement : HTMLElement, TexImageSource {
     open var width: Int
     open var height: Int
@@ -1254,6 +1482,9 @@ public inline fun CanvasRenderingContext2DSettings(alpha: Boolean? = true): Canv
     return o
 }
 
+/**
+ * [MDN CanvasRenderingContext2D](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D)
+ */
 public external abstract class CanvasRenderingContext2D : CanvasState, CanvasTransform, CanvasCompositing, CanvasImageSmoothing, CanvasFillStrokeStyles, CanvasShadowStyles, CanvasFilters, CanvasRect, CanvasDrawPath, CanvasUserInterface, CanvasText, CanvasDrawImage, CanvasHitRegion, CanvasImageData, CanvasPathDrawingStyles, CanvasTextDrawingStyles, CanvasPath, RenderingContext {
     open val canvas: HTMLCanvasElement
 }
@@ -1387,14 +1618,23 @@ public external interface CanvasPath {
     fun ellipse(x: Double, y: Double, radiusX: Double, radiusY: Double, rotation: Double, startAngle: Double, endAngle: Double, anticlockwise: Boolean = definedExternally): Unit
 }
 
+/**
+ * [MDN CanvasGradient](https://developer.mozilla.org/en/docs/Web/API/CanvasGradient)
+ */
 public external abstract class CanvasGradient {
     fun addColorStop(offset: Double, color: String): Unit
 }
 
+/**
+ * [MDN CanvasPattern](https://developer.mozilla.org/en/docs/Web/API/CanvasPattern)
+ */
 public external abstract class CanvasPattern {
     fun setTransform(transform: dynamic = definedExternally): Unit
 }
 
+/**
+ * [MDN TextMetrics](https://developer.mozilla.org/en/docs/Web/API/TextMetrics)
+ */
 public external abstract class TextMetrics {
     open val width: Double
     open val actualBoundingBoxLeft: Double
@@ -1453,6 +1693,9 @@ public inline fun HitRegionOptions(path: Path2D? = null, fillRule: CanvasFillRul
     return o
 }
 
+/**
+ * [MDN ImageData](https://developer.mozilla.org/en/docs/Web/API/ImageData)
+ */
 public external open class ImageData : TexImageSource {
     constructor(sw: Int, sh: Int)
     constructor(data: Uint8ClampedArray, sw: Int, sh: Int = definedExternally)
@@ -1461,6 +1704,9 @@ public external open class ImageData : TexImageSource {
     open val data: Uint8ClampedArray
 }
 
+/**
+ * [MDN Path2D](https://developer.mozilla.org/en/docs/Web/API/Path2D)
+ */
 public external open class Path2D() : CanvasPath {
     constructor(path: Path2D)
     constructor(paths: Array<Path2D>, fillRule: CanvasFillRule = definedExternally)
@@ -1478,10 +1724,16 @@ public external open class Path2D() : CanvasPath {
     override fun ellipse(x: Double, y: Double, radiusX: Double, radiusY: Double, rotation: Double, startAngle: Double, endAngle: Double, anticlockwise: Boolean /* = definedExternally */): Unit
 }
 
+/**
+ * [MDN Touch](https://developer.mozilla.org/en/docs/Web/API/Touch)
+ */
 public external abstract class Touch {
     open val region: String?
 }
 
+/**
+ * [MDN ImageBitmapRenderingContext](https://developer.mozilla.org/en/docs/Web/API/ImageBitmapRenderingContext)
+ */
 public external abstract class ImageBitmapRenderingContext {
     open val canvas: HTMLCanvasElement
     fun transferFromImageBitmap(bitmap: ImageBitmap?): Unit
@@ -1502,6 +1754,9 @@ public inline fun ImageBitmapRenderingContextSettings(alpha: Boolean? = true): I
     return o
 }
 
+/**
+ * [MDN CustomElementRegistry](https://developer.mozilla.org/en/docs/Web/API/CustomElementRegistry)
+ */
 public external abstract class CustomElementRegistry {
     fun define(name: String, constructor: () -> dynamic, options: ElementDefinitionOptions = definedExternally): Unit
     fun get(name: String): Any?
@@ -1528,6 +1783,9 @@ public external interface ElementContentEditable {
     val isContentEditable: Boolean
 }
 
+/**
+ * [MDN DataTransfer](https://developer.mozilla.org/en/docs/Web/API/DataTransfer)
+ */
 public external abstract class DataTransfer {
     open var dropEffect: String
     open var effectAllowed: String
@@ -1540,6 +1798,9 @@ public external abstract class DataTransfer {
     fun clearData(format: String = definedExternally): Unit
 }
 
+/**
+ * [MDN DataTransferItemList](https://developer.mozilla.org/en/docs/Web/API/DataTransferItemList)
+ */
 public external abstract class DataTransferItemList {
     open val length: Int
     fun add(data: String, type: String): DataTransferItem?
@@ -1549,6 +1810,9 @@ public external abstract class DataTransferItemList {
 }
 @kotlin.internal.InlineOnly inline operator fun DataTransferItemList.get(index: Int): DataTransferItem? = asDynamic()[index]
 
+/**
+ * [MDN DataTransferItem](https://developer.mozilla.org/en/docs/Web/API/DataTransferItem)
+ */
 public external abstract class DataTransferItem {
     open val kind: String
     open val type: String
@@ -1556,6 +1820,9 @@ public external abstract class DataTransferItem {
     fun getAsFile(): File?
 }
 
+/**
+ * [MDN DragEvent](https://developer.mozilla.org/en/docs/Web/API/DragEvent)
+ */
 public external open class DragEvent(type: String, eventInitDict: DragEventInit = definedExternally) : MouseEvent {
     open val dataTransfer: DataTransfer?
 }
@@ -1605,6 +1872,9 @@ public external abstract class BarProp {
     open val visible: Boolean
 }
 
+/**
+ * [MDN History](https://developer.mozilla.org/en/docs/Web/API/History)
+ */
 public external abstract class History {
     open val length: Int
     open var scrollRestoration: ScrollRestoration
@@ -1616,6 +1886,9 @@ public external abstract class History {
     fun replaceState(data: Any?, title: String, url: String? = definedExternally): Unit
 }
 
+/**
+ * [MDN Location](https://developer.mozilla.org/en/docs/Web/API/Location)
+ */
 public external abstract class Location {
     open var href: String
     open val origin: String
@@ -1632,6 +1905,9 @@ public external abstract class Location {
     fun reload(): Unit
 }
 
+/**
+ * [MDN PopStateEvent](https://developer.mozilla.org/en/docs/Web/API/PopStateEvent)
+ */
 public external open class PopStateEvent(type: String, eventInitDict: PopStateEventInit = definedExternally) : Event {
     open val state: Any?
 }
@@ -1654,6 +1930,9 @@ public inline fun PopStateEventInit(state: Any? = null, bubbles: Boolean? = fals
     return o
 }
 
+/**
+ * [MDN HashChangeEvent](https://developer.mozilla.org/en/docs/Web/API/HashChangeEvent)
+ */
 public external open class HashChangeEvent(type: String, eventInitDict: HashChangeEventInit = definedExternally) : Event {
     open val oldURL: String
     open val newURL: String
@@ -1681,6 +1960,9 @@ public inline fun HashChangeEventInit(oldURL: String? = "", newURL: String? = ""
     return o
 }
 
+/**
+ * [MDN PageTransitionEvent](https://developer.mozilla.org/en/docs/Web/API/PageTransitionEvent)
+ */
 public external open class PageTransitionEvent(type: String, eventInitDict: PageTransitionEventInit = definedExternally) : Event {
     open val persisted: Boolean
 }
@@ -1703,6 +1985,9 @@ public inline fun PageTransitionEventInit(persisted: Boolean? = false, bubbles: 
     return o
 }
 
+/**
+ * [MDN BeforeUnloadEvent](https://developer.mozilla.org/en/docs/Web/API/BeforeUnloadEvent)
+ */
 public external open class BeforeUnloadEvent : Event {
     var returnValue: String
 }
@@ -1731,10 +2016,16 @@ public external abstract class ApplicationCache : EventTarget {
     }
 }
 
+/**
+ * [MDN NavigatorOnLine](https://developer.mozilla.org/en/docs/Web/API/NavigatorOnLine)
+ */
 public external interface NavigatorOnLine {
     val onLine: Boolean
 }
 
+/**
+ * [MDN ErrorEvent](https://developer.mozilla.org/en/docs/Web/API/ErrorEvent)
+ */
 public external open class ErrorEvent(type: String, eventInitDict: ErrorEventInit = definedExternally) : Event {
     open val message: String
     open val filename: String
@@ -1777,6 +2068,9 @@ public inline fun ErrorEventInit(message: String? = "", filename: String? = "", 
     return o
 }
 
+/**
+ * [MDN PromiseRejectionEvent](https://developer.mozilla.org/en/docs/Web/API/PromiseRejectionEvent)
+ */
 public external open class PromiseRejectionEvent(type: String, eventInitDict: PromiseRejectionEventInit) : Event {
     open val promise: Promise<Any?>
     open val reason: Any?
@@ -1804,6 +2098,9 @@ public inline fun PromiseRejectionEventInit(promise: Promise<Any?>?, reason: Any
     return o
 }
 
+/**
+ * [MDN GlobalEventHandlers](https://developer.mozilla.org/en/docs/Web/API/GlobalEventHandlers)
+ */
 public external interface GlobalEventHandlers {
     var onabort: ((Event) -> dynamic)?
     var onblur: ((Event) -> dynamic)?
@@ -1868,6 +2165,9 @@ public external interface GlobalEventHandlers {
     var onwaiting: ((Event) -> dynamic)?
 }
 
+/**
+ * [MDN WindowEventHandlers](https://developer.mozilla.org/en/docs/Web/API/WindowEventHandlers)
+ */
 public external interface WindowEventHandlers {
     var onafterprint: ((Event) -> dynamic)?
     var onbeforeprint: ((Event) -> dynamic)?
@@ -1892,6 +2192,9 @@ public external interface DocumentAndElementEventHandlers {
     var onpaste: ((Event) -> dynamic)?
 }
 
+/**
+ * [MDN WindowOrWorkerGlobalScope](https://developer.mozilla.org/en/docs/Web/API/WindowOrWorkerGlobalScope)
+ */
 public external interface WindowOrWorkerGlobalScope {
     val caches: CacheStorage
     val origin: String
@@ -1906,11 +2209,17 @@ public external interface WindowOrWorkerGlobalScope {
     fun createImageBitmap(image: dynamic, sx: Int, sy: Int, sw: Int, sh: Int, options: ImageBitmapOptions = definedExternally): Promise<ImageBitmap>
 }
 
+/**
+ * [MDN Navigator](https://developer.mozilla.org/en/docs/Web/API/Navigator)
+ */
 public external abstract class Navigator : NavigatorID, NavigatorLanguage, NavigatorOnLine, NavigatorContentUtils, NavigatorCookies, NavigatorPlugins, NavigatorConcurrentHardware {
     open val serviceWorker: ServiceWorkerContainer
     fun vibrate(pattern: dynamic): Boolean
 }
 
+/**
+ * [MDN NavigatorID](https://developer.mozilla.org/en/docs/Web/API/NavigatorID)
+ */
 public external interface NavigatorID {
     val appCodeName: String
     val appName: String
@@ -1925,6 +2234,9 @@ public external interface NavigatorID {
     fun taintEnabled(): Boolean
 }
 
+/**
+ * [MDN NavigatorLanguage](https://developer.mozilla.org/en/docs/Web/API/NavigatorLanguage)
+ */
 public external interface NavigatorLanguage {
     val language: String
     val languages: Array<out String>
@@ -1943,12 +2255,18 @@ public external interface NavigatorCookies {
     val cookieEnabled: Boolean
 }
 
+/**
+ * [MDN NavigatorPlugins](https://developer.mozilla.org/en/docs/Web/API/NavigatorPlugins)
+ */
 public external interface NavigatorPlugins {
     val plugins: PluginArray
     val mimeTypes: MimeTypeArray
     fun javaEnabled(): Boolean
 }
 
+/**
+ * [MDN PluginArray](https://developer.mozilla.org/en/docs/Web/API/PluginArray)
+ */
 public external abstract class PluginArray : ItemArrayLike<Plugin> {
     fun refresh(reload: Boolean = definedExternally): Unit
     override fun item(index: Int): Plugin?
@@ -1964,6 +2282,9 @@ public external abstract class MimeTypeArray : ItemArrayLike<MimeType> {
 @kotlin.internal.InlineOnly inline operator fun MimeTypeArray.get(index: Int): MimeType? = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun MimeTypeArray.get(name: String): MimeType? = asDynamic()[name]
 
+/**
+ * [MDN Plugin](https://developer.mozilla.org/en/docs/Web/API/Plugin)
+ */
 public external abstract class Plugin : ItemArrayLike<MimeType> {
     open val name: String
     open val description: String
@@ -1981,6 +2302,9 @@ public external abstract class MimeType {
     open val enabledPlugin: Plugin
 }
 
+/**
+ * [MDN ImageBitmap](https://developer.mozilla.org/en/docs/Web/API/ImageBitmap)
+ */
 public external abstract class ImageBitmap : TexImageSource {
     open val width: Int
     open val height: Int
@@ -2022,6 +2346,9 @@ public inline fun ImageBitmapOptions(imageOrientation: ImageOrientation? = Image
     return o
 }
 
+/**
+ * [MDN MessageEvent](https://developer.mozilla.org/en/docs/Web/API/MessageEvent)
+ */
 public external open class MessageEvent(type: String, eventInitDict: MessageEventInit = definedExternally) : Event {
     open val data: Any?
     open val origin: String
@@ -2065,6 +2392,9 @@ public inline fun MessageEventInit(data: Any? = null, origin: String? = "", last
     return o
 }
 
+/**
+ * [MDN EventSource](https://developer.mozilla.org/en/docs/Web/API/EventSource)
+ */
 public external open class EventSource(url: String, eventSourceInitDict: EventSourceInit = definedExternally) : EventTarget {
     open val url: String
     open val withCredentials: Boolean
@@ -2096,6 +2426,9 @@ public inline fun EventSourceInit(withCredentials: Boolean? = false): EventSourc
     return o
 }
 
+/**
+ * [MDN WebSocket](https://developer.mozilla.org/en/docs/Web/API/WebSocket)
+ */
 public external open class WebSocket(url: String, protocols: dynamic = definedExternally) : EventTarget {
     open val url: String
     open val readyState: Short
@@ -2121,6 +2454,9 @@ public external open class WebSocket(url: String, protocols: dynamic = definedEx
     }
 }
 
+/**
+ * [MDN CloseEvent](https://developer.mozilla.org/en/docs/Web/API/CloseEvent)
+ */
 public external open class CloseEvent(type: String, eventInitDict: CloseEventInit = definedExternally) : Event {
     open val wasClean: Boolean
     open val code: Short
@@ -2153,11 +2489,17 @@ public inline fun CloseEventInit(wasClean: Boolean? = false, code: Short? = 0, r
     return o
 }
 
+/**
+ * [MDN MessageChannel](https://developer.mozilla.org/en/docs/Web/API/MessageChannel)
+ */
 public external open class MessageChannel {
     open val port1: MessagePort
     open val port2: MessagePort
 }
 
+/**
+ * [MDN MessagePort](https://developer.mozilla.org/en/docs/Web/API/MessagePort)
+ */
 public external abstract class MessagePort : EventTarget, UnionMessagePortOrWindow, UnionMessagePortOrServiceWorker, UnionClientOrMessagePortOrServiceWorker {
     open var onmessage: ((Event) -> dynamic)?
     fun postMessage(message: Any?, transfer: Array<dynamic> = definedExternally): Unit
@@ -2165,6 +2507,9 @@ public external abstract class MessagePort : EventTarget, UnionMessagePortOrWind
     fun close(): Unit
 }
 
+/**
+ * [MDN BroadcastChannel](https://developer.mozilla.org/en/docs/Web/API/BroadcastChannel)
+ */
 public external open class BroadcastChannel(name: String) : EventTarget {
     open val name: String
     var onmessage: ((Event) -> dynamic)?
@@ -2172,6 +2517,9 @@ public external open class BroadcastChannel(name: String) : EventTarget {
     fun close(): Unit
 }
 
+/**
+ * [MDN WorkerGlobalScope](https://developer.mozilla.org/en/docs/Web/API/WorkerGlobalScope)
+ */
 public external abstract class WorkerGlobalScope : EventTarget, WindowOrWorkerGlobalScope, GlobalPerformance {
     open val self: WorkerGlobalScope
     open val location: WorkerLocation
@@ -2185,12 +2533,18 @@ public external abstract class WorkerGlobalScope : EventTarget, WindowOrWorkerGl
     fun importScripts(vararg urls: String): Unit
 }
 
+/**
+ * [MDN DedicatedWorkerGlobalScope](https://developer.mozilla.org/en/docs/Web/API/DedicatedWorkerGlobalScope)
+ */
 public external abstract class DedicatedWorkerGlobalScope : WorkerGlobalScope {
     open var onmessage: ((Event) -> dynamic)?
     fun postMessage(message: Any?, transfer: Array<dynamic> = definedExternally): Unit
     fun close(): Unit
 }
 
+/**
+ * [MDN SharedWorkerGlobalScope](https://developer.mozilla.org/en/docs/Web/API/SharedWorkerGlobalScope)
+ */
 public external abstract class SharedWorkerGlobalScope : WorkerGlobalScope {
     open val name: String
     open val applicationCache: ApplicationCache
@@ -2198,10 +2552,16 @@ public external abstract class SharedWorkerGlobalScope : WorkerGlobalScope {
     fun close(): Unit
 }
 
+/**
+ * [MDN AbstractWorker](https://developer.mozilla.org/en/docs/Web/API/AbstractWorker)
+ */
 public external interface AbstractWorker {
     var onerror: ((Event) -> dynamic)?
 }
 
+/**
+ * [MDN Worker](https://developer.mozilla.org/en/docs/Web/API/Worker)
+ */
 public external open class Worker(scriptURL: String, options: WorkerOptions = definedExternally) : EventTarget, AbstractWorker {
     var onmessage: ((Event) -> dynamic)?
     override var onerror: ((Event) -> dynamic)?
@@ -2228,19 +2588,31 @@ public inline fun WorkerOptions(type: WorkerType? = WorkerType.CLASSIC, credenti
     return o
 }
 
+/**
+ * [MDN SharedWorker](https://developer.mozilla.org/en/docs/Web/API/SharedWorker)
+ */
 public external open class SharedWorker(scriptURL: String, name: String = definedExternally, options: WorkerOptions = definedExternally) : EventTarget, AbstractWorker {
     open val port: MessagePort
     override var onerror: ((Event) -> dynamic)?
 }
 
+/**
+ * [MDN NavigatorConcurrentHardware](https://developer.mozilla.org/en/docs/Web/API/NavigatorConcurrentHardware)
+ */
 public external interface NavigatorConcurrentHardware {
     val hardwareConcurrency: Int
 }
 
+/**
+ * [MDN WorkerNavigator](https://developer.mozilla.org/en/docs/Web/API/WorkerNavigator)
+ */
 public external abstract class WorkerNavigator : NavigatorID, NavigatorLanguage, NavigatorOnLine, NavigatorConcurrentHardware {
     open val serviceWorker: ServiceWorkerContainer
 }
 
+/**
+ * [MDN WorkerLocation](https://developer.mozilla.org/en/docs/Web/API/WorkerLocation)
+ */
 public external abstract class WorkerLocation {
     open var href: String
     open val origin: String
@@ -2253,6 +2625,9 @@ public external abstract class WorkerLocation {
     open val hash: String
 }
 
+/**
+ * [MDN Storage](https://developer.mozilla.org/en/docs/Web/API/Storage)
+ */
 public external abstract class Storage {
     open val length: Int
     fun key(index: Int): String?
@@ -2264,14 +2639,23 @@ public external abstract class Storage {
 @kotlin.internal.InlineOnly inline operator fun Storage.get(key: String): String? = asDynamic()[key]
 @kotlin.internal.InlineOnly inline operator fun Storage.set(key: String, value: String): Unit { asDynamic()[key] = value; }
 
+/**
+ * [MDN WindowSessionStorage](https://developer.mozilla.org/en/docs/Web/API/WindowSessionStorage)
+ */
 public external interface WindowSessionStorage {
     val sessionStorage: Storage
 }
 
+/**
+ * [MDN WindowLocalStorage](https://developer.mozilla.org/en/docs/Web/API/WindowLocalStorage)
+ */
 public external interface WindowLocalStorage {
     val localStorage: Storage
 }
 
+/**
+ * [MDN StorageEvent](https://developer.mozilla.org/en/docs/Web/API/StorageEvent)
+ */
 public external open class StorageEvent(type: String, eventInitDict: StorageEventInit = definedExternally) : Event {
     open val key: String?
     open val oldValue: String?
@@ -2347,6 +2731,9 @@ public external abstract class HTMLMarqueeElement : HTMLElement {
     fun stop(): Unit
 }
 
+/**
+ * [MDN HTMLFrameSetElement](https://developer.mozilla.org/en/docs/Web/API/HTMLFrameSetElement)
+ */
 public external abstract class HTMLFrameSetElement : HTMLElement, WindowEventHandlers {
     open var cols: String
     open var rows: String
@@ -2369,6 +2756,9 @@ public external abstract class HTMLDirectoryElement : HTMLElement {
     open var compact: Boolean
 }
 
+/**
+ * [MDN HTMLFontElement](https://developer.mozilla.org/en/docs/Web/API/HTMLFontElement)
+ */
 public external abstract class HTMLFontElement : HTMLElement {
     open var color: String
     open var face: String
@@ -2403,6 +2793,9 @@ public inline fun EventInit(bubbles: Boolean? = false, cancelable: Boolean? = fa
     return o
 }
 
+/**
+ * [MDN CustomEvent](https://developer.mozilla.org/en/docs/Web/API/CustomEvent)
+ */
 public external open class CustomEvent(type: String, eventInitDict: CustomEventInit = definedExternally) : Event {
     open val detail: Any?
     fun initCustomEvent(type: String, bubbles: Boolean, cancelable: Boolean, detail: Any?): Unit
@@ -2465,10 +2858,16 @@ public external interface NonElementParentNode {
     fun getElementById(elementId: String): Element?
 }
 
+/**
+ * [MDN DocumentOrShadowRoot](https://developer.mozilla.org/en/docs/Web/API/DocumentOrShadowRoot)
+ */
 public external interface DocumentOrShadowRoot {
     val fullscreenElement: Element?
 }
 
+/**
+ * [MDN ParentNode](https://developer.mozilla.org/en/docs/Web/API/ParentNode)
+ */
 public external interface ParentNode {
     val children: HTMLCollection
     val firstElementChild: Element?
@@ -2480,11 +2879,17 @@ public external interface ParentNode {
     fun querySelectorAll(selectors: String): NodeList
 }
 
+/**
+ * [MDN NonDocumentTypeChildNode](https://developer.mozilla.org/en/docs/Web/API/NonDocumentTypeChildNode)
+ */
 public external interface NonDocumentTypeChildNode {
     val previousElementSibling: Element?
     val nextElementSibling: Element?
 }
 
+/**
+ * [MDN ChildNode](https://developer.mozilla.org/en/docs/Web/API/ChildNode)
+ */
 public external interface ChildNode {
     fun before(vararg nodes: dynamic): Unit
     fun after(vararg nodes: dynamic): Unit
@@ -2496,11 +2901,17 @@ public external interface Slotable {
     val assignedSlot: HTMLSlotElement?
 }
 
+/**
+ * [MDN NodeList](https://developer.mozilla.org/en/docs/Web/API/NodeList)
+ */
 public external abstract class NodeList : ItemArrayLike<Node> {
     override fun item(index: Int): Node?
 }
 @kotlin.internal.InlineOnly inline operator fun NodeList.get(index: Int): Node? = asDynamic()[index]
 
+/**
+ * [MDN HTMLCollection](https://developer.mozilla.org/en/docs/Web/API/HTMLCollection)
+ */
 public external abstract class HTMLCollection : UnionElementOrHTMLCollection, ItemArrayLike<Element> {
     override fun item(index: Int): Element?
     fun namedItem(name: String): Element?
@@ -2508,6 +2919,9 @@ public external abstract class HTMLCollection : UnionElementOrHTMLCollection, It
 @kotlin.internal.InlineOnly inline operator fun HTMLCollection.get(index: Int): Element? = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun HTMLCollection.get(name: String): Element? = asDynamic()[name]
 
+/**
+ * [MDN MutationObserver](https://developer.mozilla.org/en/docs/Web/API/MutationObserver)
+ */
 public external open class MutationObserver(callback: (Array<MutationRecord>, MutationObserver) -> Unit) {
     fun observe(target: Node, options: MutationObserverInit = definedExternally): Unit
     fun disconnect(): Unit
@@ -2553,6 +2967,9 @@ public inline fun MutationObserverInit(childList: Boolean? = false, attributes: 
     return o
 }
 
+/**
+ * [MDN MutationRecord](https://developer.mozilla.org/en/docs/Web/API/MutationRecord)
+ */
 public external abstract class MutationRecord {
     open val type: String
     open val target: Node
@@ -2565,6 +2982,9 @@ public external abstract class MutationRecord {
     open val oldValue: String?
 }
 
+/**
+ * [MDN Node](https://developer.mozilla.org/en/docs/Web/API/Node)
+ */
 public external abstract class Node : EventTarget {
     open val nodeType: Short
     open val nodeName: String
@@ -2633,6 +3053,9 @@ public inline fun GetRootNodeOptions(composed: Boolean? = false): GetRootNodeOpt
     return o
 }
 
+/**
+ * [MDN XMLDocument](https://developer.mozilla.org/en/docs/Web/API/XMLDocument)
+ */
 public external open class XMLDocument : Document {
     override fun getElementById(elementId: String): Element?
     override fun prepend(vararg nodes: dynamic): Unit
@@ -2660,6 +3083,9 @@ public inline fun ElementCreationOptions(is_: String? = null): ElementCreationOp
     return o
 }
 
+/**
+ * [MDN DOMImplementation](https://developer.mozilla.org/en/docs/Web/API/DOMImplementation)
+ */
 public external abstract class DOMImplementation {
     fun createDocumentType(qualifiedName: String, publicId: String, systemId: String): DocumentType
     fun createDocument(namespace: String?, qualifiedName: String, doctype: DocumentType? = definedExternally): XMLDocument
@@ -2667,12 +3093,18 @@ public external abstract class DOMImplementation {
     fun hasFeature(): Boolean
 }
 
+/**
+ * [MDN DocumentType](https://developer.mozilla.org/en/docs/Web/API/DocumentType)
+ */
 public external abstract class DocumentType : Node, ChildNode {
     open val name: String
     open val publicId: String
     open val systemId: String
 }
 
+/**
+ * [MDN DocumentFragment](https://developer.mozilla.org/en/docs/Web/API/DocumentFragment)
+ */
 public external open class DocumentFragment : Node, NonElementParentNode, ParentNode {
     override val children: HTMLCollection
     override val firstElementChild: Element?
@@ -2685,6 +3117,9 @@ public external open class DocumentFragment : Node, NonElementParentNode, Parent
     override fun querySelectorAll(selectors: String): NodeList
 }
 
+/**
+ * [MDN ShadowRoot](https://developer.mozilla.org/en/docs/Web/API/ShadowRoot)
+ */
 public external open class ShadowRoot : DocumentFragment, DocumentOrShadowRoot {
     open val mode: ShadowRootMode
     open val host: Element
@@ -2696,6 +3131,9 @@ public external open class ShadowRoot : DocumentFragment, DocumentOrShadowRoot {
     override fun querySelectorAll(selectors: String): NodeList
 }
 
+/**
+ * [MDN Element](https://developer.mozilla.org/en/docs/Web/API/Element)
+ */
 public external abstract class Element : Node, ParentNode, NonDocumentTypeChildNode, ChildNode, Slotable, GeometryUtils, UnionElementOrProcessingInstruction, UnionElementOrHTMLCollection, UnionElementOrRadioNodeList, UnionElementOrMouseEvent {
     open var innerHTML: String
     open var outerHTML: String
@@ -2770,6 +3208,9 @@ public inline fun ShadowRootInit(mode: ShadowRootMode?): ShadowRootInit {
     return o
 }
 
+/**
+ * [MDN NamedNodeMap](https://developer.mozilla.org/en/docs/Web/API/NamedNodeMap)
+ */
 public external abstract class NamedNodeMap : ItemArrayLike<Attr> {
     override fun item(index: Int): Attr?
     fun getNamedItem(qualifiedName: String): Attr?
@@ -2782,6 +3223,9 @@ public external abstract class NamedNodeMap : ItemArrayLike<Attr> {
 @kotlin.internal.InlineOnly inline operator fun NamedNodeMap.get(index: Int): Attr? = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun NamedNodeMap.get(qualifiedName: String): Attr? = asDynamic()[qualifiedName]
 
+/**
+ * [MDN Attr](https://developer.mozilla.org/en/docs/Web/API/Attr)
+ */
 public external abstract class Attr : Node {
     open val namespaceURI: String?
     open val prefix: String?
@@ -2792,6 +3236,9 @@ public external abstract class Attr : Node {
     open val specified: Boolean
 }
 
+/**
+ * [MDN CharacterData](https://developer.mozilla.org/en/docs/Web/API/CharacterData)
+ */
 public external abstract class CharacterData : Node, NonDocumentTypeChildNode, ChildNode {
     open var data: String
     open val length: Int
@@ -2802,6 +3249,9 @@ public external abstract class CharacterData : Node, NonDocumentTypeChildNode, C
     fun replaceData(offset: Int, count: Int, data: String): Unit
 }
 
+/**
+ * [MDN Text](https://developer.mozilla.org/en/docs/Web/API/Text)
+ */
 public external open class Text(data: String = definedExternally) : CharacterData, Slotable, GeometryUtils {
     open val wholeText: String
     override val previousElementSibling: Element?
@@ -2818,6 +3268,9 @@ public external open class Text(data: String = definedExternally) : CharacterDat
     override fun convertPointFromNode(point: DOMPointInit, from: dynamic, options: ConvertCoordinateOptions /* = definedExternally */): DOMPoint
 }
 
+/**
+ * [MDN CDATASection](https://developer.mozilla.org/en/docs/Web/API/CDATASection)
+ */
 public external open class CDATASection : Text {
     override fun before(vararg nodes: dynamic): Unit
     override fun after(vararg nodes: dynamic): Unit
@@ -2829,10 +3282,16 @@ public external open class CDATASection : Text {
     override fun convertPointFromNode(point: DOMPointInit, from: dynamic, options: ConvertCoordinateOptions /* = definedExternally */): DOMPoint
 }
 
+/**
+ * [MDN ProcessingInstruction](https://developer.mozilla.org/en/docs/Web/API/ProcessingInstruction)
+ */
 public external abstract class ProcessingInstruction : CharacterData, LinkStyle, UnionElementOrProcessingInstruction {
     open val target: String
 }
 
+/**
+ * [MDN Comment](https://developer.mozilla.org/en/docs/Web/API/Comment)
+ */
 public external open class Comment(data: String = definedExternally) : CharacterData {
     override val previousElementSibling: Element?
     override val nextElementSibling: Element?
@@ -2842,6 +3301,9 @@ public external open class Comment(data: String = definedExternally) : Character
     override fun remove(): Unit
 }
 
+/**
+ * [MDN Range](https://developer.mozilla.org/en/docs/Web/API/Range)
+ */
 public external open class Range {
     open val startContainer: Node
     open val startOffset: Int
@@ -2881,6 +3343,9 @@ public external open class Range {
     }
 }
 
+/**
+ * [MDN NodeIterator](https://developer.mozilla.org/en/docs/Web/API/NodeIterator)
+ */
 public external abstract class NodeIterator {
     open val root: Node
     open val referenceNode: Node
@@ -2892,6 +3357,9 @@ public external abstract class NodeIterator {
     fun detach(): Unit
 }
 
+/**
+ * [MDN TreeWalker](https://developer.mozilla.org/en/docs/Web/API/TreeWalker)
+ */
 public external abstract class TreeWalker {
     open val root: Node
     open val whatToShow: Int
@@ -2906,6 +3374,9 @@ public external abstract class TreeWalker {
     fun nextNode(): Node?
 }
 
+/**
+ * [MDN NodeFilter](https://developer.mozilla.org/en/docs/Web/API/NodeFilter)
+ */
 public external interface NodeFilter {
     fun acceptNode(node: Node): Short
 
@@ -2929,6 +3400,9 @@ public external interface NodeFilter {
     }
 }
 
+/**
+ * [MDN DOMTokenList](https://developer.mozilla.org/en/docs/Web/API/DOMTokenList)
+ */
 public external abstract class DOMTokenList : ItemArrayLike<String> {
     open var value: String
     override fun item(index: Int): String?
@@ -2941,6 +3415,9 @@ public external abstract class DOMTokenList : ItemArrayLike<String> {
 }
 @kotlin.internal.InlineOnly inline operator fun DOMTokenList.get(index: Int): String? = asDynamic()[index]
 
+/**
+ * [MDN DOMPointReadOnly](https://developer.mozilla.org/en/docs/Web/API/DOMPointReadOnly)
+ */
 public external open class DOMPointReadOnly(x: Double, y: Double, z: Double, w: Double) {
     open val x: Double
     open val y: Double
@@ -2949,6 +3426,9 @@ public external open class DOMPointReadOnly(x: Double, y: Double, z: Double, w: 
     fun matrixTransform(matrix: DOMMatrixReadOnly): DOMPoint
 }
 
+/**
+ * [MDN DOMPoint](https://developer.mozilla.org/en/docs/Web/API/DOMPoint)
+ */
 public external open class DOMPoint : DOMPointReadOnly {
     constructor(point: DOMPointInit)
     constructor(x: Double = definedExternally, y: Double = definedExternally, z: Double = definedExternally, w: Double = definedExternally)
@@ -2985,6 +3465,9 @@ public inline fun DOMPointInit(x: Double? = 0.0, y: Double? = 0.0, z: Double? = 
     return o
 }
 
+/**
+ * [MDN DOMRect](https://developer.mozilla.org/en/docs/Web/API/DOMRect)
+ */
 public external open class DOMRect(x: Double = definedExternally, y: Double = definedExternally, width: Double = definedExternally, height: Double = definedExternally) : DOMRectReadOnly {
     override var x: Double
     override var y: Double
@@ -2992,6 +3475,9 @@ public external open class DOMRect(x: Double = definedExternally, y: Double = de
     override var height: Double
 }
 
+/**
+ * [MDN DOMRectReadOnly](https://developer.mozilla.org/en/docs/Web/API/DOMRectReadOnly)
+ */
 public external open class DOMRectReadOnly(x: Double, y: Double, width: Double, height: Double) {
     open val x: Double
     open val y: Double
@@ -3045,6 +3531,9 @@ public external open class DOMQuad {
     open val bounds: DOMRectReadOnly
 }
 
+/**
+ * [MDN DOMMatrixReadOnly](https://developer.mozilla.org/en/docs/Web/API/DOMMatrixReadOnly)
+ */
 public external open class DOMMatrixReadOnly(numberSequence: Array<Double>) {
     open val a: Double
     open val b: Double
@@ -3088,6 +3577,9 @@ public external open class DOMMatrixReadOnly(numberSequence: Array<Double>) {
     fun toFloat64Array(): Float64Array
 }
 
+/**
+ * [MDN DOMMatrix](https://developer.mozilla.org/en/docs/Web/API/DOMMatrix)
+ */
 public external open class DOMMatrix() : DOMMatrixReadOnly {
     constructor(transformList: String)
     constructor(other: DOMMatrixReadOnly)
@@ -3166,6 +3658,9 @@ public inline fun ScrollToOptions(left: Double? = null, top: Double? = null, beh
     return o
 }
 
+/**
+ * [MDN MediaQueryList](https://developer.mozilla.org/en/docs/Web/API/MediaQueryList)
+ */
 public external abstract class MediaQueryList : EventTarget {
     open val media: String
     open val matches: Boolean
@@ -3203,6 +3698,9 @@ public inline fun MediaQueryListEventInit(media: String? = "", matches: Boolean?
     return o
 }
 
+/**
+ * [MDN Screen](https://developer.mozilla.org/en/docs/Web/API/Screen)
+ */
 public external abstract class Screen {
     open val availWidth: Int
     open val availHeight: Int
@@ -3212,6 +3710,9 @@ public external abstract class Screen {
     open val pixelDepth: Int
 }
 
+/**
+ * [MDN CaretPosition](https://developer.mozilla.org/en/docs/Web/API/CaretPosition)
+ */
 public external abstract class CaretPosition {
     open val offsetNode: Node
     open val offset: Int

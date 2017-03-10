@@ -22,6 +22,9 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
+/**
+ * [MDN Headers](https://developer.mozilla.org/en/docs/Web/API/Headers)
+ */
 public external open class Headers(init: dynamic = definedExternally) {
     fun append(name: String, value: String): Unit
     fun delete(name: String): Unit
@@ -30,6 +33,9 @@ public external open class Headers(init: dynamic = definedExternally) {
     fun set(name: String, value: String): Unit
 }
 
+/**
+ * [MDN Body](https://developer.mozilla.org/en/docs/Web/API/Body)
+ */
 public external interface Body {
     val bodyUsed: Boolean
     fun arrayBuffer(): Promise<ArrayBuffer>
@@ -39,6 +45,9 @@ public external interface Body {
     fun text(): Promise<String>
 }
 
+/**
+ * [MDN Request](https://developer.mozilla.org/en/docs/Web/API/Request)
+ */
 public external open class Request(input: dynamic, init: RequestInit = definedExternally) : Body {
     open val method: String
     open val url: String
@@ -121,6 +130,9 @@ public inline fun RequestInit(method: String? = null, headers: dynamic = null, b
     return o
 }
 
+/**
+ * [MDN Response](https://developer.mozilla.org/en/docs/Web/API/Response)
+ */
 public external open class Response(body: dynamic = definedExternally, init: ResponseInit = definedExternally) : Body {
     open val type: ResponseType
     open val url: String

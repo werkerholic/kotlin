@@ -22,6 +22,9 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
+/**
+ * [MDN SVGElement](https://developer.mozilla.org/en/docs/Web/API/SVGElement)
+ */
 public external abstract class SVGElement : Element, ElementCSSInlineStyle, GlobalEventHandlers, SVGElementInstance {
     open val dataset: DOMStringMap
     open val ownerSVGElement: SVGSVGElement?
@@ -58,6 +61,9 @@ public inline fun SVGBoundingBoxOptions(fill: Boolean? = true, stroke: Boolean? 
     return o
 }
 
+/**
+ * [MDN SVGGraphicsElement](https://developer.mozilla.org/en/docs/Web/API/SVGGraphicsElement)
+ */
 public external abstract class SVGGraphicsElement : SVGElement, SVGTests {
     open val transform: SVGAnimatedTransformList
     fun getBBox(options: SVGBoundingBoxOptions = definedExternally): DOMRect
@@ -65,6 +71,9 @@ public external abstract class SVGGraphicsElement : SVGElement, SVGTests {
     fun getScreenCTM(): DOMMatrix?
 }
 
+/**
+ * [MDN SVGGeometryElement](https://developer.mozilla.org/en/docs/Web/API/SVGGeometryElement)
+ */
 public external abstract class SVGGeometryElement : SVGGraphicsElement {
     open val pathLength: SVGAnimatedNumber
     fun isPointInFill(point: DOMPoint): Boolean
@@ -73,10 +82,16 @@ public external abstract class SVGGeometryElement : SVGGraphicsElement {
     fun getPointAtLength(distance: Float): DOMPoint
 }
 
+/**
+ * [MDN SVGNumber](https://developer.mozilla.org/en/docs/Web/API/SVGNumber)
+ */
 public external abstract class SVGNumber {
     open var value: Float
 }
 
+/**
+ * [MDN SVGLength](https://developer.mozilla.org/en/docs/Web/API/SVGLength)
+ */
 public external abstract class SVGLength {
     open val unitType: Short
     open var value: Float
@@ -100,6 +115,9 @@ public external abstract class SVGLength {
     }
 }
 
+/**
+ * [MDN SVGAngle](https://developer.mozilla.org/en/docs/Web/API/SVGAngle)
+ */
 public external abstract class SVGAngle {
     open val unitType: Short
     open var value: Float
@@ -131,6 +149,9 @@ public external abstract class SVGNameList {
 @kotlin.internal.InlineOnly inline operator fun SVGNameList.get(index: Int): dynamic = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun SVGNameList.set(index: Int, newItem: dynamic): Unit { asDynamic()[index] = newItem; }
 
+/**
+ * [MDN SVGNumberList](https://developer.mozilla.org/en/docs/Web/API/SVGNumberList)
+ */
 public external abstract class SVGNumberList {
     open val length: Int
     open val numberOfItems: Int
@@ -145,6 +166,9 @@ public external abstract class SVGNumberList {
 @kotlin.internal.InlineOnly inline operator fun SVGNumberList.get(index: Int): SVGNumber? = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun SVGNumberList.set(index: Int, newItem: SVGNumber): Unit { asDynamic()[index] = newItem; }
 
+/**
+ * [MDN SVGLengthList](https://developer.mozilla.org/en/docs/Web/API/SVGLengthList)
+ */
 public external abstract class SVGLengthList {
     open val length: Int
     open val numberOfItems: Int
@@ -159,56 +183,89 @@ public external abstract class SVGLengthList {
 @kotlin.internal.InlineOnly inline operator fun SVGLengthList.get(index: Int): SVGLength? = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun SVGLengthList.set(index: Int, newItem: SVGLength): Unit { asDynamic()[index] = newItem; }
 
+/**
+ * [MDN SVGAnimatedBoolean](https://developer.mozilla.org/en/docs/Web/API/SVGAnimatedBoolean)
+ */
 public external abstract class SVGAnimatedBoolean {
     open var baseVal: Boolean
     open val animVal: Boolean
 }
 
+/**
+ * [MDN SVGAnimatedEnumeration](https://developer.mozilla.org/en/docs/Web/API/SVGAnimatedEnumeration)
+ */
 public external abstract class SVGAnimatedEnumeration {
     open var baseVal: Short
     open val animVal: Short
 }
 
+/**
+ * [MDN SVGAnimatedInteger](https://developer.mozilla.org/en/docs/Web/API/SVGAnimatedInteger)
+ */
 public external abstract class SVGAnimatedInteger {
     open var baseVal: Int
     open val animVal: Int
 }
 
+/**
+ * [MDN SVGAnimatedNumber](https://developer.mozilla.org/en/docs/Web/API/SVGAnimatedNumber)
+ */
 public external abstract class SVGAnimatedNumber {
     open var baseVal: Float
     open val animVal: Float
 }
 
+/**
+ * [MDN SVGAnimatedLength](https://developer.mozilla.org/en/docs/Web/API/SVGAnimatedLength)
+ */
 public external abstract class SVGAnimatedLength {
     open val baseVal: SVGLength
     open val animVal: SVGLength
 }
 
+/**
+ * [MDN SVGAnimatedAngle](https://developer.mozilla.org/en/docs/Web/API/SVGAnimatedAngle)
+ */
 public external abstract class SVGAnimatedAngle {
     open val baseVal: SVGAngle
     open val animVal: SVGAngle
 }
 
+/**
+ * [MDN SVGAnimatedString](https://developer.mozilla.org/en/docs/Web/API/SVGAnimatedString)
+ */
 public external abstract class SVGAnimatedString {
     open var baseVal: String
     open val animVal: String
 }
 
+/**
+ * [MDN SVGAnimatedRect](https://developer.mozilla.org/en/docs/Web/API/SVGAnimatedRect)
+ */
 public external abstract class SVGAnimatedRect {
     open val baseVal: DOMRect
     open val animVal: DOMRectReadOnly
 }
 
+/**
+ * [MDN SVGAnimatedNumberList](https://developer.mozilla.org/en/docs/Web/API/SVGAnimatedNumberList)
+ */
 public external abstract class SVGAnimatedNumberList {
     open val baseVal: SVGNumberList
     open val animVal: SVGNumberList
 }
 
+/**
+ * [MDN SVGAnimatedLengthList](https://developer.mozilla.org/en/docs/Web/API/SVGAnimatedLengthList)
+ */
 public external abstract class SVGAnimatedLengthList {
     open val baseVal: SVGLengthList
     open val animVal: SVGLengthList
 }
 
+/**
+ * [MDN SVGStringList](https://developer.mozilla.org/en/docs/Web/API/SVGStringList)
+ */
 public external abstract class SVGStringList {
     open val length: Int
     open val numberOfItems: Int
@@ -232,6 +289,9 @@ public external interface SVGUnitTypes {
     }
 }
 
+/**
+ * [MDN SVGTests](https://developer.mozilla.org/en/docs/Web/API/SVGTests)
+ */
 public external interface SVGTests {
     val requiredExtensions: SVGStringList
     val systemLanguage: SVGStringList
@@ -256,6 +316,9 @@ public external interface SVGURIReference {
     val href: SVGAnimatedString
 }
 
+/**
+ * [MDN SVGSVGElement](https://developer.mozilla.org/en/docs/Web/API/SVGSVGElement)
+ */
 public external abstract class SVGSVGElement : SVGGraphicsElement, SVGFitToViewBox, SVGZoomAndPan, WindowEventHandlers {
     open val x: SVGAnimatedLength
     open val y: SVGAnimatedLength
@@ -289,27 +352,45 @@ public external abstract class SVGSVGElement : SVGGraphicsElement, SVGFitToViewB
     }
 }
 
+/**
+ * [MDN SVGGElement](https://developer.mozilla.org/en/docs/Web/API/SVGGElement)
+ */
 public external abstract class SVGGElement : SVGGraphicsElement {
 }
 
 public external abstract class SVGUnknownElement : SVGGraphicsElement {
 }
 
+/**
+ * [MDN SVGDefsElement](https://developer.mozilla.org/en/docs/Web/API/SVGDefsElement)
+ */
 public external abstract class SVGDefsElement : SVGGraphicsElement {
 }
 
+/**
+ * [MDN SVGDescElement](https://developer.mozilla.org/en/docs/Web/API/SVGDescElement)
+ */
 public external abstract class SVGDescElement : SVGElement {
 }
 
 public external abstract class SVGMetadataElement : SVGElement {
 }
 
+/**
+ * [MDN SVGTitleElement](https://developer.mozilla.org/en/docs/Web/API/SVGTitleElement)
+ */
 public external abstract class SVGTitleElement : SVGElement {
 }
 
+/**
+ * [MDN SVGSymbolElement](https://developer.mozilla.org/en/docs/Web/API/SVGSymbolElement)
+ */
 public external abstract class SVGSymbolElement : SVGGraphicsElement, SVGFitToViewBox {
 }
 
+/**
+ * [MDN SVGUseElement](https://developer.mozilla.org/en/docs/Web/API/SVGUseElement)
+ */
 public external abstract class SVGUseElement : SVGGraphicsElement, SVGURIReference {
     open val x: SVGAnimatedLength
     open val y: SVGAnimatedLength
@@ -336,6 +417,9 @@ public external open class ShadowAnimation(source: dynamic, newTarget: dynamic) 
     open val sourceAnimation: dynamic
 }
 
+/**
+ * [MDN SVGSwitchElement](https://developer.mozilla.org/en/docs/Web/API/SVGSwitchElement)
+ */
 public external abstract class SVGSwitchElement : SVGGraphicsElement {
 }
 
@@ -343,12 +427,18 @@ public external interface GetSVGDocument {
     fun getSVGDocument(): Document
 }
 
+/**
+ * [MDN SVGStyleElement](https://developer.mozilla.org/en/docs/Web/API/SVGStyleElement)
+ */
 public external abstract class SVGStyleElement : SVGElement, LinkStyle {
     open var type: String
     open var media: String
     open var title: String
 }
 
+/**
+ * [MDN SVGTransform](https://developer.mozilla.org/en/docs/Web/API/SVGTransform)
+ */
 public external abstract class SVGTransform {
     open val type: Short
     open val matrix: DOMMatrix
@@ -371,6 +461,9 @@ public external abstract class SVGTransform {
     }
 }
 
+/**
+ * [MDN SVGTransformList](https://developer.mozilla.org/en/docs/Web/API/SVGTransformList)
+ */
 public external abstract class SVGTransformList {
     open val length: Int
     open val numberOfItems: Int
@@ -387,11 +480,17 @@ public external abstract class SVGTransformList {
 @kotlin.internal.InlineOnly inline operator fun SVGTransformList.get(index: Int): SVGTransform? = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun SVGTransformList.set(index: Int, newItem: SVGTransform): Unit { asDynamic()[index] = newItem; }
 
+/**
+ * [MDN SVGAnimatedTransformList](https://developer.mozilla.org/en/docs/Web/API/SVGAnimatedTransformList)
+ */
 public external abstract class SVGAnimatedTransformList {
     open val baseVal: SVGTransformList
     open val animVal: SVGTransformList
 }
 
+/**
+ * [MDN SVGPreserveAspectRatio](https://developer.mozilla.org/en/docs/Web/API/SVGPreserveAspectRatio)
+ */
 public external abstract class SVGPreserveAspectRatio {
     open var align: Short
     open var meetOrSlice: Short
@@ -414,14 +513,23 @@ public external abstract class SVGPreserveAspectRatio {
     }
 }
 
+/**
+ * [MDN SVGAnimatedPreserveAspectRatio](https://developer.mozilla.org/en/docs/Web/API/SVGAnimatedPreserveAspectRatio)
+ */
 public external abstract class SVGAnimatedPreserveAspectRatio {
     open val baseVal: SVGPreserveAspectRatio
     open val animVal: SVGPreserveAspectRatio
 }
 
+/**
+ * [MDN SVGPathElement](https://developer.mozilla.org/en/docs/Web/API/SVGPathElement)
+ */
 public external abstract class SVGPathElement : SVGGeometryElement {
 }
 
+/**
+ * [MDN SVGRectElement](https://developer.mozilla.org/en/docs/Web/API/SVGRectElement)
+ */
 public external abstract class SVGRectElement : SVGGeometryElement {
     open val x: SVGAnimatedLength
     open val y: SVGAnimatedLength
@@ -431,12 +539,18 @@ public external abstract class SVGRectElement : SVGGeometryElement {
     open val ry: SVGAnimatedLength
 }
 
+/**
+ * [MDN SVGCircleElement](https://developer.mozilla.org/en/docs/Web/API/SVGCircleElement)
+ */
 public external abstract class SVGCircleElement : SVGGeometryElement {
     open val cx: SVGAnimatedLength
     open val cy: SVGAnimatedLength
     open val r: SVGAnimatedLength
 }
 
+/**
+ * [MDN SVGEllipseElement](https://developer.mozilla.org/en/docs/Web/API/SVGEllipseElement)
+ */
 public external abstract class SVGEllipseElement : SVGGeometryElement {
     open val cx: SVGAnimatedLength
     open val cy: SVGAnimatedLength
@@ -444,6 +558,9 @@ public external abstract class SVGEllipseElement : SVGGeometryElement {
     open val ry: SVGAnimatedLength
 }
 
+/**
+ * [MDN SVGLineElement](https://developer.mozilla.org/en/docs/Web/API/SVGLineElement)
+ */
 public external abstract class SVGLineElement : SVGGeometryElement {
     open val x1: SVGAnimatedLength
     open val y1: SVGAnimatedLength
@@ -451,9 +568,15 @@ public external abstract class SVGLineElement : SVGGeometryElement {
     open val y2: SVGAnimatedLength
 }
 
+/**
+ * [MDN SVGMeshElement](https://developer.mozilla.org/en/docs/Web/API/SVGMeshElement)
+ */
 public external abstract class SVGMeshElement : SVGGeometryElement, SVGURIReference {
 }
 
+/**
+ * [MDN SVGAnimatedPoints](https://developer.mozilla.org/en/docs/Web/API/SVGAnimatedPoints)
+ */
 public external interface SVGAnimatedPoints {
     val points: SVGPointList
     val animatedPoints: SVGPointList
@@ -473,12 +596,21 @@ public external abstract class SVGPointList {
 @kotlin.internal.InlineOnly inline operator fun SVGPointList.get(index: Int): DOMPoint? = asDynamic()[index]
 @kotlin.internal.InlineOnly inline operator fun SVGPointList.set(index: Int, newItem: DOMPoint): Unit { asDynamic()[index] = newItem; }
 
+/**
+ * [MDN SVGPolylineElement](https://developer.mozilla.org/en/docs/Web/API/SVGPolylineElement)
+ */
 public external abstract class SVGPolylineElement : SVGGeometryElement, SVGAnimatedPoints {
 }
 
+/**
+ * [MDN SVGPolygonElement](https://developer.mozilla.org/en/docs/Web/API/SVGPolygonElement)
+ */
 public external abstract class SVGPolygonElement : SVGGeometryElement, SVGAnimatedPoints {
 }
 
+/**
+ * [MDN SVGTextContentElement](https://developer.mozilla.org/en/docs/Web/API/SVGTextContentElement)
+ */
 public external abstract class SVGTextContentElement : SVGGraphicsElement {
     open val textLength: SVGAnimatedLength
     open val lengthAdjust: SVGAnimatedEnumeration
@@ -499,6 +631,9 @@ public external abstract class SVGTextContentElement : SVGGraphicsElement {
     }
 }
 
+/**
+ * [MDN SVGTextPositioningElement](https://developer.mozilla.org/en/docs/Web/API/SVGTextPositioningElement)
+ */
 public external abstract class SVGTextPositioningElement : SVGTextContentElement {
     open val x: SVGAnimatedLengthList
     open val y: SVGAnimatedLengthList
@@ -507,9 +642,15 @@ public external abstract class SVGTextPositioningElement : SVGTextContentElement
     open val rotate: SVGAnimatedNumberList
 }
 
+/**
+ * [MDN SVGTextElement](https://developer.mozilla.org/en/docs/Web/API/SVGTextElement)
+ */
 public external abstract class SVGTextElement : SVGTextPositioningElement {
 }
 
+/**
+ * [MDN SVGTSpanElement](https://developer.mozilla.org/en/docs/Web/API/SVGTSpanElement)
+ */
 public external abstract class SVGTSpanElement : SVGTextPositioningElement {
 }
 
@@ -528,6 +669,9 @@ public external abstract class SVGTextPathElement : SVGTextContentElement, SVGUR
     }
 }
 
+/**
+ * [MDN SVGImageElement](https://developer.mozilla.org/en/docs/Web/API/SVGImageElement)
+ */
 public external abstract class SVGImageElement : SVGGraphicsElement, SVGURIReference, HTMLOrSVGImageElement {
     open val x: SVGAnimatedLength
     open val y: SVGAnimatedLength
@@ -537,6 +681,9 @@ public external abstract class SVGImageElement : SVGGraphicsElement, SVGURIRefer
     open var crossOrigin: String?
 }
 
+/**
+ * [MDN SVGForeignObjectElement](https://developer.mozilla.org/en/docs/Web/API/SVGForeignObjectElement)
+ */
 public external abstract class SVGForeignObjectElement : SVGGraphicsElement {
     open val x: SVGAnimatedLength
     open val y: SVGAnimatedLength
@@ -569,6 +716,9 @@ public external abstract class SVGMarkerElement : SVGElement, SVGFitToViewBox {
 public external abstract class SVGSolidcolorElement : SVGElement {
 }
 
+/**
+ * [MDN SVGGradientElement](https://developer.mozilla.org/en/docs/Web/API/SVGGradientElement)
+ */
 public external abstract class SVGGradientElement : SVGElement, SVGURIReference, SVGUnitTypes {
     open val gradientUnits: SVGAnimatedEnumeration
     open val gradientTransform: SVGAnimatedTransformList
@@ -585,6 +735,9 @@ public external abstract class SVGGradientElement : SVGElement, SVGURIReference,
     }
 }
 
+/**
+ * [MDN SVGLinearGradientElement](https://developer.mozilla.org/en/docs/Web/API/SVGLinearGradientElement)
+ */
 public external abstract class SVGLinearGradientElement : SVGGradientElement {
     open val x1: SVGAnimatedLength
     open val y1: SVGAnimatedLength
@@ -592,6 +745,9 @@ public external abstract class SVGLinearGradientElement : SVGGradientElement {
     open val y2: SVGAnimatedLength
 }
 
+/**
+ * [MDN SVGRadialGradientElement](https://developer.mozilla.org/en/docs/Web/API/SVGRadialGradientElement)
+ */
 public external abstract class SVGRadialGradientElement : SVGGradientElement {
     open val cx: SVGAnimatedLength
     open val cy: SVGAnimatedLength
@@ -610,10 +766,16 @@ public external abstract class SVGMeshrowElement : SVGElement {
 public external abstract class SVGMeshpatchElement : SVGElement {
 }
 
+/**
+ * [MDN SVGStopElement](https://developer.mozilla.org/en/docs/Web/API/SVGStopElement)
+ */
 public external abstract class SVGStopElement : SVGElement {
     open val offset: SVGAnimatedNumber
 }
 
+/**
+ * [MDN SVGPatternElement](https://developer.mozilla.org/en/docs/Web/API/SVGPatternElement)
+ */
 public external abstract class SVGPatternElement : SVGElement, SVGFitToViewBox, SVGURIReference, SVGUnitTypes {
     open val patternUnits: SVGAnimatedEnumeration
     open val patternContentUnits: SVGAnimatedEnumeration
@@ -636,16 +798,25 @@ public external abstract class SVGHatchElement : SVGElement {
 public external abstract class SVGHatchpathElement : SVGElement {
 }
 
+/**
+ * [MDN SVGCursorElement](https://developer.mozilla.org/en/docs/Web/API/SVGCursorElement)
+ */
 public external abstract class SVGCursorElement : SVGElement, SVGURIReference {
     open val x: SVGAnimatedLength
     open val y: SVGAnimatedLength
 }
 
+/**
+ * [MDN SVGScriptElement](https://developer.mozilla.org/en/docs/Web/API/SVGScriptElement)
+ */
 public external abstract class SVGScriptElement : SVGElement, SVGURIReference, HTMLOrSVGScriptElement {
     open var type: String
     open var crossOrigin: String?
 }
 
+/**
+ * [MDN SVGAElement](https://developer.mozilla.org/en/docs/Web/API/SVGAElement)
+ */
 public external abstract class SVGAElement : SVGGraphicsElement, SVGURIReference {
     open val target: SVGAnimatedString
     open val download: SVGAnimatedString
@@ -655,6 +826,9 @@ public external abstract class SVGAElement : SVGGraphicsElement, SVGURIReference
     open val type: SVGAnimatedString
 }
 
+/**
+ * [MDN SVGViewElement](https://developer.mozilla.org/en/docs/Web/API/SVGViewElement)
+ */
 public external abstract class SVGViewElement : SVGElement, SVGFitToViewBox, SVGZoomAndPan {
 
     companion object {
