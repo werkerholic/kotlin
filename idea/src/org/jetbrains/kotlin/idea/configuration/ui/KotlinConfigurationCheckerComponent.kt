@@ -16,14 +16,19 @@
 
 package org.jetbrains.kotlin.idea.configuration.ui
 
+import com.intellij.ProjectTopics
 import com.intellij.notification.NotificationDisplayType
 import com.intellij.notification.NotificationsConfiguration
 import com.intellij.openapi.components.AbstractProjectComponent
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ModuleRootAdapter
+import com.intellij.openapi.roots.ModuleRootEvent
 import com.intellij.openapi.startup.StartupManager
 import org.jetbrains.kotlin.idea.configuration.getModulesWithKotlinFiles
 import org.jetbrains.kotlin.idea.configuration.showConfigureKotlinNotificationIfNeeded
+import org.jetbrains.kotlin.idea.configuration.ui.notifications.ConfigureKotlinNotification
 import org.jetbrains.kotlin.idea.project.getAndCacheLanguageLevelByDependencies
 import org.jetbrains.kotlin.idea.versions.collectModulesWithOutdatedRuntime
 import org.jetbrains.kotlin.idea.versions.findOutdatedKotlinLibraries
@@ -31,10 +36,26 @@ import org.jetbrains.kotlin.idea.versions.notifyOutdatedKotlinRuntime
 import java.util.concurrent.atomic.AtomicInteger
 
 class KotlinConfigurationCheckerComponent protected constructor(project: Project) : AbstractProjectComponent(project) {
-    private var syncCount = AtomicInteger()
+    private val syncDepth = AtomicInteger()
+    private var notificationPostponed = false
 
     init {
         NotificationsConfiguration.getNotificationsConfiguration().register(CONFIGURE_NOTIFICATION_GROUP_ID, NotificationDisplayType.STICKY_BALLOON, true)
+
+        val connection = project.messageBus.connect()
+        connection.subscribe(ProjectTopics.PROJECT_ROOTS, object : ModuleRootAdapter() {
+            override fun rootsChanged(event: ModuleRootEvent?) {
+                if (notificationPostponed && !isSyncing) {
+                    DumbService.getInstance(myProject).smartInvokeLater {
+                        if (!isSyncing) {
+                            notificationPostponed = false
+                            showConfigureKotlinNotificationIfNeeded(myProject,
+                                                                    collectModulesWithOutdatedRuntime(findOutdatedKotlinLibraries(myProject)))
+                        }
+                    }
+                }
+            }
+        })
     }
 
     override fun projectOpened() {
@@ -50,33 +71,30 @@ class KotlinConfigurationCheckerComponent protected constructor(project: Project
                 if (!libraries.isEmpty()) {
                     notifyOutdatedKotlinRuntime(myProject, libraries)
                 }
-                if (syncCount.get() == 0) {
+                if (syncDepth.get() == 0) {
                     showConfigureKotlinNotificationIfNeeded(myProject,
                                                             collectModulesWithOutdatedRuntime(libraries))
                 }
-            }
-        }
-    }
-
-    val isSyncing: Boolean get() = syncCount.get() > 0
-
-    fun syncStarted() {
-        syncCount.incrementAndGet()
-    }
-
-    fun syncDone() {
-        if (syncCount.decrementAndGet() == 0) {
-            DumbService.getInstance(myProject).smartInvokeLater {
-                if (!isSyncing) {
-                    showConfigureKotlinNotificationIfNeeded(myProject,
-                                                            collectModulesWithOutdatedRuntime(findOutdatedKotlinLibraries(myProject)))
+                else {
+                    notificationPostponed = true
                 }
             }
         }
+    }
+
+    val isSyncing: Boolean get() = syncDepth.get() > 0
+
+    fun syncStarted() {
+        syncDepth.incrementAndGet()
+    }
+
+    fun syncDone() {
+        syncDepth.decrementAndGet()
     }
 
     companion object {
         val CONFIGURE_NOTIFICATION_GROUP_ID = "Configure Kotlin in Project"
+        val LOG = Logger.getInstance(ConfigureKotlinNotification::class.java)
 
         fun getInstance(project: Project): KotlinConfigurationCheckerComponent
                 = project.getComponent(KotlinConfigurationCheckerComponent::class.java)
