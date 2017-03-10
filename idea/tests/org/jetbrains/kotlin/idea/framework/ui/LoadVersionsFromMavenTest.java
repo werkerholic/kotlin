@@ -22,7 +22,7 @@ import java.util.Collection;
 
 public class LoadVersionsFromMavenTest extends LightIdeaTestCase {
     public void testDownload() throws Exception {
-        Collection<String> versions = ConfigureDialogWithModulesAndVersion.loadVersions();
+        Collection<String> versions = ConfigureDialogWithModulesAndVersion.loadVersions("1.0.0");
         assert versions.size() > 0;
     }
 }
