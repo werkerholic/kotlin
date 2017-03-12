@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2015 JetBrains s.r.o.
+ * Copyright 2010-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.jetbrains.kotlin.load.java.components.JavaResolverCache
 import org.jetbrains.kotlin.load.java.lazy.LazyJavaPackageFragmentProvider
 import org.jetbrains.kotlin.load.java.structure.JavaClass
 import org.jetbrains.kotlin.load.java.structure.LightClassOriginKind
+import org.jetbrains.kotlin.name.SpecialNames
 
 class JavaDescriptorResolver(
         val packageFragmentProvider: LazyJavaPackageFragmentProvider,
@@ -35,7 +36,8 @@ class JavaDescriptorResolver(
 
         javaClass.outerClass?.let { outerClass ->
             val outerClassScope = resolveClass(outerClass)?.unsubstitutedInnerClassesScope
-            return outerClassScope?.getContributedClassifier(javaClass.name, NoLookupLocation.FROM_JAVA_LOADER) as? ClassDescriptor
+            val name = if (javaClass.name == SpecialNames.SAFE_IDENTIFIER_FOR_NO_NAME) SpecialNames.NO_NAME_PROVIDED else javaClass.name
+            return outerClassScope?.getContributedClassifier(name, NoLookupLocation.FROM_JAVA_LOADER) as? ClassDescriptor
         }
 
         if (fqName == null) return null
