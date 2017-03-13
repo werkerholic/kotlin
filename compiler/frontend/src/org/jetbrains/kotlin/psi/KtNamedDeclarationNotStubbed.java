@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2015 JetBrains s.r.o.
+ * Copyright 2010-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.kotlin.name.Name;
 import org.jetbrains.kotlin.lexer.KtTokens;
+import org.jetbrains.kotlin.name.Name;
+import org.jetbrains.kotlin.name.SpecialNames;
 
 import static org.jetbrains.kotlin.psi.KtPsiFactoryKt.KtPsiFactory;
 
@@ -54,7 +55,7 @@ abstract class KtNamedDeclarationNotStubbed extends KtDeclarationImpl implements
     @Override
     @NotNull
     public Name getNameAsSafeName() {
-        return KtPsiUtil.safeName(getName());
+        return SpecialNames.safeIdentifier(getName());
     }
 
     @Override
