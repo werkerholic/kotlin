@@ -13789,6 +13789,12 @@ public class DiagnosticsTestGenerated extends AbstractDiagnosticsTest {
                 doTest(fileName);
             }
 
+            @TestMetadata("noOperatorRemWhenApiVersion10.kt")
+            public void testNoOperatorRemWhenApiVersion10() throws Exception {
+                String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/operatorRem/noOperatorRemWhenApiVersion10.kt");
+                doTest(fileName);
+            }
+
             @TestMetadata("numberRemConversions.kt")
             public void testNumberRemConversions() throws Exception {
                 String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/operatorRem/numberRemConversions.kt");
