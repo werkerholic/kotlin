@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2015 JetBrains s.r.o.
+ * Copyright 2010-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import org.jetbrains.annotations.NonNls
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.SpecialNames
 import org.jetbrains.kotlin.psi.stubs.KotlinObjectStub
 import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
@@ -40,6 +41,10 @@ class KtObjectDeclaration : KtClassOrObject {
         }
 
         return null
+    }
+
+    override fun getNameAsSafeName(): Name {
+        return KtPsiUtil.safeName(name)
     }
 
     override fun setName(@NonNls name: String): PsiElement {
