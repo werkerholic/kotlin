@@ -349,7 +349,9 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
 
     @Override
     protected void generateSyntheticParts() {
-        generatePropertyMetadataArrayFieldIfNeeded(classAsmType);
+        if (!isNonCompanionObject(descriptor) || !state.getClassBuilderMode().generateBodies) {
+            generatePropertyMetadataArrayFieldIfNeeded(classAsmType);
+        }
 
         generateFieldForSingleton();
 
@@ -823,13 +825,6 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
                        ACC_PUBLIC | ACC_STATIC | ACC_FINAL,
                        field.name, field.type.getDescriptor(), null, null);
 
-            if (!state.getClassBuilderMode().generateBodies) return;
-            // Invoke the object constructor but ignore the result because INSTANCE will be initialized in the first line of <init>
-            InstructionAdapter v = createOrGetClInitCodegen().v;
-            markLineNumberForElement(element.getPsiOrParent(), v);
-            v.anew(classAsmType);
-            v.invokespecial(classAsmType.getInternalName(), "<init>", "()V", false);
-
             return;
         }
 
@@ -971,7 +966,17 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
                                            getDelegationConstructorCall(bindingContext, constructorDescriptor));
 
         if (isNonCompanionObject(descriptor)) {
-            StackValue.singletonViaInstance(descriptor, typeMapper).store(StackValue.LOCAL_0, iv);
+            InstructionAdapter v = createOrGetClInitCodegen().v;
+            markLineNumberForElement(element.getPsiOrParent(), v);
+            generatePropertyMetadataArrayFieldIfNeeded(classAsmType);
+            v.anew(classAsmType);
+            v.dup();
+            v.invokespecial(classAsmType.getInternalName(), "<init>", "()V", false);
+            //TODO: local 0 is redundant, but it's hack for provideDelegate convention cause it uses local 0)
+            createOrGetClInitCodegen().getFrameMap().enterTemp(classAsmType);
+            StackValue.Local local0 = StackValue.local(0, classAsmType);
+            local0.store(StackValue.onStack(classAsmType), createOrGetClInitCodegen().v);
+            StackValue.singletonViaInstance(descriptor, typeMapper).store(local0, createOrGetClInitCodegen().v);
         }
 
         for (KtSuperTypeListEntry specifier : myClass.getSuperTypeListEntries()) {
@@ -1010,7 +1015,7 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
             });
         }
         else {
-            generateInitializers(codegen);
+            generateInitializers(isNonCompanionObject(descriptor) ? createOrGetClInitCodegen() : codegen);
         }
 
         iv.visitInsn(RETURN);
