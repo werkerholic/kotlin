@@ -95,7 +95,7 @@ class ReflectionTypes(module: ModuleDescriptor, private val notFoundClasses: Not
             else -> throw AssertionError("More than 2 receivers is not allowed")
         }
 
-        val arguments = (receiverTypes + listOf(returnType)).map(::TypeProjectionImpl)
+        val arguments = (receiverTypes + returnType).map(::TypeProjectionImpl)
         return KotlinTypeFactory.simpleNotNullType(annotations, classDescriptor, arguments)
     }
 
