@@ -95,11 +95,10 @@ sealed class ChangeCoroutineSupportFix(
             }
 
             with(KotlinCommonCompilerArgumentsHolder.getInstance(project).settings) {
-                when (coroutineSupport) {
-                    LanguageFeature.State.ENABLED -> coroutinesEnable = true
-                    LanguageFeature.State.ENABLED_WITH_WARNING -> coroutinesWarn = true
-                    LanguageFeature.State.ENABLED_WITH_ERROR, LanguageFeature.State.DISABLED -> coroutinesError = true
-                }
+                coroutinesEnable = coroutineSupport == LanguageFeature.State.ENABLED
+                coroutinesWarn = coroutineSupport == LanguageFeature.State.ENABLED_WITH_WARNING
+                coroutinesError = coroutineSupport == LanguageFeature.State.ENABLED_WITH_ERROR ||
+                                  coroutineSupport == LanguageFeature.State.DISABLED
             }
             ProjectRootManagerEx.getInstanceEx(project).makeRootsChange({}, false, true)
         }
