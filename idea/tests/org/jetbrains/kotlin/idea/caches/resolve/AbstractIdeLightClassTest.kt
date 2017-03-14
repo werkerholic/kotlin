@@ -190,6 +190,10 @@ object LightClassLazinessChecker {
     )
 
     private fun fieldInfo(field: PsiField) = with(field) {
+        PsiModifier.MODIFIERS.asList().forEach {
+            assertEquals(field.modifierList!!.hasModifierProperty(it), field.hasModifierProperty(it))
+        }
+
         FieldInfo(
                 name!!, PsiModifier.MODIFIERS.asList().filter { hasModifierProperty(it) }
         )
@@ -203,6 +207,10 @@ object LightClassLazinessChecker {
     )
 
     private fun methodInfo(method: PsiMethod) = with(method) {
+        PsiModifier.MODIFIERS.asList().forEach {
+            assertEquals(method.modifierList.hasModifierProperty(it), method.hasModifierProperty(it))
+        }
+
         MethodInfo(
                 name, PsiModifier.MODIFIERS.asList().filter { hasModifierProperty(it) },
                 isConstructor, method.parameterList.parametersCount

@@ -18,11 +18,8 @@ package org.jetbrains.kotlin.asJava.elements
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
+import com.intellij.psi.impl.light.LightElement
 import com.intellij.psi.impl.light.LightModifierList
-import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.util.ArrayUtil
 import org.jetbrains.annotations.NonNls
 import org.jetbrains.kotlin.asJava.LightClassGenerationSupport
@@ -41,11 +38,11 @@ abstract class KtLightModifierListWithExplicitModifiers(
 ) : LightModifierList(owner.manager, KotlinLanguage.INSTANCE, *modifiers) {
     abstract val delegate: PsiAnnotationOwner
 
-    private val _annotations by lazyPub { computeAnnotations(this, delegate) }
+    private val _annotations = KtLightAnnotations(this) { delegate.annotations }
 
     override fun getParent() = owner
 
-    override fun getAnnotations(): Array<out PsiAnnotation> = _annotations.value
+    override fun getAnnotations(): Array<out PsiAnnotation> = _annotations.annotations
 
     override fun getApplicableAnnotations() = delegate.applicableAnnotations
 
@@ -55,16 +52,17 @@ abstract class KtLightModifierListWithExplicitModifiers(
 }
 
 class KtLightModifierList(
-        private val delegate: PsiModifierList,
-        private val owner: PsiModifierListOwner
-) : PsiModifierList by delegate {
-    private val _annotations by lazyPub { computeAnnotations(this, delegate) }
+        private val owner: PsiModifierListOwner,
+        private val computeDelegateAnnotations: () -> Array<PsiAnnotation>
+) : LightElement(owner.manager, KotlinLanguage.INSTANCE), PsiModifierList {
 
-    override fun getAnnotations(): Array<out PsiAnnotation> = _annotations.value
+    private val _annotations = KtLightAnnotations(this, computeDelegateAnnotations)
+
+    override fun getAnnotations(): Array<out PsiAnnotation> = _annotations.annotations
 
     override fun findAnnotation(@NonNls qualifiedName: String) = annotations.firstOrNull { it.qualifiedName == qualifiedName }
 
-    override fun addAnnotation(@NonNls qualifiedName: String) = delegate.addAnnotation(qualifiedName)
+    override fun addAnnotation(@NonNls qualifiedName: String) = throwCanNotModify()
 
     override fun getParent() = owner
 
@@ -73,7 +71,6 @@ class KtLightModifierList(
     override fun getLanguage() = KotlinLanguage.INSTANCE
     override fun getTextRange() = TextRange.EMPTY_RANGE
     override fun getStartOffsetInParent() = -1
-    override fun getTextLength() = 0
     override fun getPrevSibling(): PsiElement? = null
     override fun getNextSibling(): PsiElement? = null
     override fun findElementAt(offset: Int): PsiElement? = null
@@ -82,25 +79,36 @@ class KtLightModifierList(
     override fun isWritable() = false
     override fun isPhysical() = false
     override fun textToCharArray(): CharArray = ArrayUtil.EMPTY_CHAR_ARRAY;
-    override fun textMatches(text: CharSequence): Boolean = getText() == text.toString()
-    override fun textMatches(element: PsiElement): Boolean = text == element.text
-    override fun textContains(c: Char): Boolean = text?.contains(c) ?: false
-    override fun copy(): PsiElement = KtLightModifierList(delegate, owner)
+    override fun copy(): PsiElement = KtLightModifierList(owner, computeDelegateAnnotations)
     override fun getReferences() = PsiReference.EMPTY_ARRAY
     override fun isEquivalentTo(another: PsiElement?) =
-            another is KtLightModifierList && delegate == another.delegate && owner == another.owner
+            another is KtLightModifierList && owner == another.owner
+
+    override fun hasModifierProperty(name: String) = owner.hasModifierProperty(name)
+
+    override fun hasExplicitModifier(name: String) = hasModifierProperty(name)
+
+    override fun setModifierProperty(name: String, value: Boolean) = throwCanNotModify()
+    override fun checkSetModifierProperty(name: String, value: Boolean) = throwCanNotModify()
+    override fun getApplicableAnnotations() = annotations
+
+    override fun toString() = "${this::class} for $owner"
 }
 
-internal fun computeAnnotations(lightElement: PsiModifierList,
-                                delegate: PsiAnnotationOwner): CachedValue<Array<out PsiAnnotation>> {
-    fun doCompute(): Array<PsiAnnotation> {
-        val delegateAnnotations = delegate.annotations
+class KtLightAnnotations(
+        private val parent: PsiModifierList,
+        private val computeDelegateAnnotations: () -> Array<PsiAnnotation>
+) {
+    val annotations by lazyPub(this::computeAnnotations)
+
+    private fun computeAnnotations(): Array<PsiAnnotation> {
+        val delegateAnnotations = computeDelegateAnnotations()
         if (delegateAnnotations.isEmpty()) return emptyArray()
 
-        val lightOwner = lightElement.parent as? KtLightElement<*, *>
+        val lightOwner = parent.parent as? KtLightElement<*, *>
         val declaration = lightOwner?.kotlinOrigin as? KtDeclaration
         if (declaration != null && !declaration.isValid) return PsiAnnotation.EMPTY_ARRAY
-        val descriptor = declaration?.let { LightClassGenerationSupport.getInstance(lightElement.project).resolveToDescriptor(it) }
+        val descriptor = declaration?.let { LightClassGenerationSupport.getInstance(parent.project).resolveToDescriptor(it) }
         val annotatedDescriptor = when {
             descriptor !is PropertyDescriptor || lightOwner !is KtLightMethod -> descriptor
             lightOwner.isGetter -> descriptor.getter
@@ -118,7 +126,7 @@ internal fun computeAnnotations(lightElement: PsiModifierList,
                         nextIndex = currentIndex + 1
                         val ktAnnotation = ktAnnotations[currentIndex]
                         val entry = ktAnnotation.annotation.source.getPsi() as? KtAnnotationEntry ?: return@map clsAnnotation
-                        KtLightAnnotation(clsAnnotation, entry, lightElement)
+                        KtLightAnnotation(clsAnnotation, entry, parent)
                     }
                     else clsAnnotation
                 }
@@ -126,8 +134,4 @@ internal fun computeAnnotations(lightElement: PsiModifierList,
         return result
     }
 
-    return CachedValuesManager.getManager(lightElement.project).createCachedValue<Array<out PsiAnnotation>>(
-            { CachedValueProvider.Result.create(doCompute(), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT) },
-            false
-    )
 }

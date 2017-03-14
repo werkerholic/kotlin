@@ -83,9 +83,7 @@ sealed class KtLightFieldImpl<T: PsiField>(
     }
 
     private val _modifierList by lazyPub {
-        if (lightMemberOrigin is LightMemberOriginForDeclaration)
-            clsDelegate.modifierList?.let { KtLightModifierList(it, this) }
-        else clsDelegate.modifierList
+            KtLightModifierList(this) { clsDelegate.modifierList!!.annotations }
     }
 
     override fun getModifierList() = _modifierList

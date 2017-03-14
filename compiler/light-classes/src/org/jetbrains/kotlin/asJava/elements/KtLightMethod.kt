@@ -16,13 +16,11 @@
 
 package org.jetbrains.kotlin.asJava.elements
 
-import com.intellij.core.JavaCoreBundle
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.psi.impl.compiled.ClsTypeElementImpl
 import com.intellij.psi.impl.light.LightElement
-import com.intellij.psi.javadoc.PsiDocComment
 import com.intellij.psi.scope.PsiScopeProcessor
 import com.intellij.psi.util.*
 import com.intellij.util.IncorrectOperationException
@@ -134,14 +132,8 @@ class KtLightMethodImpl private constructor(
         } ?: throwCanNotModify()
     }
 
-    private fun throwCanNotModify(): Nothing {
-        throw IncorrectOperationException(JavaCoreBundle.message("psi.error.attempt.to.edit.class.file"))
-    }
-
     private val _modifierList by lazyPub {
-        if (lightMethodOrigin is LightMemberOriginForDeclaration)
-            KtLightModifierList(clsDelegate.modifierList, this)
-        else clsDelegate.modifierList
+        KtLightModifierList(this) { clsDelegate.modifierList.annotations }
     }
 
     override fun getModifierList(): PsiModifierList {
@@ -315,3 +307,8 @@ val KtLightMethod.isGetter: Boolean
 
 val KtLightMethod.isSetter: Boolean
     get() = isAccessor(false)
+
+
+internal fun throwCanNotModify(): Nothing {
+    throw IncorrectOperationException("Can not modify element.")
+}
